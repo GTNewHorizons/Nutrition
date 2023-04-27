@@ -6,7 +6,7 @@ gui.nutrition:nutrition_title=Voeding
 gui.nutrition:close=Sluiten
 gui.nutrition:updating=Updaten...
 
-# Voeding (Kan aangepast worden met Resource Packs)
+# Voeding
 nutrient.nutrition:grain=Graan
 nutrient.nutrition:fruit=Fruit
 nutrient.nutrition:vegetable=Groenten

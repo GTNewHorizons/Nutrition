@@ -6,7 +6,7 @@ gui.nutrition:nutrition_title=Nutrición
 gui.nutrition:close=Cerrar
 gui.nutrition:updating=Actualizando...
 
-# Nutrientes (se pueden perzonalizar utilizando paquetes de recursos)
+# Nutrientes
 nutrient.nutrition:grain=Cereales
 nutrient.nutrition:fruit=Fruta
 nutrient.nutrition:vegetable=Vegetales

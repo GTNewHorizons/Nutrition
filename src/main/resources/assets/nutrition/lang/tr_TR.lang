@@ -6,7 +6,7 @@ gui.nutrition:nutrition_title=Beslenme
 gui.nutrition:close=Kapat
 gui.nutrition:updating=Güncelleniyor...
 
-# Nutrients (Can be customized using Resource Packs)
+# Nutrients
 nutrient.nutrition:grain=Tahıl Ürünleri
 nutrient.nutrition:fruit=Meyve
 nutrient.nutrition:vegetable=Sebze

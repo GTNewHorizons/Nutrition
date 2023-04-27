@@ -6,7 +6,7 @@ gui.nutrition:nutrition_title=Ernæring
 gui.nutrition:close=Lukke
 gui.nutrition:updating=Oppdaterer...
 
-# Ernæring (Kan tilpasses ved hjelp av ressurspakker)
+# Ernæring
 nutrient.nutrition:grain=Korn
 nutrient.nutrition:fruit=Frukt
 nutrient.nutrition:vegetable=grønnsaker

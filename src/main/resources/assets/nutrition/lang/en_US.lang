@@ -6,7 +6,7 @@ gui.nutrition:nutrition_title=Nutrition
 gui.nutrition:close=Close
 gui.nutrition:updating=Updating...
 
-# Nutrients (Can be customized using Resource Packs)
+# Nutrients
 nutrient.nutrition:grain=Grain
 nutrient.nutrition:fruit=Fruit
 nutrient.nutrition:vegetable=Vegetable

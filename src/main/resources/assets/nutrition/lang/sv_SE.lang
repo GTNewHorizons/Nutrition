@@ -6,7 +6,7 @@ gui.nutrition:nutrition_title=Näring
 gui.nutrition:close=Avsluta
 gui.nutrition:updating=Uppdaterar...
 
-# Näring (Anpassbar i "Resource pack")
+# Näring
 nutrient.nutrition:grain=Spannmål
 nutrient.nutrition:fruit=Frukt
 nutrient.nutrition:vegetable=Grönsaker

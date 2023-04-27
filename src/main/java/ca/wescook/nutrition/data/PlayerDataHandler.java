@@ -1,16 +1,17 @@
 package ca.wescook.nutrition.data;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+
 import ca.wescook.nutrition.network.Sync;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.proxy.ClientProxy;
 import ca.wescook.nutrition.utility.Config;
 import ca.wescook.nutrition.utility.Log;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class PlayerDataHandler {
 
@@ -61,7 +62,9 @@ public class PlayerDataHandler {
         NutrientManager manager = MANAGER_STORAGE.get(player);
         if (manager == null) {
             // should only happen on initial data creation
-            Log.info("Creating initial nutrient data for player " + player.getGameProfile().getName());
+            Log.info(
+                "Creating initial nutrient data for player " + player.getGameProfile()
+                    .getName());
             setForPlayer(player, manager = new NutrientManager(), true);
         }
         return manager;
@@ -77,7 +80,9 @@ public class PlayerDataHandler {
         if (sync) Sync.serverRequest(player);
     }
 
-    /** Set player nutrition data without syncing. SERVER SIDE ONLY!! On client, set {@link ClientProxy#localNutrition}. */
+    /**
+     * Set player nutrition data without syncing. SERVER SIDE ONLY!! On client, set {@link ClientProxy#localNutrition}.
+     */
     public static void setForPlayer(EntityPlayer player, NutrientManager manager) {
         setForPlayer(player, manager, false);
     }

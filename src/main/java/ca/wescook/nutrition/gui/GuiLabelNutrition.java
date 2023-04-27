@@ -1,16 +1,18 @@
 package ca.wescook.nutrition.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.resources.I18n;
+
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.List;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 // Basically just copied from MC's GuiLabel class, because it's nearly unusable...
 @SideOnly(Side.CLIENT)
@@ -70,7 +72,12 @@ public class GuiLabelNutrition extends GuiLabel {
 
             for (int i1 = 0; i1 < this.labels.size(); ++i1) {
                 if (this.centered) {
-                    this.drawCenteredString(this.fontRenderer, this.labels.get(i1), this.x + this.width / 2, l + i1 * 10, this.textColor);
+                    this.drawCenteredString(
+                        this.fontRenderer,
+                        this.labels.get(i1),
+                        this.x + this.width / 2,
+                        l + i1 * 10,
+                        this.textColor);
                 } else {
                     this.drawString(this.fontRenderer, this.labels.get(i1), this.x, l + i1 * 10, this.textColor);
                 }

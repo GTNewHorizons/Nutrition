@@ -15,6 +15,7 @@ public class JsonNutrient {
     public Food food = new Food();
 
     public static class Food {
+
         public List<String> oredict = new ArrayList<>();
         public List<String> items = new ArrayList<>();
     }

@@ -1,9 +1,9 @@
 package ca.wescook.nutrition.nutrients;
 
-import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 // Maintains information about nutrients (name, color, icon)
 // Stored client and server-side

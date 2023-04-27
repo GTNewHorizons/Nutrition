@@ -1,12 +1,14 @@
 package ca.wescook.nutrition.gui;
 
-import ca.wescook.nutrition.Tags;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
+import ca.wescook.nutrition.Tags;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 // because MC's button class has no way to set a custom icon without extension
 @SideOnly(Side.CLIENT)
@@ -33,12 +35,12 @@ public class GuiButtonNutrition extends GuiButton {
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
             // hovered
-            this.field_146123_n = mouseX >= this.xPosition
-                && mouseY >= this.yPosition
+            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition
                 && mouseX < this.xPosition + this.width
                 && mouseY < this.yPosition + this.height;
 
-            mc.getTextureManager().bindTexture(TEXTURE_LOC);
+            mc.getTextureManager()
+                .bindTexture(TEXTURE_LOC);
             GL11.glDisable(GL11.GL_DEPTH_TEST);
             int j = Y_TEX_START;
             if (this.field_146123_n) {

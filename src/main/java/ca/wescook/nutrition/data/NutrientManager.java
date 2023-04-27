@@ -1,13 +1,14 @@
 package ca.wescook.nutrition.data;
 
-import ca.wescook.nutrition.nutrients.Nutrient;
-import ca.wescook.nutrition.nutrients.NutrientList;
-import ca.wescook.nutrition.utility.Config;
-import net.minecraft.util.MathHelper;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.minecraft.util.MathHelper;
+
+import ca.wescook.nutrition.nutrients.Nutrient;
+import ca.wescook.nutrition.nutrients.NutrientList;
+import ca.wescook.nutrition.utility.Config;
 
 public class NutrientManager {
 
@@ -89,8 +90,7 @@ public class NutrientManager {
         Map<Nutrient, Float> nutritionOld = new HashMap<>(data);
 
         nutrition.clear();
-        loop:
-        for (Nutrient nutrient : NutrientList.get()) {
+        loop: for (Nutrient nutrient : NutrientList.get()) {
             for (Map.Entry<Nutrient, Float> nutrientOld : nutritionOld.entrySet()) {
                 if (nutrient.name.equals(nutrientOld.getKey().name)) {
                     nutrition.put(nutrient, nutrientOld.getValue());

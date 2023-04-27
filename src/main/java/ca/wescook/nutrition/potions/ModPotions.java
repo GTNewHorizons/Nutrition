@@ -1,10 +1,10 @@
 package ca.wescook.nutrition.potions;
 
+import java.util.UUID;
+
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.UUID;
 
 public class ModPotions {
 
@@ -21,18 +21,24 @@ public class ModPotions {
 
     public static void createPotions() {
         // Toughness
-        toughness = new PotionToughness(findPotionId(), new ResourceLocation("nutrition", "textures/potions/toughness.png"));
+        toughness = new PotionToughness(
+            findPotionId(),
+            new ResourceLocation("nutrition", "textures/potions/toughness.png"));
         toughness.setPotionName("potion.toughness");
         toughness.func_111184_a(SharedMonsterAttributes.maxHealth, TOUGHNESS_HEALTH.toString(), 0D, 0);
         toughness.func_111184_a(SharedMonsterAttributes.knockbackResistance, TOUGHNESS_KNOCKBACK.toString(), 0D, 0);
 
         // Nourished
-        nourished = new PotionNourished(findPotionId(), new ResourceLocation("nutrition", "textures/potions/nourished.png"));
+        nourished = new PotionNourished(
+            findPotionId(),
+            new ResourceLocation("nutrition", "textures/potions/nourished.png"));
         nourished.setPotionName("potion.nourished");
         nourished.func_111184_a(SharedMonsterAttributes.maxHealth, NOURISHMENT_HEALTH.toString(), 0D, 0);
 
         // Malnourished
-        malnourished = new PotionMalnourished(findPotionId(), new ResourceLocation("nutrition", "textures/potions/malnourished.png"));
+        malnourished = new PotionMalnourished(
+            findPotionId(),
+            new ResourceLocation("nutrition", "textures/potions/malnourished.png"));
         malnourished.setPotionName("potion.malnourished");
         malnourished.func_111184_a(SharedMonsterAttributes.maxHealth, MALNOURISHMENT_HEALTH.toString(), 0D, 0);
     }

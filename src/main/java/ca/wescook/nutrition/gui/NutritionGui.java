@@ -1,5 +1,10 @@
 package ca.wescook.nutrition.gui;
 
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.resources.I18n;
+
+import org.lwjgl.opengl.GL11;
+
 import ca.wescook.nutrition.Tags;
 import ca.wescook.nutrition.network.Sync;
 import ca.wescook.nutrition.nutrients.Nutrient;
@@ -7,9 +12,6 @@ import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.proxy.ClientProxy;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.resources.I18n;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class NutritionGui extends GuiScreenDynamic {
@@ -60,12 +62,19 @@ public class NutritionGui extends GuiScreenDynamic {
         int i = 0;
         for (Nutrient nutrient : NutrientList.getVisible()) {
             // Calculate percentage width for nutrition bars
-            float currentNutrient = (ClientProxy.localNutrition != null && ClientProxy.localNutrition.get(nutrient) != null) ? Math.round(ClientProxy.localNutrition.get(nutrient)) : 0; // Display empty if null
+            float currentNutrient = (ClientProxy.localNutrition != null
+                && ClientProxy.localNutrition.get(nutrient) != null)
+                    ? Math.round(ClientProxy.localNutrition.get(nutrient))
+                    : 0; // Display empty if null
             int nutritionBarDisplayWidth = (int) (currentNutrient / 100 * NUTRITION_BAR_WIDTH);
 
             // Draw icons
-            itemRender.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine,
-                nutrient.icon, left + NUTRITION_ICON_HORIZONTAL_OFFSET, top + NUTRITION_ICON_VERTICAL_OFFSET + (i * NUTRITION_DISTANCE));
+            itemRender.renderItemIntoGUI(
+                mc.fontRenderer,
+                mc.renderEngine,
+                nutrient.icon,
+                left + NUTRITION_ICON_HORIZONTAL_OFFSET,
+                top + NUTRITION_ICON_VERTICAL_OFFSET + (i * NUTRITION_DISTANCE));
 
             GL11.glDisable(GL11.GL_LIGHTING);
             // Draw black background
@@ -74,8 +83,7 @@ public class NutritionGui extends GuiScreenDynamic {
                 top + NUTRITION_BAR_VERTICAL_OFFSET + (i * NUTRITION_DISTANCE) - 1,
                 left + NUTRITION_BAR_HORIZONTAL_OFFSET + NUTRITION_BAR_WIDTH + labelCharacterPadding + 1,
                 top + NUTRITION_BAR_VERTICAL_OFFSET + (i * NUTRITION_DISTANCE) + NUTRITION_BAR_HEIGHT + 1,
-                0xFF000000
-            );
+                0xFF000000);
 
             // Draw colored bar
             drawRect(
@@ -83,8 +91,7 @@ public class NutritionGui extends GuiScreenDynamic {
                 top + NUTRITION_BAR_VERTICAL_OFFSET + (i * NUTRITION_DISTANCE),
                 left + NUTRITION_BAR_HORIZONTAL_OFFSET + nutritionBarDisplayWidth + labelCharacterPadding,
                 top + NUTRITION_BAR_VERTICAL_OFFSET + (i * NUTRITION_DISTANCE) + NUTRITION_BAR_HEIGHT,
-                nutrient.color
-            );
+                nutrient.color);
             GL11.glEnable(GL11.GL_LIGHTING);
 
             i++;
@@ -99,24 +106,28 @@ public class NutritionGui extends GuiScreenDynamic {
 
         // Calculate label offset for long nutrition names
         for (Nutrient nutrient : NutrientList.getVisible()) {
-            int nutrientWidth = mc.fontRenderer.getStringWidth(I18n.format("nutrient." + Tags.MODID + ":" + nutrient.name)); // Get width of localized string
+            int nutrientWidth = mc.fontRenderer
+                .getStringWidth(I18n.format("nutrient." + Tags.MODID + ":" + nutrient.name)); // Get width of localized
+                                                                                              // string
             nutrientWidth = (nutrientWidth / 4) * 4; // Round to nearest multiple of 4
-            if (nutrientWidth > labelCharacterPadding)
-                labelCharacterPadding = nutrientWidth;
+            if (nutrientWidth > labelCharacterPadding) labelCharacterPadding = nutrientWidth;
         }
 
         // Update dynamic GUI size
-        super.updateContainerSize(GUI_BASE_WIDTH + labelCharacterPadding, GUI_BASE_HEIGHT + (NutrientList.getVisible().size() * NUTRITION_DISTANCE));
+        super.updateContainerSize(
+            GUI_BASE_WIDTH + labelCharacterPadding,
+            GUI_BASE_HEIGHT + (NutrientList.getVisible()
+                .size() * NUTRITION_DISTANCE));
 
         // Add Close button
-        buttonList.add(buttonClose = new GuiButton(
-            0,
-            (width / 2) - (CLOSE_BUTTON_WIDTH / 2),
-            bottom - CLOSE_BUTTON_HEIGHT - CLOSE_BUTTON_OFFSET,
-            CLOSE_BUTTON_WIDTH,
-            CLOSE_BUTTON_HEIGHT,
-            I18n.format("gui." + Tags.MODID + ":close")
-        ));
+        buttonList.add(
+            buttonClose = new GuiButton(
+                0,
+                (width / 2) - (CLOSE_BUTTON_WIDTH / 2),
+                bottom - CLOSE_BUTTON_HEIGHT - CLOSE_BUTTON_OFFSET,
+                CLOSE_BUTTON_WIDTH,
+                CLOSE_BUTTON_HEIGHT,
+                I18n.format("gui." + Tags.MODID + ":close")));
 
         // Draw labels
         redrawLabels();
@@ -130,22 +141,48 @@ public class NutritionGui extends GuiScreenDynamic {
         // Draw title
         String nutritionTitle = I18n.format("gui." + Tags.MODID + ":nutrition_title");
         GuiLabelNutrition label;
-        labelList.add(label = new GuiLabelNutrition(mc.fontRenderer, 0, (width / 2) - (mc.fontRenderer.getStringWidth(nutritionTitle) / 2), top + TITLE_VERTICAL_OFFSET, 0, 0, 0xffffffff));
+        labelList.add(
+            label = new GuiLabelNutrition(
+                mc.fontRenderer,
+                0,
+                (width / 2) - (mc.fontRenderer.getStringWidth(nutritionTitle) / 2),
+                top + TITLE_VERTICAL_OFFSET,
+                0,
+                0,
+                0xffffffff));
         label.addLine(nutritionTitle);
 
         // Nutrients names and values
         int i = 0;
         for (Nutrient nutrient : NutrientList.getVisible()) {
             // Create labels for each nutrient type name
-            labelList.add(label = new GuiLabelNutrition(mc.fontRenderer, 0, left + LABEL_NAME_HORIZONTAL_OFFSET, top + LABEL_VERTICAL_OFFSET + (i * NUTRITION_DISTANCE), 0, 0, 0xffffffff));
-            label.addLine(I18n.format("nutrient." + Tags.MODID + ":" + nutrient.name)); // Add name from localization file
+            labelList.add(
+                label = new GuiLabelNutrition(
+                    mc.fontRenderer,
+                    0,
+                    left + LABEL_NAME_HORIZONTAL_OFFSET,
+                    top + LABEL_VERTICAL_OFFSET + (i * NUTRITION_DISTANCE),
+                    0,
+                    0,
+                    0xffffffff));
+            label.addLine(I18n.format("nutrient." + Tags.MODID + ":" + nutrient.name)); // Add name from localization
+                                                                                        // file
 
             // Create percent value labels for each nutrient value
-            labelList.add(label = new GuiLabelNutrition(mc.fontRenderer, 0, left + LABEL_VALUE_HORIZONTAL_OFFSET + labelCharacterPadding, top + LABEL_VERTICAL_OFFSET + (i * NUTRITION_DISTANCE), 0, 0, 0xffffffff));
-            if (ClientProxy.localNutrition != null && ClientProxy.localNutrition.get(nutrient) != null) // Ensure local nutrition data exists
+            labelList.add(
+                label = new GuiLabelNutrition(
+                    mc.fontRenderer,
+                    0,
+                    left + LABEL_VALUE_HORIZONTAL_OFFSET + labelCharacterPadding,
+                    top + LABEL_VERTICAL_OFFSET + (i * NUTRITION_DISTANCE),
+                    0,
+                    0,
+                    0xffffffff));
+            if (ClientProxy.localNutrition != null && ClientProxy.localNutrition.get(nutrient) != null) // Ensure local
+                                                                                                        // nutrition
+                                                                                                        // data exists
                 label.addLine(Math.round(ClientProxy.localNutrition.get(nutrient)) + "%%");
-            else
-                label.addLine(I18n.format("gui." + Tags.MODID + ":updating"));
+            else label.addLine(I18n.format("gui." + Tags.MODID + ":updating"));
             i++;
         }
     }
@@ -156,8 +193,7 @@ public class NutritionGui extends GuiScreenDynamic {
         if (button == buttonClose) {
             // Close GUI
             mc.thePlayer.closeScreen();
-            if (mc.currentScreen == null)
-                mc.setIngameFocus();
+            if (mc.currentScreen == null) mc.setIngameFocus();
         }
     }
 
@@ -167,11 +203,11 @@ public class NutritionGui extends GuiScreenDynamic {
         super.keyTyped(typedChar, keyCode);
 
         // If escape key (1), or player inventory key (E), or Nutrition GUI key (N) is pressed
-        if (keyCode == 1 || keyCode == mc.gameSettings.keyBindInventory.getKeyCode() || keyCode == ClientProxy.keyNutritionGui.getKeyCode()) {
+        if (keyCode == 1 || keyCode == mc.gameSettings.keyBindInventory.getKeyCode()
+            || keyCode == ClientProxy.keyNutritionGui.getKeyCode()) {
             // Close GUI
             mc.thePlayer.closeScreen();
-            if (mc.currentScreen == null)
-                mc.setIngameFocus();
+            if (mc.currentScreen == null) mc.setIngameFocus();
         }
     }
 

@@ -9,7 +9,8 @@ public class Sync {
     // Only call from server
     public static void serverRequest(EntityPlayer player) {
         if (!player.worldObj.isRemote) { // Server-only
-            ModPacketHandler.NETWORK_CHANNEL.sendTo(new PacketNutritionResponse.Message(player), (EntityPlayerMP) player);
+            ModPacketHandler.NETWORK_CHANNEL
+                .sendTo(new PacketNutritionResponse.Message(player), (EntityPlayerMP) player);
         }
     }
 

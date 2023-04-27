@@ -1,9 +1,9 @@
 package ca.wescook.nutrition.nutrients;
 
-import net.minecraft.item.ItemStack;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import net.minecraft.item.ItemStack;
 
 // Nutrient object represents a type of food group
 public class Nutrient {

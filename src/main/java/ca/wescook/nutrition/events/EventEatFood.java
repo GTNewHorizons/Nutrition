@@ -1,11 +1,7 @@
 package ca.wescook.nutrition.events;
 
-import ca.wescook.nutrition.data.PlayerDataHandler;
-import ca.wescook.nutrition.effects.EffectsManager;
-import ca.wescook.nutrition.nutrients.Nutrient;
-import ca.wescook.nutrition.nutrients.NutrientUtils;
-import ca.wescook.nutrition.proxy.ClientProxy;
-import ca.wescook.nutrition.utility.Config;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCake;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,10 +11,15 @@ import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 
-import java.util.List;
+import ca.wescook.nutrition.data.PlayerDataHandler;
+import ca.wescook.nutrition.effects.EffectsManager;
+import ca.wescook.nutrition.nutrients.Nutrient;
+import ca.wescook.nutrition.nutrients.NutrientUtils;
+import ca.wescook.nutrition.proxy.ClientProxy;
+import ca.wescook.nutrition.utility.Config;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class EventEatFood {
 
@@ -44,10 +45,12 @@ public class EventEatFood {
             List<Nutrient> foundNutrients = NutrientUtils.getFoodNutrients(itemStack);
             float nutritionValue = NutrientUtils.calculateNutrition(itemStack, foundNutrients);
 
-            // todo eventually, once syncing is more tested, simplify this down by changing PlayerDataHandler to return either/or
+            // todo eventually, once syncing is more tested, simplify this down by changing PlayerDataHandler to return
+            // either/or
             // Add to each nutrient
             if (!player.getEntityWorld().isRemote) { // Server
-                PlayerDataHandler.getForPlayer(player).add(foundNutrients, nutritionValue);
+                PlayerDataHandler.getForPlayer(player)
+                    .add(foundNutrients, nutritionValue);
             } else { // Client
                 ClientProxy.localNutrition.add(foundNutrients, nutritionValue);
             }
@@ -114,11 +117,13 @@ public class EventEatFood {
 
         // Calculate nutrition
         List<Nutrient> foundNutrients = NutrientUtils.getFoodNutrients(itemStack); // Nutrient list for that food
-        float nutritionValue = NutrientUtils.calculateNutrition(itemStack, foundNutrients); // Nutrition value for that food
+        float nutritionValue = NutrientUtils.calculateNutrition(itemStack, foundNutrients); // Nutrition value for that
+                                                                                            // food
 
         // Add to each nutrient
         if (!player.getEntityWorld().isRemote) { // Server
-            PlayerDataHandler.getForPlayer(player).add(foundNutrients, nutritionValue);
+            PlayerDataHandler.getForPlayer(player)
+                .add(foundNutrients, nutritionValue);
         } else { // Client
             ClientProxy.localNutrition.add(foundNutrients, nutritionValue);
         }

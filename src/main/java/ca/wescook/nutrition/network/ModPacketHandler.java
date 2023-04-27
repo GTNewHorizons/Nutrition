@@ -15,7 +15,15 @@ public class ModPacketHandler {
 
     // Register messages on run
     public static void registerMessages() {
-        NETWORK_CHANNEL.registerMessage(PacketNutritionRequest.Handler.class, PacketNutritionRequest.Message.class, MESSAGE_NUTRITION_REQUEST, Side.SERVER);
-        NETWORK_CHANNEL.registerMessage(PacketNutritionResponse.Handler.class, PacketNutritionResponse.Message.class, MESSAGE_NUTRITION_RESPONSE, Side.CLIENT);
+        NETWORK_CHANNEL.registerMessage(
+            PacketNutritionRequest.Handler.class,
+            PacketNutritionRequest.Message.class,
+            MESSAGE_NUTRITION_REQUEST,
+            Side.SERVER);
+        NETWORK_CHANNEL.registerMessage(
+            PacketNutritionResponse.Handler.class,
+            PacketNutritionResponse.Message.class,
+            MESSAGE_NUTRITION_RESPONSE,
+            Side.CLIENT);
     }
 }

@@ -1,13 +1,13 @@
 package ca.wescook.nutrition.effects;
 
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.potion.Potion;
+
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.utility.Log;
-import net.minecraft.potion.Potion;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 // todo clean up unnecessary parts of this class and better comment things, as well as value bounds checking
 public class Effect {
@@ -28,9 +28,9 @@ public class Effect {
     }
 
     public enum EnumDetectionType {
-        ANY,       // Any nutrient may be in the threshold.
-        AVERAGE,   // The average of all nutrients must be in the threshold.
-        ALL,       // All nutrients must be in the threshold.
+        ANY, // Any nutrient may be in the threshold.
+        AVERAGE, // The average of all nutrients must be in the threshold.
+        ALL, // All nutrients must be in the threshold.
         CUMULATIVE // For each nutrient within the threshold, the amplifier increases by one.
     }
 

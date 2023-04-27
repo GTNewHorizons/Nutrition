@@ -1,15 +1,18 @@
 package ca.wescook.nutrition.nutrients;
 
-import ca.wescook.nutrition.utility.Config;
-import ca.wescook.nutrition.utility.Log;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCake;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.ArrayList;
-import java.util.List;
+import ca.wescook.nutrition.utility.Config;
+import ca.wescook.nutrition.utility.Log;
+import cpw.mods.fml.common.Loader;
+import squeek.applecore.api.food.FoodValues;
 
 public class NutrientUtils {
 
@@ -18,8 +21,7 @@ public class NutrientUtils {
         List<Nutrient> nutrientsFound = new ArrayList<>();
 
         // Loop through nutrients to look for food
-        foodSearch:
-        for (Nutrient nutrient : NutrientList.get()) { // All nutrients
+        foodSearch: for (Nutrient nutrient : NutrientList.get()) { // All nutrients
             // Search foods
             for (ItemStack listedFood : nutrient.foodItems) { // All foods in that category
                 if (listedFood.isItemEqual(eatingFood)) {
@@ -30,7 +32,8 @@ public class NutrientUtils {
 
             // Search ore dictionary
             for (String listedOreDict : nutrient.foodOreDict) { // All ore dicts in that nutrient
-                for (ItemStack itemStack : OreDictionary.getOres(listedOreDict)) { // All items that match that oredict (eg. listAllmilk)
+                for (ItemStack itemStack : OreDictionary.getOres(listedOreDict)) { // All items that match that oredict
+                    // (eg. listAllmilk)
                     if (itemStack.isItemEqual(eatingFood)) { // Our food matches oredict
                         nutrientsFound.add(nutrient); // Add nutrient
                         continue foodSearch; // Skip rest of search in this nutrient, try others
@@ -51,7 +54,11 @@ public class NutrientUtils {
         // Base food value
         int foodValue = 0;
         if (item instanceof ItemFood) {
-            foodValue = ((ItemFood) item).func_150905_g(itemStack); // Number of half-drumsticks food heals
+            if (Loader.isModLoaded("AppleCore")) {
+                foodValue = FoodValues.get(itemStack).hunger;
+            } else {
+                foodValue = ((ItemFood) item).func_150905_g(itemStack); // Number of half-drumsticks food heals
+            }
         } else if (item instanceof ItemBlock || item instanceof ItemReed) { // Cake, most likely
             foodValue = 2; // Hardcoded value from vanilla
         } else if (item instanceof ItemBucketMilk) {
@@ -62,7 +69,9 @@ public class NutrientUtils {
         float adjustedFoodValue = (float) (foodValue * 0.5); // Halve to start at reasonable starting point
         adjustedFoodValue = adjustedFoodValue * Config.nutritionMultiplier; // Multiply by config value
         float lossPercentage = (float) Config.lossPerNutrient / 100; // Loss percentage from config file
-        float foodLoss = (adjustedFoodValue * lossPercentage * (nutrients.size() - 1)); // Lose 15% (configurable) for each nutrient added after the first nutrient
+        float foodLoss = (adjustedFoodValue * lossPercentage * (nutrients.size() - 1)); // Lose 15% (configurable) for
+        // each nutrient added after the
+        // first nutrient
 
         return Math.max(0, adjustedFoodValue - foodLoss);
     }

@@ -13,7 +13,8 @@ public class PotionMalnourished extends PotionCustom {
     @Override
     public double func_111183_a(int amplifier, AttributeModifier modifier) {
         // Reduce health
-        if (modifier.getID().equals(ModPotions.MALNOURISHMENT_HEALTH)) {
+        if (modifier.getID()
+            .equals(ModPotions.MALNOURISHMENT_HEALTH)) {
             return -(amplifier + 1); // Half-heart per level
         }
 

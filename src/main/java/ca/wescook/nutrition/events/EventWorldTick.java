@@ -1,35 +1,37 @@
 package ca.wescook.nutrition.events;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.effects.EffectsManager;
 import ca.wescook.nutrition.gui.ModGuiHandler;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.proxy.ClientProxy;
 import ca.wescook.nutrition.utility.Config;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class EventWorldTick {
 
-    private final Map<Pair<EntityPlayer, Boolean>, Integer> playerFoodLevels = new HashMap<>(); // Track food level between ticks
+    private final Map<Pair<EntityPlayer, Boolean>, Integer> playerFoodLevels = new HashMap<>(); // Track food level
+                                                                                                // between ticks
     private int potionCounter = 0; // Count ticks to reapply potion effects
 
     @SubscribeEvent
     public void WorldTickEvent(TickEvent.WorldTickEvent event) {
         // Only run during end phase (post-vanilla)
-        if (event.phase != TickEvent.Phase.END)
-            return;
+        if (event.phase != TickEvent.Phase.END) return;
 
         // Apply decay check each tick
         if (Config.enableDecay) {
@@ -47,7 +49,8 @@ public class EventWorldTick {
         Pair<EntityPlayer, Boolean> playerSidedID = new ImmutablePair<>(player, player.getEntityWorld().isRemote);
 
         // Get player food levels
-        int foodLevelNew = player.getFoodStats().getFoodLevel(); // Current food level
+        int foodLevelNew = player.getFoodStats()
+            .getFoodLevel(); // Current food level
         Integer foodLevelOld = playerFoodLevels.get(playerSidedID); // Food level last tick
 
         // If food level has reduced, also lower nutrition
@@ -57,7 +60,8 @@ public class EventWorldTick {
             // Server
             Map<Nutrient, Float> playerNutrition;
             if (!player.getEntityWorld().isRemote) {
-                playerNutrition = PlayerDataHandler.getForPlayer(player).get();
+                playerNutrition = PlayerDataHandler.getForPlayer(player)
+                    .get();
                 calculateDecay(playerNutrition, difference);
             }
             // Client
@@ -79,14 +83,18 @@ public class EventWorldTick {
 
     private void calculateDecay(Map<Nutrient, Float> playerNutrition, int difference) {
         for (Map.Entry<Nutrient, Float> entry : playerNutrition.entrySet()) {
-            float decay = (float) (difference * 0.075 * entry.getKey().decay); // Lower number for reasonable starting point, then apply multiplier from config
+            float decay = (float) (difference * 0.075 * entry.getKey().decay); // Lower number for reasonable starting
+                                                                               // point, then apply multiplier from
+                                                                               // config
             entry.setValue(MathHelper.clamp_float(entry.getValue() - decay, 0, 100)); // Subtract decay from nutrient
         }
     }
 
     private void potionTicking(World world) {
         if (potionCounter > 110) {
-            for (EntityPlayer player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) { // All players on server
+            for (EntityPlayer player : FMLCommonHandler.instance()
+                .getMinecraftServerInstance()
+                .getConfigurationManager().playerEntityList) { // All players on server
                 EffectsManager.reapplyEffects(player);
             }
             potionCounter = 0;

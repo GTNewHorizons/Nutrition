@@ -1,5 +1,7 @@
 package ca.wescook.nutrition;
 
+import net.minecraftforge.common.MinecraftForge;
+
 import ca.wescook.nutrition.effects.EffectsList;
 import ca.wescook.nutrition.events.*;
 import ca.wescook.nutrition.gui.ModGuiHandler;
@@ -18,7 +20,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid = Tags.MODID, name = Tags.MODNAME, version = Tags.VERSION)
 public class Nutrition {
@@ -26,7 +27,9 @@ public class Nutrition {
     @Instance
     public static Nutrition instance;
 
-    @SidedProxy(clientSide = "ca.wescook.nutrition.proxy.ClientProxy", serverSide = "ca.wescook.nutrition.proxy.CommonProxy")
+    @SidedProxy(
+        clientSide = "ca.wescook.nutrition.proxy.ClientProxy",
+        serverSide = "ca.wescook.nutrition.proxy.CommonProxy")
     public static CommonProxy proxy;
 
     @EventHandler

@@ -1,16 +1,18 @@
 package ca.wescook.nutrition.utility;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import org.apache.commons.lang3.math.NumberUtils;
+
 import ca.wescook.nutrition.nutrients.JsonNutrient;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientUtils;
-import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.Loader;
-import org.apache.commons.lang3.math.NumberUtils;
-
-import java.util.ArrayList;
-import java.util.List;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class DataParser {
 
@@ -20,8 +22,7 @@ public class DataParser {
 
         for (JsonNutrient nutrientRaw : jsonNutrients) {
             // Skip if nutrient is not enabled, or if field omitted (null)
-            if (nutrientRaw.enabled != null && !nutrientRaw.enabled)
-                continue;
+            if (nutrientRaw.enabled != null && !nutrientRaw.enabled) continue;
 
             // Copying and cleaning data
             Nutrient nutrient = new Nutrient();
@@ -29,7 +30,9 @@ public class DataParser {
             // Name, icon color
             try {
                 nutrient.name = nutrientRaw.name;
-                nutrient.icon = getItemByName(nutrientRaw.name, nutrientRaw.icon).getItemStack(); // Create ItemStack used to represent icon
+                nutrient.icon = getItemByName(nutrientRaw.name, nutrientRaw.icon).getItemStack(); // Create ItemStack
+                                                                                                  // used to represent
+                                                                                                  // icon
                 nutrient.color = Integer.parseUnsignedInt("ff" + nutrientRaw.color, 16); // Convert hex string to int
             } catch (NullPointerException e) {
                 Log.fatal("Missing or invalid JSON.  A name, icon, and color are required.");
@@ -38,10 +41,8 @@ public class DataParser {
 
             // Decay rate multiplier
             // Determined either by global rate, or optional override in nutrient file
-            if (nutrientRaw.decay == null)
-                nutrient.decay = Config.decayMultiplier; // Set to global value
-            else if (nutrientRaw.decay >= -100 && nutrientRaw.decay <= 100)
-                nutrient.decay = nutrientRaw.decay;
+            if (nutrientRaw.decay == null) nutrient.decay = Config.decayMultiplier; // Set to global value
+            else if (nutrientRaw.decay >= -100 && nutrientRaw.decay <= 100) nutrient.decay = nutrientRaw.decay;
             else {
                 nutrient.decay = 0;
                 Log.error("Decay rate must be between -100 and 100 (" + nutrient.name + ").");
@@ -52,8 +53,8 @@ public class DataParser {
             nutrient.visible = (nutrientRaw.visible == null || nutrientRaw.visible);
 
             // Food - Ore Dictionary
-            if (nutrientRaw.food.oredict != null)
-                nutrient.foodOreDict = nutrientRaw.food.oredict; // Ore dicts remains as strings
+            if (nutrientRaw.food.oredict != null) nutrient.foodOreDict = nutrientRaw.food.oredict; // Ore dicts remains
+                                                                                                   // as strings
 
             // Food Items
             if (nutrientRaw.food.items != null) {
@@ -95,18 +96,25 @@ public class DataParser {
         int metadata = 0;
         // Null check input string
         if (fullName == null) {
-            Log.fatal("There is a null item in the '" + nutrientName + "' JSON.  Check for a trailing comma in the file.");
+            Log.fatal(
+                "There is a null item in the '" + nutrientName + "' JSON.  Check for a trailing comma in the file.");
             if (throwException) {
-                throw new NullPointerException("There is a null item in the '" + nutrientName + "' JSON.  Check for a trailing comma in the file.");
+                throw new NullPointerException(
+                    "There is a null item in the '" + nutrientName
+                        + "' JSON.  Check for a trailing comma in the file.");
             }
             return null;
         }
 
         String[] splitName = fullName.split(":");
         if (splitName.length <= 1) {
-            Log.fatal("There is an item missing a modid in the '" + nutrientName + "' JSON. Ensure names are formatted like 'minecraft:golden_apple'");
+            Log.fatal(
+                "There is an item missing a modid in the '" + nutrientName
+                    + "' JSON. Ensure names are formatted like 'minecraft:golden_apple'");
             if (throwException) {
-                throw new NullPointerException("There is an item missing a modid in the '" + nutrientName + "' JSON. Ensure names are formatted like 'minecraft:golden_apple'");
+                throw new NullPointerException(
+                    "There is an item missing a modid in the '" + nutrientName
+                        + "' JSON. Ensure names are formatted like 'minecraft:golden_apple'");
             }
             return null;
         }
@@ -128,6 +136,7 @@ public class DataParser {
     }
 
     private static class ItemData {
+
         private final String modid, name;
         private final int metadata;
 

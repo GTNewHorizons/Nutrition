@@ -1,11 +1,12 @@
 package ca.wescook.nutrition.events;
 
+import net.minecraftforge.event.entity.player.PlayerEvent;
+
 import ca.wescook.nutrition.data.NutrientManager;
 import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.utility.Config;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class EventPlayerDeath {
@@ -21,8 +22,21 @@ public class EventPlayerDeath {
         // This is synced automatically in EventPlayerJoinWorld#EntityJoinWorldEvent
         if (event.wasDeath) {
             for (Nutrient nutrient : NutrientList.get()) {
-                if (Config.deathPenaltyReset || nutritionNew.get(nutrient) > Config.deathPenaltyMin) { // If reset is disabled, only reduce to cap when above its value
-                    nutritionNew.set(nutrient, Math.max(Config.deathPenaltyMin, nutritionNew.get(nutrient) - Config.deathPenaltyLoss)); // Subtract death penalty from each nutrient, to cap
+                if (Config.deathPenaltyReset || nutritionNew.get(nutrient) > Config.deathPenaltyMin) { // If reset is
+                                                                                                       // disabled, only
+                                                                                                       // reduce to cap
+                                                                                                       // when above its
+                                                                                                       // value
+                    nutritionNew.set(
+                        nutrient,
+                        Math.max(Config.deathPenaltyMin, nutritionNew.get(nutrient) - Config.deathPenaltyLoss)); // Subtract
+                                                                                                                 // death
+                                                                                                                 // penalty
+                                                                                                                 // from
+                                                                                                                 // each
+                                                                                                                 // nutrient,
+                                                                                                                 // to
+                                                                                                                 // cap
                 }
             }
         }

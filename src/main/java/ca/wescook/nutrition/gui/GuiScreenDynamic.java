@@ -1,13 +1,15 @@
 package ca.wescook.nutrition.gui;
 
-import ca.wescook.nutrition.Tags;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
+import ca.wescook.nutrition.Tags;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 // Similar to GuiScreen, but draws a dynamic Minecraft border around any size
 @SideOnly(Side.CLIENT)
@@ -49,7 +51,8 @@ public abstract class GuiScreenDynamic extends GuiScreen {
     private void drawBackground() {
         // Init
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        mc.getTextureManager().bindTexture(GUI_BORDERS); // Fetch texture
+        mc.getTextureManager()
+            .bindTexture(GUI_BORDERS); // Fetch texture
 
         // Top left corner
         drawTexturedModalRect(left, top, 0, 0, 4, 4);
@@ -64,25 +67,20 @@ public abstract class GuiScreenDynamic extends GuiScreen {
         drawTexturedModalRect(right - 4, bottom - 4, 8, 8, 4, 4);
 
         // Left side
-        for (int i = 0; i < guiHeight - 8; i += 4)
-            drawTexturedModalRect(left, top + 4 + i, 0, 4, 4, 4);
+        for (int i = 0; i < guiHeight - 8; i += 4) drawTexturedModalRect(left, top + 4 + i, 0, 4, 4, 4);
 
         // Top side
-        for (int i = 0; i < guiWidth - 8; i += 4)
-            drawTexturedModalRect(left + 4 + i, top, 4, 0, 4, 4);
+        for (int i = 0; i < guiWidth - 8; i += 4) drawTexturedModalRect(left + 4 + i, top, 4, 0, 4, 4);
 
         // Right side
-        for (int i = 0; i < guiHeight - 8; i += 4)
-            drawTexturedModalRect(right - 4, top + 4 + i, 8, 4, 4, 4);
+        for (int i = 0; i < guiHeight - 8; i += 4) drawTexturedModalRect(right - 4, top + 4 + i, 8, 4, 4, 4);
 
         // Bottom side
-        for (int i = 0; i < guiWidth - 8; i += 4)
-            drawTexturedModalRect(left + 4 + i, bottom - 4, 4, 8, 4, 4);
+        for (int i = 0; i < guiWidth - 8; i += 4) drawTexturedModalRect(left + 4 + i, bottom - 4, 4, 8, 4, 4);
 
         // Draw center tiles
         for (int i = 0; i < guiWidth - 8; i += 4)
-            for (int j = 0; j < guiHeight - 8; j += 4)
-                drawTexturedModalRect(left + 4 + i, top + 4 + j, 4, 4, 4, 4);
+            for (int j = 0; j < guiHeight - 8; j += 4) drawTexturedModalRect(left + 4 + i, top + 4 + j, 4, 4, 4, 4);
     }
 
     // Draw labels and buttons (replacing super.drawScreen() call)
@@ -90,12 +88,10 @@ public abstract class GuiScreenDynamic extends GuiScreen {
     public void drawLabels(int mouseX, int mouseY) {
         // Labels
         GL11.glDisable(GL11.GL_LIGHTING);
-        for (GuiButton aButtonList : this.buttonList)
-            aButtonList.drawButton(this.mc, mouseX, mouseY);
+        for (GuiButton aButtonList : this.buttonList) aButtonList.drawButton(this.mc, mouseX, mouseY);
 
         // Buttons
-        for (GuiLabel aLabelList : this.labelList)
-            aLabelList.func_146159_a(this.mc, mouseX, mouseY);
+        for (GuiLabel aLabelList : this.labelList) aLabelList.func_146159_a(this.mc, mouseX, mouseY);
         GL11.glEnable(GL11.GL_LIGHTING);
     }
 }

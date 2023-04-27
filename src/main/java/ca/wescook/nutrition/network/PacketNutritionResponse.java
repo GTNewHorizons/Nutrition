@@ -1,22 +1,23 @@
 package ca.wescook.nutrition.network;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+
 import ca.wescook.nutrition.data.NutrientManager;
 import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.gui.ModGuiHandler;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.proxy.ClientProxy;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-
-import java.util.HashMap;
-import java.util.Map;
+import io.netty.buffer.ByteBuf;
 
 public class PacketNutritionResponse {
 
@@ -38,7 +39,8 @@ public class PacketNutritionResponse {
         @Override
         public void toBytes(ByteBuf buf) {
             // Loop through nutrients from server player, and add to buffer
-            Map<Nutrient, Float> nutrientData = PlayerDataHandler.getForPlayer(serverPlayer).get();
+            Map<Nutrient, Float> nutrientData = PlayerDataHandler.getForPlayer(serverPlayer)
+                .get();
             for (Map.Entry<Nutrient, Float> entry : nutrientData.entrySet()) {
                 ByteBufUtils.writeUTF8String(buf, entry.getKey().name);
                 buf.writeFloat(entry.getValue());
@@ -60,6 +62,7 @@ public class PacketNutritionResponse {
 
     // This is the client's handling of the information
     public static class Handler implements IMessageHandler<Message, IMessage> {
+
         @Override
         public IMessage onMessage(final Message message, final MessageContext context) {
             if (ClientProxy.localNutrition != null) {

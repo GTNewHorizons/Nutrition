@@ -1,29 +1,39 @@
 package ca.wescook.nutrition.utility;
 
-import ca.wescook.nutrition.data.PlayerDataHandler;
-import ca.wescook.nutrition.network.Sync;
-import ca.wescook.nutrition.nutrients.Nutrient;
-import ca.wescook.nutrition.nutrients.NutrientList;
-import com.google.common.primitives.Floats;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
-import org.apache.commons.lang3.math.NumberUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import com.google.common.primitives.Floats;
+
+import ca.wescook.nutrition.data.PlayerDataHandler;
+import ca.wescook.nutrition.network.Sync;
+import ca.wescook.nutrition.nutrients.Nutrient;
+import ca.wescook.nutrition.nutrients.NutrientList;
 
 public class ChatCommand extends CommandBase {
 
-    private final List<String> playerSubCommands = Arrays.asList("get", "set", "add", "subtract", "reset"); // Suggest player names following these subcommands
+    private final List<String> playerSubCommands = Arrays.asList("get", "set", "add", "subtract", "reset"); // Suggest
+                                                                                                            // player
+                                                                                                            // names
+                                                                                                            // following
+                                                                                                            // these
+                                                                                                            // subcommands
     private final String helpString = "/nutrition <get/set/add/subtract/reset/reload> <player> <nutrient> <value>";
 
-    private enum actions {SET, ADD, SUBTRACT}
+    private enum actions {
+        SET,
+        ADD,
+        SUBTRACT
+    }
 
     @Override
     public String getCommandName() {
@@ -43,9 +53,14 @@ public class ChatCommand extends CommandBase {
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
         if (args.length == 1) { // Sub-commands list
-            return getListOfStringsFromIterableMatchingLastWord(args, Arrays.asList("get", "set", "add", "subtract", "reset", "reload"));
+            return getListOfStringsFromIterableMatchingLastWord(
+                args,
+                Arrays.asList("get", "set", "add", "subtract", "reset", "reload"));
         } else if (args.length == 2 && playerSubCommands.contains(args[0])) { // Player list/reload command
-            return getListOfStringsMatchingLastWord(args, MinecraftServer.getServer().getAllUsernames());
+            return getListOfStringsMatchingLastWord(
+                args,
+                MinecraftServer.getServer()
+                    .getAllUsernames());
         } else if (args.length == 3) { // Nutrients list
             List<String> nutrientList = new ArrayList<>();
             for (Nutrient nutrient : NutrientList.get()) {
@@ -62,24 +77,16 @@ public class ChatCommand extends CommandBase {
     public void processCommand(ICommandSender sender, String[] args) {
         // Get player
         EntityPlayerMP player = null;
-        if (args.length > 0 && playerSubCommands.contains(args[0]))
-            player = CommandBase.getPlayer(sender, args[1]);
+        if (args.length > 0 && playerSubCommands.contains(args[0])) player = CommandBase.getPlayer(sender, args[1]);
 
         // Which sub-command to execute
-        if (args.length == 0 || args[0].equals("help"))
-            commandHelp(sender);
-        else if (args[0].equals("get"))
-            commandGetNutrition(player, sender, args);
-        else if (args[0].equals("set"))
-            commandSetNutrition(player, sender, args, actions.SET);
-        else if (args[0].equals("add"))
-            commandSetNutrition(player, sender, args, actions.ADD);
-        else if (args[0].equals("subtract"))
-            commandSetNutrition(player, sender, args, actions.SUBTRACT);
-        else if (args[0].equals("reset"))
-            commandResetNutrition(player, sender, args);
-        else if (args[0].equals("reload"))
-            commandReload(sender);
+        if (args.length == 0 || args[0].equals("help")) commandHelp(sender);
+        else if (args[0].equals("get")) commandGetNutrition(player, sender, args);
+        else if (args[0].equals("set")) commandSetNutrition(player, sender, args, actions.SET);
+        else if (args[0].equals("add")) commandSetNutrition(player, sender, args, actions.ADD);
+        else if (args[0].equals("subtract")) commandSetNutrition(player, sender, args, actions.SUBTRACT);
+        else if (args[0].equals("reset")) commandResetNutrition(player, sender, args);
+        else if (args[0].equals("reload")) commandReload(sender);
     }
 
     private void commandHelp(ICommandSender sender) {
@@ -96,8 +103,10 @@ public class ChatCommand extends CommandBase {
         // Write nutrient name and percentage to chat
         Nutrient nutrient = NutrientList.getByName(args[2]);
         if (nutrient != null) {
-            Float nutrientValue = PlayerDataHandler.getForPlayer(player).get(nutrient);
-            sender.addChatMessage(new ChatComponentText(nutrient.name + ": " + String.format("%.2f", nutrientValue) + "%"));
+            Float nutrientValue = PlayerDataHandler.getForPlayer(player)
+                .get(nutrient);
+            sender.addChatMessage(
+                new ChatComponentText(nutrient.name + ": " + String.format("%.2f", nutrientValue) + "%"));
         } else // Write error message
             sender.addChatMessage(new ChatComponentText("'" + args[2] + "' is not a valid nutrient"));
     }
@@ -105,19 +114,21 @@ public class ChatCommand extends CommandBase {
     // Used to set, add, and subtract nutrients (defined under actions)
     private void commandSetNutrition(EntityPlayer player, ICommandSender sender, String[] args, actions action) {
         // Sanity checking
-        if (!validNumber(sender, args[3]))
-            return;
+        if (!validNumber(sender, args[3])) return;
 
         // Set nutrient value and output
         Nutrient nutrient = NutrientList.getByName(args[2]);
         if (nutrient != null) {
             // Update nutrition based on action type
             if (action == actions.SET) {
-                PlayerDataHandler.getForPlayer(player).set(nutrient, Float.parseFloat(args[3]));
+                PlayerDataHandler.getForPlayer(player)
+                    .set(nutrient, Float.parseFloat(args[3]));
             } else if (action == actions.ADD) {
-                PlayerDataHandler.getForPlayer(player).add(nutrient, Float.parseFloat(args[3]));
+                PlayerDataHandler.getForPlayer(player)
+                    .add(nutrient, Float.parseFloat(args[3]));
             } else if (action == actions.SUBTRACT) {
-                PlayerDataHandler.getForPlayer(player).subtract(nutrient, Float.parseFloat(args[3]));
+                PlayerDataHandler.getForPlayer(player)
+                    .subtract(nutrient, Float.parseFloat(args[3]));
             }
 
             // Sync nutrition
@@ -135,14 +146,25 @@ public class ChatCommand extends CommandBase {
         if (args.length == 3) {
             Nutrient nutrient = NutrientList.getByName(args[2]);
             if (nutrient != null) {
-                PlayerDataHandler.getForPlayer(player).reset(nutrient);
-                sender.addChatMessage(new ChatComponentText("Nutrient " + nutrient.name + " reset for " + player.getGameProfile().getName() + "!"));
+                PlayerDataHandler.getForPlayer(player)
+                    .reset(nutrient);
+                sender.addChatMessage(
+                    new ChatComponentText(
+                        "Nutrient " + nutrient.name
+                            + " reset for "
+                            + player.getGameProfile()
+                                .getName()
+                            + "!"));
             }
         }
         // Reset all nutrients
         else if (args.length == 2) {
-            PlayerDataHandler.getForPlayer(player).reset();
-            sender.addChatMessage(new ChatComponentText("Nutrition reset for " + player.getGameProfile().getName() + "!"));
+            PlayerDataHandler.getForPlayer(player)
+                .reset();
+            sender.addChatMessage(
+                new ChatComponentText(
+                    "Nutrition reset for " + player.getGameProfile()
+                        .getName() + "!"));
         }
 
         // Sync nutrition
@@ -154,8 +176,7 @@ public class ChatCommand extends CommandBase {
     private boolean validNumber(ICommandSender sender, String value) {
         // Valid number check
         float newValue;
-        if (Floats.tryParse(value) != null)
-            newValue = Float.parseFloat(value);
+        if (Floats.tryParse(value) != null) newValue = Float.parseFloat(value);
         else {
             sender.addChatMessage(new ChatComponentText("'" + value + "' is not a number."));
             return false;

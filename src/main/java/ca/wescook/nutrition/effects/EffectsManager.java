@@ -1,13 +1,14 @@
 package ca.wescook.nutrition.effects;
 
-import ca.wescook.nutrition.data.PlayerDataHandler;
-import ca.wescook.nutrition.nutrients.Nutrient;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.PotionEffect;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.potion.PotionEffect;
+
+import ca.wescook.nutrition.data.PlayerDataHandler;
+import ca.wescook.nutrition.nutrients.Nutrient;
 
 public class EffectsManager {
 
@@ -16,7 +17,9 @@ public class EffectsManager {
         List<Effect> effects = removeDuplicates(getEffectsInThreshold(player));
 
         for (Effect effect : effects) {
-            boolean ambient = (effect.particles == Effect.EnumParticleVisibility.TRANSLUCENT); // Determine if particles should be shown, and what strength
+            boolean ambient = (effect.particles == Effect.EnumParticleVisibility.TRANSLUCENT); // Determine if particles
+                                                                                               // should be shown, and
+                                                                                               // what strength
             player.addPotionEffect(new PotionEffect(effect.potion.id, 619, effect.amplifier, ambient));
         }
     }
@@ -27,7 +30,8 @@ public class EffectsManager {
         List<Effect> effectsInThreshold = new ArrayList<>();
 
         // Get player nutrition
-        Map<Nutrient, Float> playerNutrition = PlayerDataHandler.getForPlayer(player).get();
+        Map<Nutrient, Float> playerNutrition = PlayerDataHandler.getForPlayer(player)
+            .get();
 
         // Read in list of potion effects to apply
         for (Effect effect : EffectsList.get()) {
@@ -39,7 +43,8 @@ public class EffectsManager {
                     // Loop relevant nutrients
                     for (Nutrient nutrient : effect.nutrients) {
                         // If any are found within threshold
-                        if (playerNutrition.get(nutrient) >= effect.minimum && playerNutrition.get(nutrient) <= effect.maximum) {
+                        if (playerNutrition.get(nutrient) >= effect.minimum
+                            && playerNutrition.get(nutrient) <= effect.maximum) {
                             effectsInThreshold.add(effect); // Add effect, once
                             break;
                         }
@@ -53,16 +58,15 @@ public class EffectsManager {
                     float average;
 
                     // Loop relevant nutrients
-                    for (Nutrient nutrient : effect.nutrients)
-                        total += playerNutrition.get(nutrient); // Add each value to total
+                    for (Nutrient nutrient : effect.nutrients) total += playerNutrition.get(nutrient); // Add each value
+                                                                                                       // to total
 
                     // Divide by number of nutrients for average (division by zero check)
                     int size = effect.nutrients.size();
                     average = (size != 0) ? total / size : -1f;
 
                     // Check average is inside the threshold
-                    if (average >= effect.minimum && average <= effect.maximum)
-                        effectsInThreshold.add(effect);
+                    if (average >= effect.minimum && average <= effect.maximum) effectsInThreshold.add(effect);
                 }
 
                 // If all nutrients are within the threshold
@@ -72,13 +76,13 @@ public class EffectsManager {
 
                     // Loop relevant nutrients
                     for (Nutrient nutrient : effect.nutrients) {
-                        if (!(playerNutrition.get(nutrient) >= effect.minimum && playerNutrition.get(nutrient) <= effect.maximum)) // If nutrient isn't within threshold
+                        if (!(playerNutrition.get(nutrient) >= effect.minimum
+                            && playerNutrition.get(nutrient) <= effect.maximum)) // If nutrient isn't within threshold
                             allWithinThreshold = false; // Fail check
                     }
 
                     // If check wasn't failed, set effect
-                    if (allWithinThreshold)
-                        effectsInThreshold.add(effect);
+                    if (allWithinThreshold) effectsInThreshold.add(effect);
                 }
 
                 // For each nutrient within the threshold, the amplifier increases by one
@@ -89,8 +93,8 @@ public class EffectsManager {
                     // Loop relevant nutrients
                     for (Nutrient nutrient : effect.nutrients) {
                         // For each nutrient found within threshold
-                        if (playerNutrition.get(nutrient) >= effect.minimum && playerNutrition.get(nutrient) <= effect.maximum)
-                            cumulativeCount++;
+                        if (playerNutrition.get(nutrient) >= effect.minimum
+                            && playerNutrition.get(nutrient) <= effect.maximum) cumulativeCount++;
                     }
 
                     // Save number of nutrients found as amplifier
@@ -126,8 +130,7 @@ public class EffectsManager {
             }
 
             // If potion wasn't already found, add to list
-            if (!foundMatch)
-                effectsOutput.add(effectIn);
+            if (!foundMatch) effectsOutput.add(effectIn);
         }
 
         return effectsOutput;

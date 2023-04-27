@@ -1,8 +1,9 @@
 package ca.wescook.nutrition.events;
 
-import ca.wescook.nutrition.network.Sync;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+
+import ca.wescook.nutrition.network.Sync;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class EventPlayerJoinWorld {

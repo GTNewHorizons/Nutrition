@@ -1,9 +1,10 @@
 package ca.wescook.nutrition.utility;
 
-import ca.wescook.nutrition.Tags;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import ca.wescook.nutrition.Tags;
 
 public class Log {
 
@@ -29,10 +30,13 @@ public class Log {
 
     public static void fatal(String message) {
         // Collect debug info
-        String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
+        String fullClassName = Thread.currentThread()
+            .getStackTrace()[2].getClassName();
         String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+        String methodName = Thread.currentThread()
+            .getStackTrace()[2].getMethodName();
+        int lineNumber = Thread.currentThread()
+            .getStackTrace()[2].getLineNumber();
 
         logger.log(Level.FATAL, message + " (" + className + "." + methodName + "():" + lineNumber + ")");
     }

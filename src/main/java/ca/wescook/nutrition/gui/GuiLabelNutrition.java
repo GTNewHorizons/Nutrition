@@ -12,12 +12,12 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-// because MC's GuiLabel class is basically useless...
+// Basically just copied from MC's GuiLabel class, because it's nearly unusable...
 @SideOnly(Side.CLIENT)
 public class GuiLabelNutrition extends GuiLabel {
 
-    protected int width = 200;
-    protected int height = 20;
+    protected int width;
+    protected int height;
     public int x;
     public int y;
     private final List<String> labels;
@@ -66,7 +66,7 @@ public class GuiLabelNutrition extends GuiLabel {
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             this.func_146160_b(mc, mouseX, mouseY);
             int k = this.y + this.height / 2 + this.border / 2;
-            int l = k = this.labels.size() * 10 / 2;
+            int l = k - this.labels.size() * 10 / 2;
 
             for (int i1 = 0; i1 < this.labels.size(); ++i1) {
                 if (this.centered) {

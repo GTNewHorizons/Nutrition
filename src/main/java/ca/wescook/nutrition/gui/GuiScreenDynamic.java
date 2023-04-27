@@ -89,11 +89,13 @@ public abstract class GuiScreenDynamic extends GuiScreen {
     // Can be called after background drawing, for proper layering
     public void drawLabels(int mouseX, int mouseY) {
         // Labels
+        GL11.glDisable(GL11.GL_LIGHTING);
         for (GuiButton aButtonList : this.buttonList)
             aButtonList.drawButton(this.mc, mouseX, mouseY);
 
         // Buttons
         for (GuiLabel aLabelList : this.labelList)
             aLabelList.func_146159_a(this.mc, mouseX, mouseY);
+        GL11.glEnable(GL11.GL_LIGHTING);
     }
 }

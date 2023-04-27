@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class NutritionGui extends GuiScreenDynamic {
@@ -66,6 +67,7 @@ public class NutritionGui extends GuiScreenDynamic {
             itemRender.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine,
                 nutrient.icon, left + NUTRITION_ICON_HORIZONTAL_OFFSET, top + NUTRITION_ICON_VERTICAL_OFFSET + (i * NUTRITION_DISTANCE));
 
+            GL11.glDisable(GL11.GL_LIGHTING);
             // Draw black background
             drawRect(
                 left + NUTRITION_BAR_HORIZONTAL_OFFSET + labelCharacterPadding - 1,
@@ -83,6 +85,7 @@ public class NutritionGui extends GuiScreenDynamic {
                 top + NUTRITION_BAR_VERTICAL_OFFSET + (i * NUTRITION_DISTANCE) + NUTRITION_BAR_HEIGHT,
                 nutrient.color
             );
+            GL11.glEnable(GL11.GL_LIGHTING);
 
             i++;
         }

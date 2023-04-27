@@ -17,8 +17,9 @@ public class ModGuiHandler implements IGuiHandler {
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        if (ID == NUTRITION_GUI_ID)
+        if (ID == NUTRITION_GUI_ID) {
             return nutritionGui = new NutritionGui();
+        }
         return null;
     }
 }

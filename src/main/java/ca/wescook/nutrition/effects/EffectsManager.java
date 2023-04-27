@@ -1,11 +1,9 @@
 package ca.wescook.nutrition.effects;
 
-import ca.wescook.nutrition.capabilities.INutrientManager;
+import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,17 +11,13 @@ import java.util.Map;
 
 public class EffectsManager {
 
-    @CapabilityInject(INutrientManager.class)
-    private static final Capability<INutrientManager> NUTRITION_CAPABILITY = null;
-
     // Called from EventWorldTick#PlayerTickEvent and EventEatFood#reapplyEffectsFromMilk
     public static void reapplyEffects(EntityPlayer player) {
         List<Effect> effects = removeDuplicates(getEffectsInThreshold(player));
 
         for (Effect effect : effects) {
-            boolean ambient = (effect.particles == Effect.ParticleVisibility.TRANSLUCENT); // Determine if particles should be shown, and what strength
-            boolean showParticles = (effect.particles == Effect.ParticleVisibility.TRANSLUCENT || effect.particles == Effect.ParticleVisibility.OPAQUE);
-            player.addPotionEffect(new PotionEffect(effect.potion, 619, effect.amplifier, ambient, showParticles));
+            boolean ambient = (effect.particles == Effect.EnumParticleVisibility.TRANSLUCENT); // Determine if particles should be shown, and what strength
+            player.addPotionEffect(new PotionEffect(effect.potion.id, 619, effect.amplifier, ambient));
         }
     }
 
@@ -33,15 +27,15 @@ public class EffectsManager {
         List<Effect> effectsInThreshold = new ArrayList<>();
 
         // Get player nutrition
-        Map<Nutrient, Float> playerNutrition = player.getCapability(NUTRITION_CAPABILITY, null).get();
+        Map<Nutrient, Float> playerNutrition = PlayerDataHandler.getForPlayer(player).get();
 
         // Read in list of potion effects to apply
         for (Effect effect : EffectsList.get()) {
 
             // Apply effect based on "detect" condition
-            switch (effect.detect) {
+            switch (effect.detectionType) {
                 // If any nutrient is within the threshold
-                case "any": {
+                case ANY -> {
                     // Loop relevant nutrients
                     for (Nutrient nutrient : effect.nutrients) {
                         // If any are found within threshold
@@ -51,10 +45,9 @@ public class EffectsManager {
                         }
                     }
                 }
-                break;
 
                 // If the average of all nutrients is within the threshold
-                case "average": {
+                case AVERAGE -> {
                     // Reset counter each new loop
                     Float total = 0f;
                     float average;
@@ -71,10 +64,9 @@ public class EffectsManager {
                     if (average >= effect.minimum && average <= effect.maximum)
                         effectsInThreshold.add(effect);
                 }
-                break;
 
                 // If all nutrients are within the threshold
-                case "all": {
+                case ALL -> {
                     // Condition starts true, and must be triggered to fail
                     boolean allWithinThreshold = true;
 
@@ -88,10 +80,9 @@ public class EffectsManager {
                     if (allWithinThreshold)
                         effectsInThreshold.add(effect);
                 }
-                break;
 
                 // For each nutrient within the threshold, the amplifier increases by one
-                case "cumulative": {
+                case CUMULATIVE -> {
                     // Reset counter each new loop
                     int cumulativeCount = 0;
 
@@ -104,7 +95,7 @@ public class EffectsManager {
 
                     // Save number of nutrients found as amplifier
                     // We're saving this for the entire effect, which is crazy hacky.
-                    // However it's otherwise unused, and the simplest way of storing this information.
+                    // However, it's otherwise unused, and the simplest way of storing this information.
                     effect.amplifier = (cumulativeCount * effect.cumulativeModifier) - 1;
 
                     // If any were found, set effect
@@ -112,7 +103,6 @@ public class EffectsManager {
                         effectsInThreshold.add(effect); // Add effect, once
                     }
                 }
-                break;
             }
         }
 

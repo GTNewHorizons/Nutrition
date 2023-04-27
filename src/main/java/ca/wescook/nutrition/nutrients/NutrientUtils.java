@@ -2,7 +2,9 @@ package ca.wescook.nutrition.nutrients;
 
 import ca.wescook.nutrition.utility.Config;
 import ca.wescook.nutrition.utility.Log;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockCake;
+import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -48,21 +50,21 @@ public class NutrientUtils {
 
         // Base food value
         int foodValue = 0;
-        if (item instanceof ItemFood)
-            foodValue = ((ItemFood) item).getHealAmount(itemStack); // Number of half-drumsticks food heals
-        else if (item instanceof ItemBlock || item instanceof ItemBlockSpecial) // Cake, most likely
+        if (item instanceof ItemFood) {
+            foodValue = ((ItemFood) item).func_150905_g(itemStack); // Number of half-drumsticks food heals
+        } else if (item instanceof ItemBlock || item instanceof ItemReed) { // Cake, most likely
             foodValue = 2; // Hardcoded value from vanilla
-        else if (item instanceof ItemBucketMilk)
+        } else if (item instanceof ItemBucketMilk) {
             foodValue = 4; // Hardcoded milk value
+        }
 
         // Apply multipliers
         float adjustedFoodValue = (float) (foodValue * 0.5); // Halve to start at reasonable starting point
         adjustedFoodValue = adjustedFoodValue * Config.nutritionMultiplier; // Multiply by config value
         float lossPercentage = (float) Config.lossPerNutrient / 100; // Loss percentage from config file
         float foodLoss = (adjustedFoodValue * lossPercentage * (nutrients.size() - 1)); // Lose 15% (configurable) for each nutrient added after the first nutrient
-        float nutritionValue = Math.max(0, adjustedFoodValue - foodLoss); // Subtract from true value, with a floor of 0
 
-        return nutritionValue;
+        return Math.max(0, adjustedFoodValue - foodLoss);
     }
 
     // Verify it meets a valid type
@@ -71,30 +73,37 @@ public class NutrientUtils {
         Item item = itemStack.getItem();
 
         // Regular ItemFood
-        if (item instanceof ItemFood)
+        if (item instanceof ItemFood) {
             return true;
-
-        // Cake - Vanilla
-        if (item instanceof ItemBlock && ((ItemBlock) item).getBlock() instanceof BlockCake)
-            return true;
-
-        // Cake - Modded
-        if (item instanceof ItemBlockSpecial && ((ItemBlockSpecial) item).getBlock() instanceof BlockCake)
-            return true;
+        }
 
         // Milk Bucket
-        if (item instanceof ItemBucketMilk)
+        if (item instanceof ItemBucketMilk) {
             return true;
+        }
+
+        // Cake - Vanilla
+        if (item == Items.cake) {
+            return true;
+        }
+
+        // Cake - Modded
+        if (item instanceof ItemReed && Block.getBlockFromItem(item) instanceof BlockCake) {
+            return true;
+        }
+
+        // add more special cases here if needed to mark as valid foods
 
         return false;
     }
 
     // List all foods registered in-game without nutrients
     public static void findRegisteredFoods() {
-        for (Item item : Item.REGISTRY) {
+        for (Object object : Item.itemRegistry) {
+            Item item = (Item) object;
             ItemStack itemStack = new ItemStack(item);
             if (isValidFood(itemStack) && getFoodNutrients(itemStack).size() == 0)
-                Log.warn("Registered food without nutrients: " + item.getRegistryName());
+                Log.warn("Registered food without nutrients: " + item.getUnlocalizedName());
         }
     }
 }

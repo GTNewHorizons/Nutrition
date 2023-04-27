@@ -5,24 +5,22 @@ import net.minecraft.util.ResourceLocation;
 
 public class PotionToughness extends PotionCustom {
 
-    PotionToughness(boolean visibility, ResourceLocation icon) {
-        super(visibility, icon);
+    PotionToughness(int id, ResourceLocation icon) {
+        super(id, false, icon);
     }
 
     // Multiply effects based on amplifier
     @Override
-    public double getAttributeModifierAmount(int amplifier, AttributeModifier modifier) {
+    public double func_111183_a(int amplifier, AttributeModifier modifier) {
         // Multiply health
-        if (modifier.getID().equals(ModPotions.TOUGHNESS_HEALTH))
+        if (modifier.getID().equals(ModPotions.TOUGHNESS_HEALTH)) {
             return (amplifier + 1) * 4D; // 4 = two hearts
+        }
 
         // Multiply armor toughness
-        if (modifier.getID().equals(ModPotions.TOUGHNESS_ARMOR))
+        if (modifier.getID().equals(ModPotions.TOUGHNESS_KNOCKBACK)) {
             return (amplifier + 1) * 2D;
-
-        // Multiply attack speed
-        if (modifier.getID().equals(ModPotions.TOUGHNESS_ATTACK_SPEED))
-            return (amplifier + 1) * 0.1D;
+        }
 
         return 0D;
     }

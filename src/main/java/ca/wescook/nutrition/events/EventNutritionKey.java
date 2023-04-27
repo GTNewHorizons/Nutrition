@@ -23,7 +23,7 @@ public class EventNutritionKey {
         }
 
         // If Nutrition key is pressed, and F3 key is not being held (F3+N toggles Spectator mode)
-        if (ClientProxy.keyNutritionGui.isKeyDown() && !Keyboard.isKeyDown(Keyboard.KEY_F3)) {
+        if (ClientProxy.keyNutritionGui.getIsKeyPressed() && !Keyboard.isKeyDown(Keyboard.KEY_F3)) {
             openNutritionGui();
         }
     }
@@ -32,8 +32,8 @@ public class EventNutritionKey {
     @SideOnly(Side.CLIENT)
     private void openNutritionGui() {
         // Get data
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        World world = Minecraft.getMinecraft().world;
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        World world = Minecraft.getMinecraft().theWorld;
 
         // Open GUI
         player.openGui(Nutrition.instance, ModGuiHandler.NUTRITION_GUI_ID, world, (int) player.posX, (int) player.posY, (int) player.posZ);

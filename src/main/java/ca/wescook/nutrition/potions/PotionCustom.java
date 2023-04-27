@@ -10,36 +10,28 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PotionCustom extends Potion {
 
-    private boolean visibility;
-    private ResourceLocation icon;
+    private final ResourceLocation icon;
 
-    PotionCustom(boolean visibility, ResourceLocation icon) {
-        super(false, 0);
-        this.visibility = visibility;
+    PotionCustom(int id, boolean isBadEffect, ResourceLocation icon) {
+        super(id, isBadEffect, 0);
         this.icon = icon;
     }
 
-    @Override
-    public boolean shouldRender(PotionEffect effect) {
-        return visibility;
-    }
-
     // Inventory potion rendering
-    @Override
     @SideOnly(Side.CLIENT)
-    public void renderInventoryEffect(PotionEffect effect, Gui gui, int x, int y, float z) {
-        Minecraft mc = Minecraft.getMinecraft();
+    @Override
+    public void renderInventoryEffect(int x, int y, PotionEffect effect, Minecraft mc) {
         if (mc.currentScreen != null) {
             mc.getTextureManager().bindTexture(icon);
-            Gui.drawModalRectWithCustomSizedTexture(x + 6, y + 7, 0, 0, 18, 18, 18, 18);
+            Gui.func_146110_a(x + 6, y + 7, 0, 0, 18, 18, 18, 18);
         }
     }
 
     // On-screen HUD rendering
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void renderHUDEffect(PotionEffect effect, Gui gui, int x, int y, float z, float alpha) {
-        Minecraft.getMinecraft().getTextureManager().bindTexture(icon);
-        Gui.drawModalRectWithCustomSizedTexture(x + 3, y + 3, 0, 0, 18, 18, 18, 18);
-    }
+    //@Override
+    //@SideOnly(Side.CLIENT)
+    //public void renderHUDEffect(PotionEffect effect, Gui gui, int x, int y, float z, float alpha) {
+    //    Minecraft.getMinecraft().getTextureManager().bindTexture(icon);
+    //    Gui.drawModalRectWithCustomSizedTexture(x + 3, y + 3, 0, 0, 18, 18, 18, 18);
+    //}
 }

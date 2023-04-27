@@ -10,8 +10,8 @@ public class ModPacketHandler {
     public static final SimpleNetworkWrapper NETWORK_CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(Tags.MODID);
 
     // Message IDs
-    private static int MESSAGE_NUTRITION_REQUEST = 0;
-    private static int MESSAGE_NUTRITION_RESPONSE = 1;
+    private static final int MESSAGE_NUTRITION_REQUEST = 0;
+    private static final int MESSAGE_NUTRITION_RESPONSE = 1;
 
     // Register messages on run
     public static void registerMessages() {

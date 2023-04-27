@@ -5,7 +5,7 @@ import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -16,7 +16,7 @@ public class EventTooltip {
 
     @SubscribeEvent
     public void tooltipEvent(ItemTooltipEvent event) {
-        ItemStack itemStack = event.getItemStack();
+        ItemStack itemStack = event.itemStack;
         String tooltip = null;
 
         // Get out if not a food item
@@ -37,12 +37,12 @@ public class EventTooltip {
         // Build tooltip
         if (!nutrientString.equals("")) {
             tooltip = I18n.format("tooltip." + Tags.MODID + ":nutrients") + " " +
-                TextFormatting.DARK_GREEN + nutrientString +
-                TextFormatting.DARK_AQUA + " (" + String.format("%.1f", nutritionValue) + "%)";
+                EnumChatFormatting.DARK_GREEN + nutrientString +
+                EnumChatFormatting.DARK_AQUA + " (" + String.format("%.1f", nutritionValue) + "%)";
         }
 
         // Add to item tooltip
         if (tooltip != null)
-            event.getToolTip().add(tooltip);
+            event.toolTip.add(tooltip);
     }
 }

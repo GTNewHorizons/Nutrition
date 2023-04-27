@@ -1,13 +1,16 @@
 package ca.wescook.nutrition.gui;
 
 import ca.wescook.nutrition.Tags;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 // Similar to GuiScreen, but draws a dynamic Minecraft border around any size
+@SideOnly(Side.CLIENT)
 public abstract class GuiScreenDynamic extends GuiScreen {
 
     // Container size
@@ -45,7 +48,7 @@ public abstract class GuiScreenDynamic extends GuiScreen {
 
     private void drawBackground() {
         // Init
-        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f); // Reset color
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         mc.getTextureManager().bindTexture(GUI_BORDERS); // Fetch texture
 
         // Top left corner
@@ -87,10 +90,10 @@ public abstract class GuiScreenDynamic extends GuiScreen {
     public void drawLabels(int mouseX, int mouseY) {
         // Labels
         for (GuiButton aButtonList : this.buttonList)
-            aButtonList.drawButton(this.mc, mouseX, mouseY, 0);
+            aButtonList.drawButton(this.mc, mouseX, mouseY);
 
         // Buttons
         for (GuiLabel aLabelList : this.labelList)
-            aLabelList.drawLabel(this.mc, mouseX, mouseY);
+            aLabelList.func_146159_a(this.mc, mouseX, mouseY);
     }
 }

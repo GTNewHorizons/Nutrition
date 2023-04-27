@@ -1,16 +1,14 @@
-[
-{
-  "modid": "${modid}",
+[{
+  "modid": "${modId}",
   "name": "${modName}",
   "description": "Nutrition is a highly configurable mod to enable the creation of health systems in Minecraft.",
-  "version": "${version}",
+  "version": "${modVersion}",
   "mcversion": "${minecraftVersion}",
-  "url": "https://github.com/WesCook/Nutrition",
+  "url": "https://github.com/DStrand1/Nutrition",
   "updateUrl": "",
-  "authorList": ["Wes Cook"],
-  "credits": "Inspiration from TerraFirmaCraft and Spice of Life.  Code contributions from Josh Davison and KnightMiner.  Thanks to others who have contributed mod support or localizations.",
+  "authorList": ["dan", "Wes Cook"],
+  "credits": "Wes Cook for the original mod",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
-}
-]
+}]

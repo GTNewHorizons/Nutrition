@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "ca.wescook.nutrition.mixin",
+  "refmap": "mixins.nutrition.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "EntityPlayerMixin"
+  ],
+  "client": [
+    "GuiContainerMixin"
+  ]
+}

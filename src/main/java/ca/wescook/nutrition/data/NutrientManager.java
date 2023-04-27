@@ -1,76 +1,93 @@
-package ca.wescook.nutrition.capabilities;
+package ca.wescook.nutrition.data;
 
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.utility.Config;
-import com.google.common.primitives.Floats;
+import net.minecraft.util.MathHelper;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// Baseline implementation of Capability
-// Contains basic logic for each method defined in the Interface
-public class SimpleImpl implements INutrientManager {
+public class NutrientManager {
 
     // Stored nutrition for the attached player
-    private Map<Nutrient, Float> nutrition = new HashMap<>();
+    private final Map<Nutrient, Float> nutrition = new HashMap<>();
 
-    public SimpleImpl() {
-        updateCapability();
+    public NutrientManager() {
+        this(new HashMap<>());
     }
 
+    public NutrientManager(Map<Nutrient, Float> nutrientData) {
+        update(nutrientData);
+    }
+
+    // Return all nutrients and values
     public Map<Nutrient, Float> get() {
         return nutrition;
     }
 
+    // Return value of specific nutrient
     public Float get(Nutrient nutrient) {
         return nutrition.get(nutrient);
     }
 
+    // Set value of specific nutrient
     public void set(Nutrient nutrient, Float value) {
         nutrition.put(nutrient, value);
     }
 
+    // Update all nutrients
     public void set(Map<Nutrient, Float> nutrientData) {
-        for (Map.Entry<Nutrient, Float> entry : nutrientData.entrySet())
-            nutrition.put(entry.getKey(), entry.getValue());
+        nutrition.putAll(nutrientData);
     }
 
+    // Increase specific nutrient by amount
     public void add(Nutrient nutrient, float amount) {
         float currentAmount = nutrition.get(nutrient);
-        nutrition.put(nutrient, Floats.constrainToRange(currentAmount + amount, 0, 100));
+        nutrition.put(nutrient, MathHelper.clamp_float(currentAmount + amount, 0, 100));
     }
 
+    // Increase list of nutrients by amount
     public void add(List<Nutrient> nutrientData, float amount) {
-        for (Nutrient nutrient : nutrientData)
-            nutrition.put(nutrient, Floats.constrainToRange(nutrition.get(nutrient) + amount, 0, 100));
+        for (Nutrient nutrient : nutrientData) {
+            nutrition.put(nutrient, MathHelper.clamp_float(nutrition.get(nutrient) + amount, 0, 100));
+        }
     }
 
+    // Decrease specific nutrient by amount
     public void subtract(Nutrient nutrient, float amount) {
         float currentAmount = nutrition.get(nutrient);
-        nutrition.put(nutrient, Floats.constrainToRange(currentAmount - amount, 0, 100));
+        nutrition.put(nutrient, MathHelper.clamp_float(currentAmount - amount, 0, 100));
     }
 
+    // Decrease list of nutrients by amount
     public void subtract(List<Nutrient> nutrientData, float amount) {
-        for (Nutrient nutrient : nutrientData)
-            nutrition.put(nutrient, Floats.constrainToRange(nutrition.get(nutrient) - amount, 0, 100));
+        for (Nutrient nutrient : nutrientData) {
+            nutrition.put(nutrient, MathHelper.clamp_float(nutrition.get(nutrient) - amount, 0, 100));
+        }
     }
 
+    // Reset specific nutrient to default nutrition
     public void reset(Nutrient nutrient) {
         set(nutrient, (float) Config.startingNutrition);
     }
 
+    // Reset all nutrients to default nutrition
     public void reset() {
         for (Nutrient nutrient : nutrition.keySet()) // Loop through player's nutrients
             reset(nutrient);
     }
 
-    public void updateCapability() {
-        // Copy map by value, not by reference
-        Map<Nutrient, Float> nutritionOld = new HashMap<>(nutrition);
+    public void update() {
+        update(nutrition);
+    }
 
-        // If nutrient already exists (by name), copy nutrition.  Else reset from starting nutrition.
+    // todo rewrite this!!
+    public void update(Map<Nutrient, Float> data) {
+        // Copy map by value, not by reference
+        Map<Nutrient, Float> nutritionOld = new HashMap<>(data);
+
         nutrition.clear();
         loop:
         for (Nutrient nutrient : NutrientList.get()) {

@@ -1,9 +1,7 @@
 package ca.wescook.nutrition.utility;
 
 import ca.wescook.nutrition.Tags;
-import ca.wescook.nutrition.capabilities.INutrientManager;
-import ca.wescook.nutrition.effects.EffectsList;
-import ca.wescook.nutrition.effects.JsonEffect;
+import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.nutrients.JsonNutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.nutrients.NutrientUtils;
@@ -13,8 +11,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -28,17 +24,13 @@ import java.util.List;
 // Handles JSON and API data loading
 public class DataImporter {
 
-    @CapabilityInject(INutrientManager.class)
-    private static final Capability<INutrientManager> NUTRITION_CAPABILITY = null;
-
     private static final Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
 
     // Loads nutrients from JSONs and API
     // Runs initially during Post-Init, or from /reload command
-    // Always call updatePlayerCapabilitiesOnServer() afterwards if world is loaded
+    // Always call updatePlayerCapabilitiesOnServer() afterward if world is loaded
     public static void reload() {
         NutrientList.register(DataParser.parseNutrients(loadJsonNutrients()));
-        EffectsList.register(DataParser.parseEffects(loadJsonEffects()));
 
         // List all foods registered in-game without nutrients
         if (Config.logMissingNutrients)
@@ -47,9 +39,11 @@ public class DataImporter {
 
     // Updates player capabilities on server so object IDs match those in NutrientList
     public static void updatePlayerCapabilitiesOnServer(MinecraftServer server) {
-        for (EntityPlayerMP player : server.getPlayerList().getPlayers())
-            if (!server.getWorld(0).isRemote)
-                player.getCapability(NUTRITION_CAPABILITY, null).updateCapability();
+        for (EntityPlayerMP player : server.getConfigurationManager().playerEntityList) {
+            if (!server.worldServerForDimension(0).isRemote) {
+                PlayerDataHandler.getForPlayer(player).update();
+            }
+        }
     }
 
 
@@ -64,30 +58,21 @@ public class DataImporter {
         return readConfigurationDirectory(JsonNutrient.class, nutrientDirectory);
     }
 
-    // Creates and parses effect json files into objects, returned as list
-    private static List<JsonEffect> loadJsonEffects() {
-        List<String> effectsFiles = Lists.newArrayList("example.json", "mining_fatigue.json", "resistance.json", "strength.json", "toughness.json", "weakness.json");
-        File effectsDirectory = new File(Config.configDirectory, Tags.MODID + "/effects");
-        createConfigurationDirectory("assets/nutrition/configs/effects", effectsDirectory, effectsFiles);
-        return readConfigurationDirectory(JsonEffect.class, effectsDirectory);
-    }
-
     // Copies files from internal resources to external files.  Accepts an input resource path, output directory, and list of files
     private static void createConfigurationDirectory(String inputDirectory, File outputDirectory, List<String> files) {
         // Make no changes if directory already exists
-        if (outputDirectory.exists())
-            return;
+        if (outputDirectory.exists()) return;
 
         // Create config directory
-        outputDirectory.mkdir();
-
-        // Copy each file over
-        ClassLoader loader = Thread.currentThread().getContextClassLoader(); // Can access resources via class loader
-        for (String file : files) {
-            try (InputStream inputStream = loader.getResourceAsStream(inputDirectory + "/" + file)) { // Get input stream of resource
-                Files.copy(inputStream, new File(outputDirectory + "/" + file).toPath()); // Create files from stream
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (outputDirectory.mkdir()) {
+            // Copy each file over
+            ClassLoader loader = Thread.currentThread().getContextClassLoader(); // Can access resources via class loader
+            for (String file : files) {
+                try (InputStream inputStream = loader.getResourceAsStream(inputDirectory + "/" + file)) { // Get input stream of resource
+                    Files.copy(inputStream, new File(outputDirectory + "/" + file).toPath()); // Create files from stream
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

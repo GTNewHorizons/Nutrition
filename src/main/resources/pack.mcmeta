@@ -1,6 +1,6 @@
 {
-	"pack": {
-		"pack_format": 3,
-		"description": "Nutrition Resources"
-	}
+  "pack": {
+    "pack_format": 1,
+    "description": "Nutrition Resources"
+  }
 }

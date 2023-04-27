@@ -1,6 +1,7 @@
 package ca.wescook.nutrition.network;
 
-import ca.wescook.nutrition.capabilities.INutrientManager;
+import ca.wescook.nutrition.data.NutrientManager;
+import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.gui.ModGuiHandler;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
@@ -9,9 +10,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -22,33 +20,28 @@ import java.util.Map;
 
 public class PacketNutritionResponse {
 
-    // Message Subclass
     public static class Message implements IMessage {
-        @CapabilityInject(INutrientManager.class)
-        private static final Capability<INutrientManager> NUTRITION_CAPABILITY = null;
 
-        // Server vars only
+        // server only
         EntityPlayer serverPlayer;
-
-        // Client vars only
+        // client only
         Map<Nutrient, Float> clientNutrients;
 
-        public Message() {
-        }
+        public Message() {}
 
         // Message data is passed along from server
         public Message(EntityPlayer player) {
-            serverPlayer = player; // Get server player
+            serverPlayer = player;
         }
 
         // Then serialized into bytes (on server)
         @Override
         public void toBytes(ByteBuf buf) {
             // Loop through nutrients from server player, and add to buffer
-            Map<Nutrient, Float> nutrientData = serverPlayer.getCapability(NUTRITION_CAPABILITY, null).get();
+            Map<Nutrient, Float> nutrientData = PlayerDataHandler.getForPlayer(serverPlayer).get();
             for (Map.Entry<Nutrient, Float> entry : nutrientData.entrySet()) {
-                ByteBufUtils.writeUTF8String(buf, entry.getKey().name); // Write name as identifier
-                buf.writeFloat(entry.getValue()); // Write float as value
+                ByteBufUtils.writeUTF8String(buf, entry.getKey().name);
+                buf.writeFloat(entry.getValue());
             }
         }
 
@@ -65,22 +58,21 @@ public class PacketNutritionResponse {
         }
     }
 
-    // Message Handler Subclass
     // This is the client's handling of the information
     public static class Handler implements IMessageHandler<Message, IMessage> {
         @Override
         public IMessage onMessage(final Message message, final MessageContext context) {
-            FMLCommonHandler.instance().getWorldThread(context.netHandler).addScheduledTask(() -> {
-                // Update local dummy nutrition data
-                if (ClientProxy.localNutrition != null)
-                    ClientProxy.localNutrition.set(message.clientNutrients);
+            if (ClientProxy.localNutrition != null) {
+                ClientProxy.localNutrition.set(message.clientNutrients);
+            } else {
+                ClientProxy.localNutrition = new NutrientManager(message.clientNutrients);
+            }
 
-                // If Nutrition GUI is open, update GUI
-                GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
-                if (currentScreen != null && currentScreen.equals(ModGuiHandler.nutritionGui))
-                    ModGuiHandler.nutritionGui.redrawLabels();
-            });
-
+            // If Nutrition GUI is open, update GUI
+            GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
+            if (currentScreen != null && currentScreen.equals(ModGuiHandler.nutritionGui)) {
+                ModGuiHandler.nutritionGui.redrawLabels();
+            }
             return null;
         }
     }

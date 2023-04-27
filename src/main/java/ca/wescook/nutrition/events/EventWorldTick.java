@@ -1,18 +1,16 @@
 package ca.wescook.nutrition.events;
 
-import ca.wescook.nutrition.capabilities.INutrientManager;
+import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.effects.EffectsManager;
 import ca.wescook.nutrition.gui.ModGuiHandler;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.proxy.ClientProxy;
 import ca.wescook.nutrition.utility.Config;
-import com.google.common.primitives.Floats;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -24,10 +22,7 @@ import java.util.Map;
 
 public class EventWorldTick {
 
-    @CapabilityInject(INutrientManager.class)
-    private static final Capability<INutrientManager> NUTRITION_CAPABILITY = null;
-
-    private Map<Pair<EntityPlayer, Boolean>, Integer> playerFoodLevels = new HashMap<>(); // Track food level between ticks
+    private final Map<Pair<EntityPlayer, Boolean>, Integer> playerFoodLevels = new HashMap<>(); // Track food level between ticks
     private int potionCounter = 0; // Count ticks to reapply potion effects
 
     @SubscribeEvent
@@ -62,20 +57,19 @@ public class EventWorldTick {
             // Server
             Map<Nutrient, Float> playerNutrition;
             if (!player.getEntityWorld().isRemote) {
-                playerNutrition = player.getCapability(NUTRITION_CAPABILITY, null).get();
-                playerNutrition = calculateDecay(playerNutrition, difference);
-                player.getCapability(NUTRITION_CAPABILITY, null).set(playerNutrition);
+                playerNutrition = PlayerDataHandler.getForPlayer(player).get();
+                calculateDecay(playerNutrition, difference);
             }
             // Client
             else {
                 playerNutrition = ClientProxy.localNutrition.get();
-                playerNutrition = calculateDecay(playerNutrition, difference);
-                ClientProxy.localNutrition.set(playerNutrition);
+                calculateDecay(playerNutrition, difference);
 
                 // If Nutrition GUI is open, update GUI
                 GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
-                if (currentScreen != null && currentScreen.equals(ModGuiHandler.nutritionGui))
+                if (currentScreen != null && currentScreen.equals(ModGuiHandler.nutritionGui)) {
                     ModGuiHandler.nutritionGui.redrawLabels();
+                }
             }
         }
 
@@ -83,23 +77,24 @@ public class EventWorldTick {
         playerFoodLevels.put(playerSidedID, foodLevelNew);
     }
 
-    private Map<Nutrient, Float> calculateDecay(Map<Nutrient, Float> playerNutrition, int difference) {
+    private void calculateDecay(Map<Nutrient, Float> playerNutrition, int difference) {
         for (Map.Entry<Nutrient, Float> entry : playerNutrition.entrySet()) {
             float decay = (float) (difference * 0.075 * entry.getKey().decay); // Lower number for reasonable starting point, then apply multiplier from config
-            entry.setValue(Floats.constrainToRange(entry.getValue() - decay, 0, 100)); // Subtract decay from nutrient
+            entry.setValue(MathHelper.clamp_float(entry.getValue() - decay, 0, 100)); // Subtract decay from nutrient
         }
-        return playerNutrition;
     }
 
     private void potionTicking(World world) {
         if (potionCounter > 110) {
-            for (EntityPlayer player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) // All players on server
+            for (EntityPlayer player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) { // All players on server
                 EffectsManager.reapplyEffects(player);
+            }
             potionCounter = 0;
         }
 
         // Only increment on world 0, as this value is global
-        if (world.provider.getDimension() == 0)
+        if (world.provider.dimensionId == 0) {
             potionCounter++;
+        }
     }
 }

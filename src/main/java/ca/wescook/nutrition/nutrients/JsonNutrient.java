@@ -14,7 +14,7 @@ public class JsonNutrient {
     public Boolean enabled;
     public Food food = new Food();
 
-    public class Food {
+    public static class Food {
         public List<String> oredict = new ArrayList<>();
         public List<String> items = new ArrayList<>();
     }

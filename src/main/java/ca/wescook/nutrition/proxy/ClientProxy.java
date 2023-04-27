@@ -7,34 +7,35 @@ import ca.wescook.nutrition.events.EventTooltip;
 import ca.wescook.nutrition.utility.Config;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy implements IProxy {
-	public static INutrientManager localNutrition; // Holds local copy of data/methods for client-side prediction
-	public static KeyBinding keyNutritionGui;
 
-	@Override
-	public void preInit(FMLPreInitializationEvent event) {
-	}
+    public static INutrientManager localNutrition; // Holds local copy of data/methods for client-side prediction
+    public static KeyBinding keyNutritionGui;
 
-	@Override
-	public void init(FMLInitializationEvent event) {
+    @Override
+    public void preInit(FMLPreInitializationEvent event) {
+    }
 
-		if (Config.enableGui) { // If GUI is enabled
-			ClientRegistry.registerKeyBinding(keyNutritionGui = new KeyBinding("key.nutrition", 49, "Nutrition")); // Register Nutrition keybind, default to "N"
-			MinecraftForge.EVENT_BUS.register(new EventNutritionKey()); // Register key input event to respond to keybind
-			if (Config.enableGuiButton)
-				MinecraftForge.EVENT_BUS.register(new EventNutritionButton()); // Register GUI button event
-		}
+    @Override
+    public void init(FMLInitializationEvent event) {
 
-		if (Config.enableTooltips)
-			MinecraftForge.EVENT_BUS.register(new EventTooltip()); // Register tooltip event
-	}
+        if (Config.enableGui) { // If GUI is enabled
+            ClientRegistry.registerKeyBinding(keyNutritionGui = new KeyBinding("key.nutrition", 49, "Nutrition")); // Register Nutrition keybind, default to "N"
+            MinecraftForge.EVENT_BUS.register(new EventNutritionKey()); // Register key input event to respond to keybind
+            if (Config.enableGuiButton)
+                MinecraftForge.EVENT_BUS.register(new EventNutritionButton()); // Register GUI button event
+        }
 
-	@Override
-	public void postInit(FMLPostInitializationEvent event) {
-	}
+        if (Config.enableTooltips)
+            MinecraftForge.EVENT_BUS.register(new EventTooltip()); // Register tooltip event
+    }
+
+    @Override
+    public void postInit(FMLPostInitializationEvent event) {
+    }
 }

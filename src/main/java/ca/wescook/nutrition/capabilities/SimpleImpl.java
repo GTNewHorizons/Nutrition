@@ -12,74 +12,75 @@ import java.util.Map;
 // Baseline implementation of Capability
 // Contains basic logic for each method defined in the Interface
 public class SimpleImpl implements INutrientManager {
-	// Stored nutrition for the attached player
-	private Map<Nutrient, Float> nutrition = new HashMap<>();
 
-	public SimpleImpl() {
-		updateCapability();
-	}
+    // Stored nutrition for the attached player
+    private Map<Nutrient, Float> nutrition = new HashMap<>();
 
-	public Map<Nutrient, Float> get() {
-		return nutrition;
-	}
+    public SimpleImpl() {
+        updateCapability();
+    }
 
-	public Float get(Nutrient nutrient) {
-		return nutrition.get(nutrient);
-	}
+    public Map<Nutrient, Float> get() {
+        return nutrition;
+    }
 
-	public void set(Nutrient nutrient, Float value) {
-		nutrition.put(nutrient, value);
-	}
+    public Float get(Nutrient nutrient) {
+        return nutrition.get(nutrient);
+    }
 
-	public void set(Map<Nutrient, Float> nutrientData) {
-		for (Map.Entry<Nutrient, Float> entry : nutrientData.entrySet())
-			nutrition.put(entry.getKey(), entry.getValue());
-	}
+    public void set(Nutrient nutrient, Float value) {
+        nutrition.put(nutrient, value);
+    }
 
-	public void add(Nutrient nutrient, float amount) {
-		float currentAmount = nutrition.get(nutrient);
-		nutrition.put(nutrient, Floats.constrainToRange(currentAmount + amount, 0, 100));
-	}
+    public void set(Map<Nutrient, Float> nutrientData) {
+        for (Map.Entry<Nutrient, Float> entry : nutrientData.entrySet())
+            nutrition.put(entry.getKey(), entry.getValue());
+    }
 
-	public void add(List<Nutrient> nutrientData, float amount) {
-		for (Nutrient nutrient : nutrientData)
-			nutrition.put(nutrient, Floats.constrainToRange(nutrition.get(nutrient) + amount, 0, 100));
-	}
+    public void add(Nutrient nutrient, float amount) {
+        float currentAmount = nutrition.get(nutrient);
+        nutrition.put(nutrient, Floats.constrainToRange(currentAmount + amount, 0, 100));
+    }
 
-	public void subtract(Nutrient nutrient, float amount) {
-		float currentAmount = nutrition.get(nutrient);
-		nutrition.put(nutrient, Floats.constrainToRange(currentAmount - amount, 0, 100));
-	}
+    public void add(List<Nutrient> nutrientData, float amount) {
+        for (Nutrient nutrient : nutrientData)
+            nutrition.put(nutrient, Floats.constrainToRange(nutrition.get(nutrient) + amount, 0, 100));
+    }
 
-	public void subtract(List<Nutrient> nutrientData, float amount) {
-		for (Nutrient nutrient : nutrientData)
-			nutrition.put(nutrient, Floats.constrainToRange(nutrition.get(nutrient) - amount, 0, 100));
-	}
+    public void subtract(Nutrient nutrient, float amount) {
+        float currentAmount = nutrition.get(nutrient);
+        nutrition.put(nutrient, Floats.constrainToRange(currentAmount - amount, 0, 100));
+    }
 
-	public void reset(Nutrient nutrient) {
-		set(nutrient, (float) Config.startingNutrition);
-	}
+    public void subtract(List<Nutrient> nutrientData, float amount) {
+        for (Nutrient nutrient : nutrientData)
+            nutrition.put(nutrient, Floats.constrainToRange(nutrition.get(nutrient) - amount, 0, 100));
+    }
 
-	public void reset() {
-		for (Nutrient nutrient : nutrition.keySet()) // Loop through player's nutrients
-			reset(nutrient);
-	}
+    public void reset(Nutrient nutrient) {
+        set(nutrient, (float) Config.startingNutrition);
+    }
 
-	public void updateCapability() {
-		// Copy map by value, not by reference
-		Map<Nutrient, Float> nutritionOld = new HashMap<>(nutrition);
+    public void reset() {
+        for (Nutrient nutrient : nutrition.keySet()) // Loop through player's nutrients
+            reset(nutrient);
+    }
 
-		// If nutrient already exists (by name), copy nutrition.  Else reset from starting nutrition.
-		nutrition.clear();
-		loop:
-		for (Nutrient nutrient : NutrientList.get()) {
-			for (Map.Entry<Nutrient, Float> nutrientOld : nutritionOld.entrySet()) {
-				if (nutrient.name.equals(nutrientOld.getKey().name)) {
-					nutrition.put(nutrient, nutrientOld.getValue());
-					continue loop;
-				}
-			}
-			nutrition.put(nutrient, (float) Config.startingNutrition);
-		}
-	}
+    public void updateCapability() {
+        // Copy map by value, not by reference
+        Map<Nutrient, Float> nutritionOld = new HashMap<>(nutrition);
+
+        // If nutrient already exists (by name), copy nutrition.  Else reset from starting nutrition.
+        nutrition.clear();
+        loop:
+        for (Nutrient nutrient : NutrientList.get()) {
+            for (Map.Entry<Nutrient, Float> nutrientOld : nutritionOld.entrySet()) {
+                if (nutrient.name.equals(nutrientOld.getKey().name)) {
+                    nutrition.put(nutrient, nutrientOld.getValue());
+                    continue loop;
+                }
+            }
+            nutrition.put(nutrient, (float) Config.startingNutrition);
+        }
+    }
 }

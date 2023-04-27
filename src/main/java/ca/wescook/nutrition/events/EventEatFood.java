@@ -18,124 +18,125 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
 
 public class EventEatFood {
-	@CapabilityInject(INutrientManager.class)
-	private static final Capability<INutrientManager> NUTRITION_CAPABILITY = null;
 
-	// Detect eating cake
-	@SubscribeEvent
-	public void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-		EntityPlayer player = (EntityPlayer) event.getEntity();
+    @CapabilityInject(INutrientManager.class)
+    private static final Capability<INutrientManager> NUTRITION_CAPABILITY = null;
 
-		// Get info
-		World world = event.getWorld();
-		IBlockState blockState = world.getBlockState(event.getPos());
+    // Detect eating cake
+    @SubscribeEvent
+    public void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        EntityPlayer player = (EntityPlayer) event.getEntity();
 
-		// Get out if not cake
-		if (!(blockState.getBlock() instanceof BlockCake)) {
-			return;
-		}
+        // Get info
+        World world = event.getWorld();
+        IBlockState blockState = world.getBlockState(event.getPos());
 
-		// Should we let them eat cake?
-		if (player.canEat(false) || Config.allowOverEating) {
-			// Calculate nutrition
-			Item item = Item.getByNameOrId(blockState.getBlock().getRegistryName().toString()); // Get cake Item from registry name
-			ItemStack itemStack = new ItemStack(item);
-			List<Nutrient> foundNutrients = NutrientUtils.getFoodNutrients(itemStack);
-			float nutritionValue = NutrientUtils.calculateNutrition(itemStack, foundNutrients);
+        // Get out if not cake
+        if (!(blockState.getBlock() instanceof BlockCake)) {
+            return;
+        }
 
-			// Add to each nutrient
-			if (!player.getEntityWorld().isRemote) // Server
-				player.getCapability(NUTRITION_CAPABILITY, null).add(foundNutrients, nutritionValue);
-			else // Client
-				ClientProxy.localNutrition.add(foundNutrients, nutritionValue);
+        // Should we let them eat cake?
+        if (player.canEat(false) || Config.allowOverEating) {
+            // Calculate nutrition
+            Item item = Item.getByNameOrId(blockState.getBlock().getRegistryName().toString()); // Get cake Item from registry name
+            ItemStack itemStack = new ItemStack(item);
+            List<Nutrient> foundNutrients = NutrientUtils.getFoodNutrients(itemStack);
+            float nutritionValue = NutrientUtils.calculateNutrition(itemStack, foundNutrients);
 
-			// If full but over-eating, simulate cake eating
-			if (!player.getEntityWorld().isRemote && !player.canEat(false) && Config.allowOverEating) {
-				int cakeBites = blockState.getValue(BlockCake.BITES);
-				if (cakeBites < 6)
-					world.setBlockState(event.getPos(), blockState.withProperty(BlockCake.BITES, cakeBites + 1), 3);
-				else
-					world.setBlockToAir(event.getPos());
-			}
-		}
-	}
+            // Add to each nutrient
+            if (!player.getEntityWorld().isRemote) // Server
+                player.getCapability(NUTRITION_CAPABILITY, null).add(foundNutrients, nutritionValue);
+            else // Client
+                ClientProxy.localNutrition.add(foundNutrients, nutritionValue);
 
-	// Allow food to be consumed regardless of hunger level
-	@SubscribeEvent
-	public void startUsingItem(PlayerInteractEvent.RightClickItem event) {
-		// Only run on server
-		EntityPlayer player = (EntityPlayer) event.getEntity();
-		if (player.getEntityWorld().isRemote)
-			return;
+            // If full but over-eating, simulate cake eating
+            if (!player.getEntityWorld().isRemote && !player.canEat(false) && Config.allowOverEating) {
+                int cakeBites = blockState.getValue(BlockCake.BITES);
+                if (cakeBites < 6)
+                    world.setBlockState(event.getPos(), blockState.withProperty(BlockCake.BITES, cakeBites + 1), 3);
+                else
+                    world.setBlockToAir(event.getPos());
+            }
+        }
+    }
 
-		// Interacting with item?
-		ItemStack itemStack = event.getItemStack();
-		if (itemStack == null)
-			return;
+    // Allow food to be consumed regardless of hunger level
+    @SubscribeEvent
+    public void startUsingItem(PlayerInteractEvent.RightClickItem event) {
+        // Only run on server
+        EntityPlayer player = (EntityPlayer) event.getEntity();
+        if (player.getEntityWorld().isRemote)
+            return;
 
-		// Is item food?
-		Item item = itemStack.getItem();
-		if (!(item instanceof ItemFood))
-			return;
+        // Interacting with item?
+        ItemStack itemStack = event.getItemStack();
+        if (itemStack == null)
+            return;
 
-		// If config allows, mark food as edible
-		if (Config.allowOverEating)
-			((ItemFood) item).setAlwaysEdible();
-	}
+        // Is item food?
+        Item item = itemStack.getItem();
+        if (!(item instanceof ItemFood))
+            return;
 
-	// Calculate nutrition after finishing eating and reapply effects if appropriate
-	@SubscribeEvent
-	public void finishUsingItem(LivingEntityUseItemEvent.Finish event) {
-		// Only check against players
-		if (!(event.getEntity() instanceof EntityPlayer))
-			return;
+        // If config allows, mark food as edible
+        if (Config.allowOverEating)
+            ((ItemFood) item).setAlwaysEdible();
+    }
 
-		// Get ItemStack of eaten food
-		ItemStack itemStack = event.getItem();
-		int stackSize = itemStack.getCount();
-		itemStack.setCount(1); // Temporarily setting stack size to 1 so .copy works for stack sizes of 0
-		ItemStack dummyStack = itemStack.copy(); // Create dummy copy to not affect original item
-		itemStack.setCount(stackSize); // Restore original stack size
+    // Calculate nutrition after finishing eating and reapply effects if appropriate
+    @SubscribeEvent
+    public void finishUsingItem(LivingEntityUseItemEvent.Finish event) {
+        // Only check against players
+        if (!(event.getEntity() instanceof EntityPlayer))
+            return;
 
-		// Apply actions to item
-		EntityPlayer player = (EntityPlayer) event.getEntity();
-		applyNutrition(player, dummyStack);
-		reapplyEffectsFromMilk(player, dummyStack);
-	}
+        // Get ItemStack of eaten food
+        ItemStack itemStack = event.getItem();
+        int stackSize = itemStack.getCount();
+        itemStack.setCount(1); // Temporarily setting stack size to 1 so .copy works for stack sizes of 0
+        ItemStack dummyStack = itemStack.copy(); // Create dummy copy to not affect original item
+        itemStack.setCount(stackSize); // Restore original stack size
 
-	// Add found nutrients to player
-	private void applyNutrition(EntityPlayer player, ItemStack itemStack) {
-		// Get out if not food item
-		if (!(itemStack.getItem() instanceof ItemFood || itemStack.getItem() instanceof ItemBucketMilk))
-			return;
+        // Apply actions to item
+        EntityPlayer player = (EntityPlayer) event.getEntity();
+        applyNutrition(player, dummyStack);
+        reapplyEffectsFromMilk(player, dummyStack);
+    }
 
-		// Calculate nutrition
-		List<Nutrient> foundNutrients = NutrientUtils.getFoodNutrients(itemStack); // Nutrient list for that food
-		float nutritionValue = NutrientUtils.calculateNutrition(itemStack, foundNutrients); // Nutrition value for that food
+    // Add found nutrients to player
+    private void applyNutrition(EntityPlayer player, ItemStack itemStack) {
+        // Get out if not food item
+        if (!(itemStack.getItem() instanceof ItemFood || itemStack.getItem() instanceof ItemBucketMilk))
+            return;
 
-		// Add to each nutrient
-		if (!player.getEntityWorld().isRemote) // Server
-			player.getCapability(NUTRITION_CAPABILITY, null).add(foundNutrients, nutritionValue);
-		else // Client
-			ClientProxy.localNutrition.add(foundNutrients, nutritionValue);
-	}
+        // Calculate nutrition
+        List<Nutrient> foundNutrients = NutrientUtils.getFoodNutrients(itemStack); // Nutrient list for that food
+        float nutritionValue = NutrientUtils.calculateNutrition(itemStack, foundNutrients); // Nutrition value for that food
 
-	// If milk clears effects, reapply immediately
-	private void reapplyEffectsFromMilk(EntityPlayer player, ItemStack itemStack) {
-		// Server only
-		if (player.getEntityWorld().isRemote)
-			return;
+        // Add to each nutrient
+        if (!player.getEntityWorld().isRemote) // Server
+            player.getCapability(NUTRITION_CAPABILITY, null).add(foundNutrients, nutritionValue);
+        else // Client
+            ClientProxy.localNutrition.add(foundNutrients, nutritionValue);
+    }
 
-		// Only continue if milk bucket (curative item)
-		if (!(itemStack.getItem() instanceof ItemBucketMilk))
-			return;
+    // If milk clears effects, reapply immediately
+    private void reapplyEffectsFromMilk(EntityPlayer player, ItemStack itemStack) {
+        // Server only
+        if (player.getEntityWorld().isRemote)
+            return;
 
-		// Reapply effects
-		EffectsManager.reapplyEffects(player);
-	}
+        // Only continue if milk bucket (curative item)
+        if (!(itemStack.getItem() instanceof ItemBucketMilk))
+            return;
+
+        // Reapply effects
+        EffectsManager.reapplyEffects(player);
+    }
 }

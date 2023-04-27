@@ -12,133 +12,134 @@ import java.util.List;
 import java.util.Map;
 
 public class EffectsManager {
-	@CapabilityInject(INutrientManager.class)
-	private static final Capability<INutrientManager> NUTRITION_CAPABILITY = null;
 
-	// Called from EventWorldTick#PlayerTickEvent and EventEatFood#reapplyEffectsFromMilk
-	public static void reapplyEffects(EntityPlayer player) {
-		List<Effect> effects = removeDuplicates(getEffectsInThreshold(player));
+    @CapabilityInject(INutrientManager.class)
+    private static final Capability<INutrientManager> NUTRITION_CAPABILITY = null;
 
-		for (Effect effect : effects) {
-			boolean ambient = (effect.particles == Effect.ParticleVisibility.TRANSLUCENT); // Determine if particles should be shown, and what strength
-			boolean showParticles = (effect.particles == Effect.ParticleVisibility.TRANSLUCENT || effect.particles == Effect.ParticleVisibility.OPAQUE);
-			player.addPotionEffect(new PotionEffect(effect.potion, 619, effect.amplifier, ambient, showParticles));
-		}
-	}
+    // Called from EventWorldTick#PlayerTickEvent and EventEatFood#reapplyEffectsFromMilk
+    public static void reapplyEffects(EntityPlayer player) {
+        List<Effect> effects = removeDuplicates(getEffectsInThreshold(player));
 
-	// Returns which effects match threshold conditions
-	private static List<Effect> getEffectsInThreshold(EntityPlayer player) {
-		// List of effects being turned on
-		List<Effect> effectsInThreshold = new ArrayList<>();
+        for (Effect effect : effects) {
+            boolean ambient = (effect.particles == Effect.ParticleVisibility.TRANSLUCENT); // Determine if particles should be shown, and what strength
+            boolean showParticles = (effect.particles == Effect.ParticleVisibility.TRANSLUCENT || effect.particles == Effect.ParticleVisibility.OPAQUE);
+            player.addPotionEffect(new PotionEffect(effect.potion, 619, effect.amplifier, ambient, showParticles));
+        }
+    }
 
-		// Get player nutrition
-		Map<Nutrient, Float> playerNutrition = player.getCapability(NUTRITION_CAPABILITY, null).get();
+    // Returns which effects match threshold conditions
+    private static List<Effect> getEffectsInThreshold(EntityPlayer player) {
+        // List of effects being turned on
+        List<Effect> effectsInThreshold = new ArrayList<>();
 
-		// Read in list of potion effects to apply
-		for (Effect effect : EffectsList.get()) {
+        // Get player nutrition
+        Map<Nutrient, Float> playerNutrition = player.getCapability(NUTRITION_CAPABILITY, null).get();
 
-			// Apply effect based on "detect" condition
-			switch (effect.detect) {
-				// If any nutrient is within the threshold
-				case "any": {
-					// Loop relevant nutrients
-					for (Nutrient nutrient : effect.nutrients) {
-						// If any are found within threshold
-						if (playerNutrition.get(nutrient) >= effect.minimum && playerNutrition.get(nutrient) <= effect.maximum) {
-							effectsInThreshold.add(effect); // Add effect, once
-							break;
-						}
-					}
-				}
-				break;
+        // Read in list of potion effects to apply
+        for (Effect effect : EffectsList.get()) {
 
-				// If the average of all nutrients is within the threshold
-				case "average": {
-					// Reset counter each new loop
-					Float total = 0f;
-					float average;
+            // Apply effect based on "detect" condition
+            switch (effect.detect) {
+                // If any nutrient is within the threshold
+                case "any": {
+                    // Loop relevant nutrients
+                    for (Nutrient nutrient : effect.nutrients) {
+                        // If any are found within threshold
+                        if (playerNutrition.get(nutrient) >= effect.minimum && playerNutrition.get(nutrient) <= effect.maximum) {
+                            effectsInThreshold.add(effect); // Add effect, once
+                            break;
+                        }
+                    }
+                }
+                break;
 
-					// Loop relevant nutrients
-					for (Nutrient nutrient : effect.nutrients)
-						total += playerNutrition.get(nutrient); // Add each value to total
+                // If the average of all nutrients is within the threshold
+                case "average": {
+                    // Reset counter each new loop
+                    Float total = 0f;
+                    float average;
 
-					// Divide by number of nutrients for average (division by zero check)
-					int size = effect.nutrients.size();
-					average = (size != 0) ? total / size : -1f;
+                    // Loop relevant nutrients
+                    for (Nutrient nutrient : effect.nutrients)
+                        total += playerNutrition.get(nutrient); // Add each value to total
 
-					// Check average is inside the threshold
-					if (average >= effect.minimum && average <= effect.maximum)
-						effectsInThreshold.add(effect);
-				}
-				break;
+                    // Divide by number of nutrients for average (division by zero check)
+                    int size = effect.nutrients.size();
+                    average = (size != 0) ? total / size : -1f;
 
-				// If all nutrients are within the threshold
-				case "all": {
-					// Condition starts true, and must be triggered to fail
-					boolean allWithinThreshold = true;
+                    // Check average is inside the threshold
+                    if (average >= effect.minimum && average <= effect.maximum)
+                        effectsInThreshold.add(effect);
+                }
+                break;
 
-					// Loop relevant nutrients
-					for (Nutrient nutrient : effect.nutrients) {
-						if (!(playerNutrition.get(nutrient) >= effect.minimum && playerNutrition.get(nutrient) <= effect.maximum)) // If nutrient isn't within threshold
-							allWithinThreshold = false; // Fail check
-					}
+                // If all nutrients are within the threshold
+                case "all": {
+                    // Condition starts true, and must be triggered to fail
+                    boolean allWithinThreshold = true;
 
-					// If check wasn't failed, set effect
-					if (allWithinThreshold)
-						effectsInThreshold.add(effect);
-				}
-				break;
+                    // Loop relevant nutrients
+                    for (Nutrient nutrient : effect.nutrients) {
+                        if (!(playerNutrition.get(nutrient) >= effect.minimum && playerNutrition.get(nutrient) <= effect.maximum)) // If nutrient isn't within threshold
+                            allWithinThreshold = false; // Fail check
+                    }
 
-				// For each nutrient within the threshold, the amplifier increases by one
-				case "cumulative":  {
-					// Reset counter each new loop
-					int cumulativeCount = 0;
+                    // If check wasn't failed, set effect
+                    if (allWithinThreshold)
+                        effectsInThreshold.add(effect);
+                }
+                break;
 
-					// Loop relevant nutrients
-					for (Nutrient nutrient : effect.nutrients) {
-						// For each nutrient found within threshold
-						if (playerNutrition.get(nutrient) >= effect.minimum && playerNutrition.get(nutrient) <= effect.maximum)
-							cumulativeCount++;
-					}
+                // For each nutrient within the threshold, the amplifier increases by one
+                case "cumulative": {
+                    // Reset counter each new loop
+                    int cumulativeCount = 0;
 
-					// Save number of nutrients found as amplifier
-					// We're saving this for the entire effect, which is crazy hacky.
-					// However it's otherwise unused, and the simplest way of storing this information.
-					effect.amplifier = (cumulativeCount * effect.cumulativeModifier) - 1;
+                    // Loop relevant nutrients
+                    for (Nutrient nutrient : effect.nutrients) {
+                        // For each nutrient found within threshold
+                        if (playerNutrition.get(nutrient) >= effect.minimum && playerNutrition.get(nutrient) <= effect.maximum)
+                            cumulativeCount++;
+                    }
 
-					// If any were found, set effect
-					if (cumulativeCount > 0) {
-						effectsInThreshold.add(effect); // Add effect, once
-					}
-				}
-				break;
-			}
-		}
+                    // Save number of nutrients found as amplifier
+                    // We're saving this for the entire effect, which is crazy hacky.
+                    // However it's otherwise unused, and the simplest way of storing this information.
+                    effect.amplifier = (cumulativeCount * effect.cumulativeModifier) - 1;
 
-		return effectsInThreshold;
-	}
+                    // If any were found, set effect
+                    if (cumulativeCount > 0) {
+                        effectsInThreshold.add(effect); // Add effect, once
+                    }
+                }
+                break;
+            }
+        }
 
-	// Determines highest amplifier for duplicates, and removes any others of the same type
-	private static List<Effect> removeDuplicates(List<Effect> effectsInput) {
-		List<Effect> effectsOutput = new ArrayList<>();
-		boolean foundMatch = false;
-		for (Effect effectIn : effectsInput) { // Loop through supplied effects
-			for (Effect effectOut : effectsOutput) { // Loop through curated list, if it exists
-				if (effectIn.potion == effectOut.potion) { // Potion types match (eg. Weakness I and Weakness II)
-					if (effectIn.amplifier > effectOut.amplifier) { // New effect has a higher amplifier
-						int listIndex = effectsOutput.indexOf(effectOut); // Get index of position in list
-						effectsOutput.add(listIndex, effectIn); // Replace entry
-					}
-					foundMatch = true;
-					break;
-				}
-			}
+        return effectsInThreshold;
+    }
 
-			// If potion wasn't already found, add to list
-			if (!foundMatch)
-				effectsOutput.add(effectIn);
-		}
+    // Determines highest amplifier for duplicates, and removes any others of the same type
+    private static List<Effect> removeDuplicates(List<Effect> effectsInput) {
+        List<Effect> effectsOutput = new ArrayList<>();
+        boolean foundMatch = false;
+        for (Effect effectIn : effectsInput) { // Loop through supplied effects
+            for (Effect effectOut : effectsOutput) { // Loop through curated list, if it exists
+                if (effectIn.potion == effectOut.potion) { // Potion types match (eg. Weakness I and Weakness II)
+                    if (effectIn.amplifier > effectOut.amplifier) { // New effect has a higher amplifier
+                        int listIndex = effectsOutput.indexOf(effectOut); // Get index of position in list
+                        effectsOutput.add(listIndex, effectIn); // Replace entry
+                    }
+                    foundMatch = true;
+                    break;
+                }
+            }
 
-		return effectsOutput;
-	}
+            // If potion wasn't already found, add to list
+            if (!foundMatch)
+                effectsOutput.add(effectIn);
+        }
+
+        return effectsOutput;
+    }
 }

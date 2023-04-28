@@ -1,0 +1,53 @@
+Foods purposefully left with no nutrients, as they have no nutritional value:
+- `minecraft:rottenFlesh`
+- `minecraft:spiderEye`
+- `TConstruct:goldHead`
+- `Forestry:beverage` (Short Mead, Curative Mead, Mead)
+- `BinnieCore:containerBucket`
+- `BinnieCore:containerCapsule`
+- `BinnieCore:containerRefractory`
+- `BinnieCore:containerCan`
+- `BinnieCore:containerGlass`
+- `BinnieCore:containerCylinder`
+- `MagicBees:jellyBabies`
+- `OpenBlocks:tastyClay`
+- `gregtech:gt.metaitem.02:32100` (Purple Drink)
+- `gregtech:gt.metaitem.02:32107` (Mineral Water)
+- `gregtech:gt.metaitem.02:32137` (Holy Water)
+- `harvestcraft:maplesyrupItem`
+- `harvestcraft:caramelItem`
+- `harvestcraft:taffyItem`
+- `harvestcraft:stockItem`
+- `harvestcraft:marshmellowsItem`
+- `harvestcraft:jellybeansItem`
+- `harvestcraft:peppermintItem`
+- `harvestcraft:gummybearsItem`
+- `harvestcraft:energydrinkItem`
+
+Known foods that still need nutritional value assigned:
+- `IC2:itemTerraWart`
+- `Thaumcraft:ItemManaBean`
+- `Automagy:foodstuff` (Vishroom Stew)
+- `Natura:natura.stewbowl` (Glowshroom Stew)
+- `EnderIO:itemEnderFood` (Enderios)
+- `ore:cropClove`
+- `ore:cropPapayimar`
+- `ore:cropBlackcurrant`
+- `ore:cropRedcurrant`
+- `ExtraTrees:food:54` (Allspice)
+- `ore:cropStarAnise`
+- `ForbiddenMagic:GluttonyShard`
+
+Cakes to deal with:
+- `BloodArsenal:blood_cake`
+- `ForbiddenMagic:ArcaneCake`
+- `harvestcraft:pamcarrotCake`
+- `harvestcraft:pamcheeseCake`
+- `harvestcraft:pamcherrycheeseCake`
+- `harvestcraft:pampineappleupsidedownCake`
+- `harvestcraft:pamchocolatesprinkleCake`
+- `harvestcraft:pamredvelvetCake`
+- `harvestcraft:pamlamingtonCake`
+- `harvestcraft:pampavlovaCake`
+- `harvestcraft:pamholidayCake`
+- `harvestcraft:pampumpkincheeseCake`

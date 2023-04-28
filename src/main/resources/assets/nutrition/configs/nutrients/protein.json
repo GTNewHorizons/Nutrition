@@ -1249,7 +1249,9 @@
       "miscutils:itemFoodCurriedSausages",
       "miscutils:itemHotFoodCurriedSausages",
       "witchery:stew",
-      "witchery:stewraw"
+      "witchery:stewraw",
+      "harvestcraft:stockItem",
+      "DraconicEvolution:dezilsMarshmallow"
 		]
 	}
 }

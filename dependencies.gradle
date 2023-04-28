@@ -34,8 +34,6 @@
  * For more details, see https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph
  */
 dependencies {
-    // Used for potion registry expansion. Technically not a hard dep, though things will probably not work if too many potions are added.
-    runtimeOnlyNonPublishable("com.github.GTNewHorizons:Hodgepodge:2.2.8:dev") { transitive = false }
     // Used for modified food values. Optional dep
-    implementation("com.github.GTNewHorizons:AppleCore:3.1.9:dev") { transitive = false }
+    implementation("com.github.GTNewHorizons:AppleCore:3.2.10:dev") { transitive = false }
 }

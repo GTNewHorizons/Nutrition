@@ -11,6 +11,9 @@ import ca.wescook.nutrition.Tags;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // Similar to GuiScreen, but draws a dynamic Minecraft border around any size
 @SideOnly(Side.CLIENT)
 public abstract class GuiScreenDynamic extends GuiScreen {
@@ -24,6 +27,8 @@ public abstract class GuiScreenDynamic extends GuiScreen {
     public int left = 0;
     public int right = 0;
     public int bottom = 0;
+
+    protected final List<GuiLabelNutrition> labelList = new ArrayList<>();
 
     // Container info
     private final ResourceLocation GUI_BORDERS = new ResourceLocation(Tags.MODID, "textures/gui/gui.png");
@@ -91,7 +96,7 @@ public abstract class GuiScreenDynamic extends GuiScreen {
         for (GuiButton aButtonList : this.buttonList) aButtonList.drawButton(this.mc, mouseX, mouseY);
 
         // Buttons
-        for (GuiLabel aLabelList : this.labelList) aLabelList.func_146159_a(this.mc, mouseX, mouseY);
+        for (GuiLabelNutrition aLabelList : this.labelList) aLabelList.drawLabel(this.mc, mouseX, mouseY);
         GL11.glEnable(GL11.GL_LIGHTING);
     }
 }

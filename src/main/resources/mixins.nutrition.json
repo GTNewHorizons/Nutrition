@@ -1,5 +1,6 @@
 {
   "required": true,
+  "minVersion": "0.8.5-GTNH",
   "package": "ca.wescook.nutrition.mixin",
   "refmap": "mixins.nutrition.refmap.json",
   "target": "@env(DEFAULT)",
@@ -8,6 +9,6 @@
     "EntityPlayerMixin"
   ],
   "client": [
-    "GuiContainerMixin"
+    "GuiContainerAccessor"
   ]
 }

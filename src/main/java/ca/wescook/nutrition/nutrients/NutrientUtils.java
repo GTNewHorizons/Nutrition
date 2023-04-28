@@ -61,7 +61,8 @@ public class NutrientUtils {
                 foodValue = ((ItemFood) item).func_150905_g(itemStack); // Number of half-drumsticks food heals
             }
         } else if (Loader.isModLoaded("AppleCore") && item instanceof IEdible edible) {
-            foodValue = edible.getFoodValues(itemStack).hunger;
+            FoodValues appleCoreValue = edible.getFoodValues(itemStack);
+            if (appleCoreValue != null) foodValue = appleCoreValue.hunger;
         } else if (item instanceof ItemBlock || item instanceof ItemReed) { // Cake, most likely
             foodValue = 2; // Hardcoded value from vanilla
         } else if (item instanceof ItemBucketMilk) {
@@ -106,7 +107,7 @@ public class NutrientUtils {
 
         // AppleCore food
         if (Loader.isModLoaded("AppleCore")) {
-            if (item instanceof IEdible) {
+            if (item instanceof IEdible edible && edible.getFoodValues(itemStack) != null) {
                 return true;
             }
         }

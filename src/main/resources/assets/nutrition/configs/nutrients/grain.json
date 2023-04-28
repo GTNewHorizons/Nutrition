@@ -767,7 +767,8 @@
       "miscutils:itemIngotRaisinBread",
       "miscutils:itemHotIngotRaisinBread",
       "miscutils:itemFoodRaisinToast",
-      "miscutils:itemHotFoodRaisinToast"
+      "miscutils:itemHotFoodRaisinToast",
+      "DraconicEvolution:dezilsMarshmallow"
 		]
 	}
 }

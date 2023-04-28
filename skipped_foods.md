@@ -17,7 +17,6 @@ Foods purposefully left with no nutrients, as they have no nutritional value:
 - `harvestcraft:maplesyrupItem`
 - `harvestcraft:caramelItem`
 - `harvestcraft:taffyItem`
-- `harvestcraft:stockItem`
 - `harvestcraft:marshmellowsItem`
 - `harvestcraft:jellybeansItem`
 - `harvestcraft:peppermintItem`

@@ -977,7 +977,8 @@
       "miscutils:itemFoodCurriedSausages",
       "miscutils:itemHotFoodCurriedSausages",
       "witchery:stew",
-      "witchery:stewraw"
+      "witchery:stewraw",
+      "DraconicEvolution:dezilsMarshmallow"
 		]
 	}
 }

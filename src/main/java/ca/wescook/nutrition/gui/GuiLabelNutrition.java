@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiLabel;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.resources.I18n;
 
@@ -14,9 +14,9 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// Basically just copied from MC's GuiLabel class, because it's nearly unusable...
+// Basically just copied from MC's GuiLabel class, because it's completely unusable...
 @SideOnly(Side.CLIENT)
-public class GuiLabelNutrition extends GuiLabel {
+public class GuiLabelNutrition extends Gui {
 
     protected int width;
     protected int height;
@@ -60,13 +60,12 @@ public class GuiLabelNutrition extends GuiLabel {
         return this;
     }
 
-    @Override
-    public void func_146159_a(Minecraft mc, int mouseX, int mouseY) {
+    public void drawLabel(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
             GL11.glEnable(GL11.GL_BLEND);
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            this.func_146160_b(mc, mouseX, mouseY);
+            this.drawLabelBackground(mc, mouseX, mouseY);
             int k = this.y + this.height / 2 + this.border / 2;
             int l = k - this.labels.size() * 10 / 2;
 
@@ -85,8 +84,7 @@ public class GuiLabelNutrition extends GuiLabel {
         }
     }
 
-    @Override
-    protected void func_146160_b(Minecraft mc, int mouseX, int mouseY) {
+    protected void drawLabelBackground(Minecraft mc, int mouseX, int mouseY) {
         if (this.labelBgEnabled) {
             int k = this.width + this.border * 2;
             int l = this.height + this.border * 2;

@@ -42,7 +42,7 @@ public class Config {
         Config.configDirectory = configDirectory;
 
         // Create or load from file
-        Configuration configFile = new Configuration(new File(configDirectory.getPath() + "/nutrition/nutrition.cfg"));
+        Configuration configFile = new Configuration(new File(configDirectory.getPath() + "/nutrition.cfg"));
         configFile.load();
 
         // Get Values

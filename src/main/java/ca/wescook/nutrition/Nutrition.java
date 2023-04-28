@@ -11,6 +11,7 @@ import ca.wescook.nutrition.proxy.CommonProxy;
 import ca.wescook.nutrition.utility.ChatCommand;
 import ca.wescook.nutrition.utility.Config;
 import ca.wescook.nutrition.utility.DataImporter;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -38,11 +39,12 @@ public class Nutrition {
         ModPacketHandler.registerMessages();
 
         ModPotions.createPotions();
-        EffectsList.registerEffects();
         MinecraftForge.EVENT_BUS.register(new EventPlayerJoinWorld());
         MinecraftForge.EVENT_BUS.register(new EventPlayerDeath());
         MinecraftForge.EVENT_BUS.register(new EventEatFood());
-        MinecraftForge.EVENT_BUS.register(new EventWorldTick());
+        FMLCommonHandler.instance()
+            .bus()
+            .register(new EventWorldTick());
     }
 
     @EventHandler
@@ -54,6 +56,7 @@ public class Nutrition {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         DataImporter.reload();
+        EffectsList.registerEffects();
     }
 
     @EventHandler

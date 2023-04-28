@@ -22,21 +22,12 @@ public class EventPlayerDeath {
         // This is synced automatically in EventPlayerJoinWorld#EntityJoinWorldEvent
         if (event.wasDeath) {
             for (Nutrient nutrient : NutrientList.get()) {
-                if (Config.deathPenaltyReset || nutritionNew.get(nutrient) > Config.deathPenaltyMin) { // If reset is
-                                                                                                       // disabled, only
-                                                                                                       // reduce to cap
-                                                                                                       // when above its
-                                                                                                       // value
+                // If reset is disabled, only reduce to cap when above its value
+                if (Config.deathPenaltyReset || nutritionNew.get(nutrient) > Config.deathPenaltyMin) {
+                    // Subtract death penalty from each nutrient, to cap
                     nutritionNew.set(
                         nutrient,
-                        Math.max(Config.deathPenaltyMin, nutritionNew.get(nutrient) - Config.deathPenaltyLoss)); // Subtract
-                                                                                                                 // death
-                                                                                                                 // penalty
-                                                                                                                 // from
-                                                                                                                 // each
-                                                                                                                 // nutrient,
-                                                                                                                 // to
-                                                                                                                 // cap
+                        Math.max(Config.deathPenaltyMin, nutritionNew.get(nutrient) - Config.deathPenaltyLoss));
                 }
             }
         }

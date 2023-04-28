@@ -20,7 +20,6 @@ public class Effect {
     public EnumDetectionType detectionType;
     public List<Nutrient> nutrients = NutrientList.get();
     public int cumulativeModifier = 1;
-    public Enum<EnumParticleVisibility> particles = EnumParticleVisibility.TRANSPARENT;
 
     private Effect(String name, Potion potion) {
         this.name = name;
@@ -32,13 +31,6 @@ public class Effect {
         AVERAGE, // The average of all nutrients must be in the threshold.
         ALL, // All nutrients must be in the threshold.
         CUMULATIVE // For each nutrient within the threshold, the amplifier increases by one.
-    }
-
-    // todo do we really need this?
-    public enum EnumParticleVisibility {
-        OPAQUE,
-        TRANSLUCENT,
-        TRANSPARENT
     }
 
     public static Builder builder(String name, Potion potion) {
@@ -80,11 +72,6 @@ public class Effect {
                 return this;
             }
             effect.cumulativeModifier = cumulativeModifier;
-            return this;
-        }
-
-        public Builder particleVisibility(EnumParticleVisibility particleVisibility) {
-            effect.particles = particleVisibility;
             return this;
         }
 

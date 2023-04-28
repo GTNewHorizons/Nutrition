@@ -29,7 +29,7 @@ public class EventWorldTick {
     private int potionCounter = 0; // Count ticks to reapply potion effects
 
     @SubscribeEvent
-    public void WorldTickEvent(TickEvent.WorldTickEvent event) {
+    public void serverTickEvent(TickEvent.WorldTickEvent event) {
         // Only run during end phase (post-vanilla)
         if (event.phase != TickEvent.Phase.END) return;
 

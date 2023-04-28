@@ -17,10 +17,7 @@ public class EffectsManager {
         List<Effect> effects = removeDuplicates(getEffectsInThreshold(player));
 
         for (Effect effect : effects) {
-            boolean ambient = (effect.particles == Effect.EnumParticleVisibility.TRANSLUCENT); // Determine if particles
-                                                                                               // should be shown, and
-                                                                                               // what strength
-            player.addPotionEffect(new PotionEffect(effect.potion.id, 619, effect.amplifier, ambient));
+            player.addPotionEffect(new PotionEffect(effect.potion.id, 619, effect.amplifier));
         }
     }
 
@@ -109,7 +106,6 @@ public class EffectsManager {
                 }
             }
         }
-
         return effectsInThreshold;
     }
 

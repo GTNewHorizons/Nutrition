@@ -24,7 +24,7 @@ public class ModPotions {
         toughness = new PotionToughness(
             findPotionId(),
             new ResourceLocation("nutrition", "textures/potions/toughness.png"));
-        toughness.setPotionName("potion.toughness");
+        toughness.setPotionName("potion.nutrition:toughness");
         toughness.func_111184_a(SharedMonsterAttributes.maxHealth, TOUGHNESS_HEALTH.toString(), 0D, 0);
         toughness.func_111184_a(SharedMonsterAttributes.knockbackResistance, TOUGHNESS_KNOCKBACK.toString(), 0D, 0);
 
@@ -32,14 +32,14 @@ public class ModPotions {
         nourished = new PotionNourished(
             findPotionId(),
             new ResourceLocation("nutrition", "textures/potions/nourished.png"));
-        nourished.setPotionName("potion.nourished");
+        nourished.setPotionName("potion.nutrition:nourished");
         nourished.func_111184_a(SharedMonsterAttributes.maxHealth, NOURISHMENT_HEALTH.toString(), 0D, 0);
 
         // Malnourished
         malnourished = new PotionMalnourished(
             findPotionId(),
             new ResourceLocation("nutrition", "textures/potions/malnourished.png"));
-        malnourished.setPotionName("potion.malnourished");
+        malnourished.setPotionName("potion.nutrition:malnourished");
         malnourished.func_111184_a(SharedMonsterAttributes.maxHealth, MALNOURISHMENT_HEALTH.toString(), 0D, 0);
     }
 

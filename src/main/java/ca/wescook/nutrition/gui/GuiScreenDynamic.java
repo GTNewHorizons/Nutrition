@@ -1,7 +1,9 @@
 package ca.wescook.nutrition.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 
@@ -10,9 +12,6 @@ import org.lwjgl.opengl.GL11;
 import ca.wescook.nutrition.Tags;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.List;
 
 // Similar to GuiScreen, but draws a dynamic Minecraft border around any size
 @SideOnly(Side.CLIENT)

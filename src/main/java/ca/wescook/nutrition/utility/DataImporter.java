@@ -4,13 +4,13 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.JsonSyntaxException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 
 import ca.wescook.nutrition.data.PlayerDataHandler;
@@ -52,7 +52,8 @@ public class DataImporter {
         List<String> nutrientFiles = Lists
             .newArrayList("dairy.json", "example.json", "fruit.json", "grain.json", "protein.json", "vegetable.json");
         List<JsonNutrient> jsonObjectList = new ArrayList<>();
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        ClassLoader loader = Thread.currentThread()
+            .getContextClassLoader();
         for (String file : nutrientFiles) {
             try (InputStream inputStream = loader.getResourceAsStream("assets/nutrition/configs/nutrients/" + file)) {
                 JsonReader jsonReader = new JsonReader(new InputStreamReader(inputStream));

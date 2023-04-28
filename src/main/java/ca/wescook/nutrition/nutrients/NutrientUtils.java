@@ -13,6 +13,7 @@ import ca.wescook.nutrition.utility.Config;
 import ca.wescook.nutrition.utility.Log;
 import cpw.mods.fml.common.Loader;
 import squeek.applecore.api.food.FoodValues;
+import squeek.applecore.api.food.IEdible;
 
 public class NutrientUtils {
 
@@ -59,6 +60,8 @@ public class NutrientUtils {
             } else {
                 foodValue = ((ItemFood) item).func_150905_g(itemStack); // Number of half-drumsticks food heals
             }
+        } else if (Loader.isModLoaded("AppleCore") && item instanceof IEdible edible) {
+            foodValue = edible.getFoodValues(itemStack).hunger;
         } else if (item instanceof ItemBlock || item instanceof ItemReed) { // Cake, most likely
             foodValue = 2; // Hardcoded value from vanilla
         } else if (item instanceof ItemBucketMilk) {
@@ -99,6 +102,13 @@ public class NutrientUtils {
         // Cake - Modded
         if (item instanceof ItemReed && Block.getBlockFromItem(item) instanceof BlockCake) {
             return true;
+        }
+
+        // AppleCore food
+        if (Loader.isModLoaded("AppleCore")) {
+            if (item instanceof IEdible) {
+                return true;
+            }
         }
 
         // add more special cases here if needed to mark as valid foods

@@ -12,6 +12,8 @@ import ca.wescook.nutrition.Tags;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientUtils;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import squeek.applecore.api.AppleCoreAPI;
+import squeek.applecore.api.food.FoodValues;
 
 public class EventTooltip {
 
@@ -21,7 +23,7 @@ public class EventTooltip {
         String tooltip = null;
 
         // Get out if not a food item
-        if (!NutrientUtils.isValidFood(itemStack)) return;
+        if (!AppleCoreAPI.accessor.isFood(itemStack)) return;
 
         // Create readable list of nutrients
         StringJoiner stringJoiner = new StringJoiner(", ");
@@ -31,7 +33,8 @@ public class EventTooltip {
         String nutrientString = stringJoiner.toString();
 
         // Get nutrition value
-        float nutritionValue = NutrientUtils.calculateNutrition(itemStack, foundNutrients);
+        FoodValues foodValues = AppleCoreAPI.accessor.getFoodValuesForPlayer(itemStack, event.entityPlayer);
+        float nutritionValue = NutrientUtils.calculateNutrition(foodValues, foundNutrients);
 
         // Build tooltip
         if (!nutrientString.equals("")) {

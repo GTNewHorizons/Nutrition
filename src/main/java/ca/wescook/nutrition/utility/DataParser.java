@@ -10,9 +10,9 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import ca.wescook.nutrition.nutrients.JsonNutrient;
 import ca.wescook.nutrition.nutrients.Nutrient;
-import ca.wescook.nutrition.nutrients.NutrientUtils;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
+import squeek.applecore.api.AppleCoreAPI;
 
 public class DataParser {
 
@@ -75,7 +75,7 @@ public class DataParser {
 
                     // Add to nutrient, or report error
                     ItemStack itemStack = new ItemStack(item, 1, data.metadata);
-                    if (NutrientUtils.isValidFood(itemStack)) {
+                    if (AppleCoreAPI.accessor.isFood(itemStack)) {
                         nutrient.foodItems.add(itemStack);
                     } else {
                         Log.warn(data.name + " is not a valid food (" + fullName + ")");

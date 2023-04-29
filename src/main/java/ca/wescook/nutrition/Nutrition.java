@@ -45,6 +45,11 @@ public class Nutrition {
         FMLCommonHandler.instance()
             .bus()
             .register(new EventWorldTick());
+
+        // only register if allow over-eating is true
+        if (Config.allowOverEating) {
+            MinecraftForge.EVENT_BUS.register(new EventAllowOvereating());
+        }
     }
 
     @EventHandler

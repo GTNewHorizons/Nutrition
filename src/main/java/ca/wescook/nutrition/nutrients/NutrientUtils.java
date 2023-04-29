@@ -3,17 +3,13 @@ package ca.wescook.nutrition.nutrients;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockCake;
-import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraftforge.oredict.OreDictionary;
 
 import ca.wescook.nutrition.utility.Config;
 import ca.wescook.nutrition.utility.Log;
-import cpw.mods.fml.common.Loader;
+import squeek.applecore.api.AppleCoreAPI;
 import squeek.applecore.api.food.FoodValues;
-import squeek.applecore.api.food.IEdible;
 
 public class NutrientUtils {
 
@@ -48,26 +44,9 @@ public class NutrientUtils {
 
     // Calculate nutrition value for supplied food
     // Requires nutrient list from that food for performance reasons (see getFoodNutrients)
-    public static float calculateNutrition(ItemStack itemStack, List<Nutrient> nutrients) {
-        // Get item/block
-        Item item = itemStack.getItem();
-
+    public static float calculateNutrition(FoodValues foodValues, List<Nutrient> nutrients) {
         // Base food value
-        int foodValue = 0;
-        if (item instanceof ItemFood) {
-            if (Loader.isModLoaded("AppleCore")) {
-                foodValue = FoodValues.get(itemStack).hunger;
-            } else {
-                foodValue = ((ItemFood) item).func_150905_g(itemStack); // Number of half-drumsticks food heals
-            }
-        } else if (Loader.isModLoaded("AppleCore") && item instanceof IEdible edible) {
-            FoodValues appleCoreValue = edible.getFoodValues(itemStack);
-            if (appleCoreValue != null) foodValue = appleCoreValue.hunger;
-        } else if (item instanceof ItemBlock || item instanceof ItemReed) { // Cake, most likely
-            foodValue = 2; // Hardcoded value from vanilla
-        } else if (item instanceof ItemBucketMilk) {
-            foodValue = 4; // Hardcoded milk value
-        }
+        int foodValue = foodValues.hunger;
 
         // Apply multipliers
         float adjustedFoodValue = (float) (foodValue * 0.5); // Halve to start at reasonable starting point
@@ -80,49 +59,12 @@ public class NutrientUtils {
         return Math.max(0, adjustedFoodValue - foodLoss);
     }
 
-    // Verify it meets a valid type
-    // Little bit of guesswork in this one...
-    public static boolean isValidFood(ItemStack itemStack) {
-        Item item = itemStack.getItem();
-
-        // Regular ItemFood
-        if (item instanceof ItemFood) {
-            return true;
-        }
-
-        // Milk Bucket
-        if (item instanceof ItemBucketMilk) {
-            return true;
-        }
-
-        // Cake - Vanilla
-        if (item == Items.cake) {
-            return true;
-        }
-
-        // Cake - Modded
-        if (item instanceof ItemReed && Block.getBlockFromItem(item) instanceof BlockCake) {
-            return true;
-        }
-
-        // AppleCore food
-        if (Loader.isModLoaded("AppleCore")) {
-            if (item instanceof IEdible edible && edible.getFoodValues(itemStack) != null) {
-                return true;
-            }
-        }
-
-        // add more special cases here if needed to mark as valid foods
-
-        return false;
-    }
-
     // List all foods registered in-game without nutrients
     public static void findRegisteredFoods() {
         for (Object object : Item.itemRegistry) {
             Item item = (Item) object;
             ItemStack itemStack = new ItemStack(item);
-            if (isValidFood(itemStack) && getFoodNutrients(itemStack).size() == 0)
+            if (AppleCoreAPI.accessor.isFood(itemStack) && getFoodNutrients(itemStack).size() == 0)
                 Log.warn("Registered food without nutrients: " + item.getUnlocalizedName());
         }
     }

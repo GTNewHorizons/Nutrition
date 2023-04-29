@@ -34,6 +34,7 @@
  * For more details, see https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph
  */
 dependencies {
-    // Used for modified food values. Optional dep
-    implementation("com.github.GTNewHorizons:AppleCore:3.2.10:dev") { transitive = false }
+    api("com.github.GTNewHorizons:AppleCore:3.2.10:dev") { transitive = false }
+
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:SpiceOfLife:2.0.9-carrot:dev")
 }

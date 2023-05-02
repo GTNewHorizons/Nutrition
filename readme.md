@@ -30,4 +30,4 @@ Licensed under LGPL-3.0 or later - Use this however you want, but please give ba
 
 Backported with permission from [WesCook's Nutrition](https://github.com/WesCook/Nutrition) under the MIT License.
 
-Original code Copyright (c) 2017 Wes Cook - see [original license](original license.txt)
+Original code Copyright (c) 2017 Wes Cook - see [original license](original_license.txt)

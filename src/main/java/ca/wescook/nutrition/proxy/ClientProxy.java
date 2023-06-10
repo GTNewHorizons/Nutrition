@@ -4,6 +4,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 
 import ca.wescook.nutrition.data.NutrientManager;
+import ca.wescook.nutrition.events.EventEatFood;
 import ca.wescook.nutrition.events.EventNutritionButton;
 import ca.wescook.nutrition.events.EventNutritionKey;
 import ca.wescook.nutrition.events.EventTooltip;
@@ -15,6 +16,8 @@ public class ClientProxy extends CommonProxy {
 
     public static NutrientManager localNutrition; // Holds local copy of data/methods for client-side prediction
     public static KeyBinding keyNutritionGui;
+
+    public static EventEatFood.State eatenState = EventEatFood.State.WAITING;
 
     @Override
     public void init(FMLInitializationEvent event) {
@@ -35,5 +38,10 @@ public class ClientProxy extends CommonProxy {
         if (Config.enableTooltips) {
             MinecraftForge.EVENT_BUS.register(new EventTooltip()); // Register tooltip event
         }
+    }
+
+    @Override
+    public boolean isClient() {
+        return true;
     }
 }

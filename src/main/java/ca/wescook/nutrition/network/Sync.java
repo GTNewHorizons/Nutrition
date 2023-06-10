@@ -19,4 +19,10 @@ public class Sync {
     public static void clientRequest() {
         ModPacketHandler.NETWORK_CHANNEL.sendToServer(new PacketNutritionRequest.Message());
     }
+
+    // Client overrides server stats with its own stats.
+    // Only call from client
+    public static void pushToServer() {
+        ModPacketHandler.NETWORK_CHANNEL.sendToServer(new PacketUpdateServerNutrients.Message());
+    }
 }

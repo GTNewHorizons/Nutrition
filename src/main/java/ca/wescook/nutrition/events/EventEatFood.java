@@ -33,16 +33,24 @@ import squeek.applecore.api.food.FoodEvent;
  * As a result, we need to know if stats were modified directly without eating an actual food, so that
  * nutrition values are modified somehow to a "neutral state" by direct-modification methods.
  * <br>
- * This is achieved with the {@link State} enum, which tracks if stats were changed, but food was not eaten.
- * See {@link EventWorldTick#clientTickEvent(TickEvent.ClientTickEvent)} for details on this check.
+ * This is achieved with a Stack, held in {@link ClientProxy}.
+ * Hunger value stat changes are pushed to the stack, then popped when food is eaten. This results in
+ * a "normal" food pushing the value, then popping it immediately after in the next event.
+ * However, something which directly modifies hunger stat will never pop the change.
+ * Those changes will be popped by {@link EventWorldTick#clientTickEvent(TickEvent.ClientTickEvent)}
+ * at the end of each client game tick.
  */
 public class EventEatFood {
 
     @SubscribeEvent
     public void onFoodStatsChanged(FoodEvent.FoodStatsAddition event) {
         if (Nutrition.proxy.isClient()) {
+            // only run if hunger value increases, also ignoring saturation
+            int hungerValue = event.foodValuesToBeAdded.hunger;
+            if (hungerValue <= 0) return;
+
             // set that stats have been changed, but food has not yet been eaten
-            ClientProxy.eatenState = State.STATS_CHANGED;
+            ClientProxy.pushHungerChange(hungerValue);
         }
     }
 
@@ -59,7 +67,7 @@ public class EventEatFood {
         } else { // Client
             ClientProxy.localNutrition.add(foundNutrients, nutritionValue);
             // set that food has now been eaten
-            ClientProxy.eatenState = State.WAITING;
+            ClientProxy.popHungerChange();
         }
     }
 
@@ -81,10 +89,5 @@ public class EventEatFood {
                 ClientProxy.localNutrition.add(NutrientList.getByName("dairy"), 1.5F);
             }
         }
-    }
-
-    public enum State {
-        WAITING, // Nothing happening, no stats changed or food eaten
-        STATS_CHANGED // Stats have been changed, food has not yet been eaten (or was not done by food)
     }
 }

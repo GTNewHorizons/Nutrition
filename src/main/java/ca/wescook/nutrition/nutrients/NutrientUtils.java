@@ -45,17 +45,16 @@ public class NutrientUtils {
     // Calculate nutrition value for supplied food
     // Requires nutrient list from that food for performance reasons (see getFoodNutrients)
     public static float calculateNutrition(FoodValues foodValues, List<Nutrient> nutrients) {
-        // Base food value
-        int foodValue = foodValues.hunger;
+        return getNutrientValue(foodValues.hunger, nutrients.size());
+    }
 
+    public static float getNutrientValue(int hungerValue, int numNutrients) {
         // Apply multipliers
-        float adjustedFoodValue = (float) (foodValue * 0.5); // Halve to start at reasonable starting point
+        float adjustedFoodValue = (float) (hungerValue * 0.5); // Halve to start at reasonable starting point
         adjustedFoodValue = adjustedFoodValue * Config.nutritionMultiplier; // Multiply by config value
         float lossPercentage = (float) Config.lossPerNutrient / 100; // Loss percentage from config file
-        float foodLoss = (adjustedFoodValue * lossPercentage * (nutrients.size() - 1)); // Lose 15% (configurable) for
-        // each nutrient added after the
-        // first nutrient
-
+        // Lose 15% (configurable) for each nutrient added after the first nutrient
+        float foodLoss = (adjustedFoodValue * lossPercentage * (numNutrients - 1));
         return Math.max(0, adjustedFoodValue - foodLoss);
     }
 

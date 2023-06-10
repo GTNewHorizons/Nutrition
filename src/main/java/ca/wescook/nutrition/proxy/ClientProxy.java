@@ -1,10 +1,11 @@
 package ca.wescook.nutrition.proxy;
 
+import java.util.Stack;
+
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 
 import ca.wescook.nutrition.data.NutrientManager;
-import ca.wescook.nutrition.events.EventEatFood;
 import ca.wescook.nutrition.events.EventNutritionButton;
 import ca.wescook.nutrition.events.EventNutritionKey;
 import ca.wescook.nutrition.events.EventTooltip;
@@ -17,7 +18,7 @@ public class ClientProxy extends CommonProxy {
     public static NutrientManager localNutrition; // Holds local copy of data/methods for client-side prediction
     public static KeyBinding keyNutritionGui;
 
-    public static EventEatFood.State eatenState = EventEatFood.State.WAITING;
+    private static final Stack<Integer> hungerValues = new Stack<>();
 
     @Override
     public void init(FMLInitializationEvent event) {
@@ -43,5 +44,21 @@ public class ClientProxy extends CommonProxy {
     @Override
     public boolean isClient() {
         return true;
+    }
+
+    public static void pushHungerChange(int hungerValue) {
+        hungerValues.push(hungerValue);
+    }
+
+    public static void popHungerChange() {
+        hungerValues.pop();
+    }
+
+    public static int getUnappliedHungerValues() {
+        int unapplied = 0;
+        while (!hungerValues.empty()) {
+            unapplied += hungerValues.pop();
+        }
+        return unapplied;
     }
 }

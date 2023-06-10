@@ -12,7 +12,7 @@ public class ModPacketHandler {
     // Message IDs
     private static final int MESSAGE_NUTRITION_REQUEST = 0;
     private static final int MESSAGE_NUTRITION_RESPONSE = 1;
-    private static final int MESSAGE_UPDATE_SERVER_NUTRIENTS = 2;
+    private static final int MESSAGE_NORMALIZE_SERVER_NUTRIENTS = 2;
 
     // Register messages on run
     public static void registerMessages() {
@@ -29,9 +29,9 @@ public class ModPacketHandler {
             Side.CLIENT);
 
         NETWORK_CHANNEL.registerMessage(
-            PacketUpdateServerNutrients.Handler.class,
-            PacketUpdateServerNutrients.Message.class,
-            MESSAGE_UPDATE_SERVER_NUTRIENTS,
+            PacketNormalizeServerNutrients.Handler.class,
+            PacketNormalizeServerNutrients.Message.class,
+            MESSAGE_NORMALIZE_SERVER_NUTRIENTS,
             Side.SERVER);
     }
 }

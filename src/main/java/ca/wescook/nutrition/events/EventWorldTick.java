@@ -15,12 +15,17 @@ import org.apache.commons.lang3.tuple.Pair;
 import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.effects.EffectsManager;
 import ca.wescook.nutrition.gui.ModGuiHandler;
+import ca.wescook.nutrition.network.Sync;
 import ca.wescook.nutrition.nutrients.Nutrient;
+import ca.wescook.nutrition.nutrients.NutrientList;
+import ca.wescook.nutrition.nutrients.NutrientUtils;
 import ca.wescook.nutrition.proxy.ClientProxy;
 import ca.wescook.nutrition.utility.Config;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class EventWorldTick {
 
@@ -42,6 +47,25 @@ public class EventWorldTick {
 
         // Reapply potion effects every 5 seconds
         potionTicking(event.world);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void clientTickEvent(TickEvent.ClientTickEvent event) {
+        // Only run during end phase (post-vanilla)
+        if (event.phase != TickEvent.Phase.END) return;
+
+        // Update nutrition if some non-food stat effect was applied.
+        // Normalize stats towards "50" in all values
+        int hungerModified = ClientProxy.getUnappliedHungerValues();
+        if (hungerModified > 0) {
+            // Use value as if food was actually eaten, which gave this amount of hunger for all nutrients
+            float amountToChange = NutrientUtils.getNutrientValue(
+                hungerModified,
+                NutrientList.get()
+                    .size());
+            Sync.normalizeOnServer(amountToChange);
+        }
     }
 
     private void nutritionDecay(EntityPlayer player) {

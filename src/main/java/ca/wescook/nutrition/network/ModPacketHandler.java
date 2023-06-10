@@ -12,6 +12,7 @@ public class ModPacketHandler {
     // Message IDs
     private static final int MESSAGE_NUTRITION_REQUEST = 0;
     private static final int MESSAGE_NUTRITION_RESPONSE = 1;
+    private static final int MESSAGE_NORMALIZE_SERVER_NUTRIENTS = 2;
 
     // Register messages on run
     public static void registerMessages() {
@@ -20,10 +21,17 @@ public class ModPacketHandler {
             PacketNutritionRequest.Message.class,
             MESSAGE_NUTRITION_REQUEST,
             Side.SERVER);
+
         NETWORK_CHANNEL.registerMessage(
             PacketNutritionResponse.Handler.class,
             PacketNutritionResponse.Message.class,
             MESSAGE_NUTRITION_RESPONSE,
             Side.CLIENT);
+
+        NETWORK_CHANNEL.registerMessage(
+            PacketNormalizeServerNutrients.Handler.class,
+            PacketNormalizeServerNutrients.Message.class,
+            MESSAGE_NORMALIZE_SERVER_NUTRIENTS,
+            Side.SERVER);
     }
 }

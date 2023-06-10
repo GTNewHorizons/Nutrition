@@ -1,6 +1,6 @@
 # Nutrition Unofficial - 1.7.10
 
-Nutrition Unofficial is a highly configurable mod to enable the creation of health systems in Minecraft, forked and backported by [DStrand1](https://github.com/DStrand1) from https://github.com/WesCook/Nutrition/ and maintained by DStrand1 & the GTNH Team.
+Nutrition Unofficial is a highly configurable mod to enable the creation of health systems in Minecraft, forked and backported by [Serenibyss](https://github.com/serenibyss) from https://github.com/WesCook/Nutrition/ and maintained by Serenibyss & the GTNH Team.
 
 IMPORTANT NOTE: This project is _not_ associated with the upstream project by [WesCook](https://github.com/WesCook/Nutrition). It has been forked in accordance with the License and with permission from the original author.  It __WILL NOT__ be ported to any other version.  All support requests must be sent to [the GTNH fork](https://github.com/GTNewHorizons/Nutrition/issues).
 
@@ -24,7 +24,7 @@ Mod support contributions are welcome!  Please create a [Pull Request](https://g
 
 ## License
 
-GTNH Modifications Copyright (c) 2023 DStrand1 and the GTNH Team
+GTNH Modifications Copyright (c) 2023 Serenibyss and the GTNH Team
 
 Licensed under LGPL-3.0 or later - Use this however you want, but please give back any modifications to the community!
 

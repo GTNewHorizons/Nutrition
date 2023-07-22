@@ -19,4 +19,10 @@ public class Sync {
     public static void clientRequest() {
         ModPacketHandler.NETWORK_CHANNEL.sendToServer(new PacketNutritionRequest.Message());
     }
+
+    // Client normalizes server stats towards 50
+    // Only call from client
+    public static void normalizeOnServer(float nutrientDelta) {
+        ModPacketHandler.NETWORK_CHANNEL.sendToServer(new PacketNormalizeServerNutrients.Message(nutrientDelta));
+    }
 }

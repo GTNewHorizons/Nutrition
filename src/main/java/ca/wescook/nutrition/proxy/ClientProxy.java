@@ -51,7 +51,9 @@ public class ClientProxy extends CommonProxy {
     }
 
     public static void popHungerChange() {
-        hungerValues.pop();
+        if (!hungerValues.empty()) {
+            hungerValues.pop();
+        }
     }
 
     public static int getUnappliedHungerValues() {

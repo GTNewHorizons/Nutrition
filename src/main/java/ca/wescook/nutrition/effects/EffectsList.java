@@ -34,7 +34,7 @@ public class EffectsList {
 
         EFFECTS.add(
             Effect.builder("strength", Potion.damageBoost)
-                .nutrientRange(90, 100)
+                .nutrientRange(70, 100)
                 .detectionType(EnumDetectionType.AVERAGE)
                 .build());
 

@@ -49,5 +49,11 @@ public class EffectsList {
                 .nutrientRange(80, 100)
                 .detectionType(EnumDetectionType.AVERAGE)
                 .build());
+
+        EFFECTS.add(
+            Effect.builder("haste", Potion.digSpeed)
+                .nutrientRange(90, 100)
+                .detectionType(EnumDetectionType.AVERAGE)
+                .build());
     }
 }

@@ -34,7 +34,7 @@ public class EffectsList {
 
         EFFECTS.add(
             Effect.builder("strength", Potion.damageBoost)
-                .nutrientRange(90, 100)
+                .nutrientRange(70, 100)
                 .detectionType(EnumDetectionType.AVERAGE)
                 .build());
 
@@ -47,6 +47,12 @@ public class EffectsList {
         EFFECTS.add(
             Effect.builder("resistance", Potion.resistance)
                 .nutrientRange(80, 100)
+                .detectionType(EnumDetectionType.AVERAGE)
+                .build());
+
+        EFFECTS.add(
+            Effect.builder("haste", Potion.digSpeed)
+                .nutrientRange(90, 100)
                 .detectionType(EnumDetectionType.AVERAGE)
                 .build());
     }

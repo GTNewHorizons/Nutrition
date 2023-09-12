@@ -4,13 +4,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiScreenEvent;
 
-import ca.wescook.nutrition.Nutrition;
 import ca.wescook.nutrition.gui.GuiButtonNutrition;
-import ca.wescook.nutrition.gui.ModGuiHandler;
+import ca.wescook.nutrition.gui.NutritionGui;
 import ca.wescook.nutrition.mixin.GuiContainerAccessor;
 import ca.wescook.nutrition.utility.Config;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -35,6 +32,7 @@ public class EventNutritionButton {
 
         // Create button
         buttonNutrition = new GuiButtonNutrition(x, y);
+        // noinspection unchecked
         event.buttonList.add(buttonNutrition);
     }
 
@@ -46,18 +44,8 @@ public class EventNutritionButton {
 
         // If nutrition button is clicked
         if (event.button.equals(buttonNutrition)) {
-            // Get data
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-            World world = Minecraft.getMinecraft().theWorld;
-
-            // Open GUI
-            player.openGui(
-                Nutrition.instance,
-                ModGuiHandler.NUTRITION_GUI_ID,
-                world,
-                (int) player.posX,
-                (int) player.posY,
-                (int) player.posZ);
+            Minecraft.getMinecraft()
+                .displayGuiScreen(new NutritionGui(event.gui));
         } else {
             // Presumably recipe book button was clicked - recalculate nutrition button position
             int[] pos = calculateButtonPosition(event.gui);

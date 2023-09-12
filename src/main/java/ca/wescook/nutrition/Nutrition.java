@@ -4,7 +4,6 @@ import net.minecraftforge.common.MinecraftForge;
 
 import ca.wescook.nutrition.effects.EffectsList;
 import ca.wescook.nutrition.events.*;
-import ca.wescook.nutrition.gui.ModGuiHandler;
 import ca.wescook.nutrition.network.ModPacketHandler;
 import ca.wescook.nutrition.potions.ModPotions;
 import ca.wescook.nutrition.proxy.CommonProxy;
@@ -20,7 +19,6 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
 
 @Mod(modid = Tags.MODID, name = Tags.MODNAME, version = Tags.VERSION)
 public class Nutrition {
@@ -54,7 +52,6 @@ public class Nutrition {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        NetworkRegistry.INSTANCE.registerGuiHandler(Nutrition.instance, new ModGuiHandler());
         Nutrition.proxy.init(event);
     }
 

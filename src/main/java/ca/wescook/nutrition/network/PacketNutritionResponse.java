@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import ca.wescook.nutrition.data.NutrientManager;
 import ca.wescook.nutrition.data.PlayerDataHandler;
-import ca.wescook.nutrition.gui.ModGuiHandler;
+import ca.wescook.nutrition.gui.NutritionGui;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.proxy.ClientProxy;
@@ -73,8 +73,8 @@ public class PacketNutritionResponse {
 
             // If Nutrition GUI is open, update GUI
             GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
-            if (currentScreen != null && currentScreen.equals(ModGuiHandler.nutritionGui)) {
-                ModGuiHandler.nutritionGui.redrawLabels();
+            if (currentScreen instanceof NutritionGui) {
+                ((NutritionGui) currentScreen).redrawLabels();
             }
             return null;
         }

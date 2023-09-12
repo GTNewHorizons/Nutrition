@@ -1,6 +1,7 @@
 package ca.wescook.nutrition.gui;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 
 import org.lwjgl.opengl.GL11;
@@ -23,33 +24,41 @@ public class NutritionGui extends GuiScreenDynamic {
     ///////////////////
 
     // Gui Container
-    private final int GUI_BASE_WIDTH = 184;
-    private final int GUI_BASE_HEIGHT = 72;
-    private final int NUTRITION_DISTANCE = 20; // Vertical distance between each nutrient
+    private static final int GUI_BASE_WIDTH = 184;
+    private static final int GUI_BASE_HEIGHT = 72;
+    private static final int NUTRITION_DISTANCE = 20; // Vertical distance between each nutrient
 
     // Nutrition Title
-    private final int TITLE_VERTICAL_OFFSET = 18;
+    private static final int TITLE_VERTICAL_OFFSET = 18;
 
     // Nutrition icon positions
-    private final int NUTRITION_ICON_HORIZONTAL_OFFSET = 10;
-    private final int NUTRITION_ICON_VERTICAL_OFFSET = 32;
+    private static final int NUTRITION_ICON_HORIZONTAL_OFFSET = 10;
+    private static final int NUTRITION_ICON_VERTICAL_OFFSET = 32;
 
     // Nutrition bar positions
-    private final int NUTRITION_BAR_WIDTH = 130;
-    private final int NUTRITION_BAR_HEIGHT = 13;
-    private final int NUTRITION_BAR_HORIZONTAL_OFFSET = 40;
-    private final int NUTRITION_BAR_VERTICAL_OFFSET = 33;
+    private static final int NUTRITION_BAR_WIDTH = 130;
+    private static final int NUTRITION_BAR_HEIGHT = 13;
+    private static final int NUTRITION_BAR_HORIZONTAL_OFFSET = 40;
+    private static final int NUTRITION_BAR_VERTICAL_OFFSET = 33;
 
     // Nutrition label positions
-    private final int LABEL_NAME_HORIZONTAL_OFFSET = 30;
-    private final int LABEL_VALUE_HORIZONTAL_OFFSET = 43;
-    private final int LABEL_VERTICAL_OFFSET = 41;
+    private static final int LABEL_NAME_HORIZONTAL_OFFSET = 30;
+    private static final int LABEL_VALUE_HORIZONTAL_OFFSET = 43;
+    private static final int LABEL_VERTICAL_OFFSET = 41;
     private int labelCharacterPadding = 0; // Add padding for long nutrient names
 
     // Close button position
-    private final int CLOSE_BUTTON_WIDTH = 70;
-    private final int CLOSE_BUTTON_HEIGHT = 20;
-    private final int CLOSE_BUTTON_OFFSET = 12;
+    private static final int CLOSE_BUTTON_WIDTH = 70;
+    private static final int CLOSE_BUTTON_HEIGHT = 20;
+    private static final int CLOSE_BUTTON_OFFSET = 12;
+
+    private GuiScreen previousScreen = null;
+
+    public NutritionGui() {}
+
+    public NutritionGui(GuiScreen prevScreen) {
+        this.previousScreen = prevScreen;
+    }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -106,9 +115,9 @@ public class NutritionGui extends GuiScreenDynamic {
 
         // Calculate label offset for long nutrition names
         for (Nutrient nutrient : NutrientList.getVisible()) {
+            // Get width of localized string
             int nutrientWidth = mc.fontRenderer
-                .getStringWidth(I18n.format("nutrient." + Tags.MODID + ":" + nutrient.name)); // Get width of localized
-                                                                                              // string
+                .getStringWidth(I18n.format("nutrient." + Tags.MODID + ":" + nutrient.name));
             nutrientWidth = (nutrientWidth / 4) * 4; // Round to nearest multiple of 4
             if (nutrientWidth > labelCharacterPadding) labelCharacterPadding = nutrientWidth;
         }
@@ -165,8 +174,8 @@ public class NutritionGui extends GuiScreenDynamic {
                     0,
                     0,
                     0xffffffff));
-            label.addLine(I18n.format("nutrient." + Tags.MODID + ":" + nutrient.name)); // Add name from localization
-                                                                                        // file
+            // Add name from localization file
+            label.addLine(I18n.format("nutrient." + Tags.MODID + ":" + nutrient.name));
 
             // Create percent value labels for each nutrient value
             labelList.add(
@@ -178,11 +187,12 @@ public class NutritionGui extends GuiScreenDynamic {
                     0,
                     0,
                     0xffffffff));
-            if (ClientProxy.localNutrition != null && ClientProxy.localNutrition.get(nutrient) != null) // Ensure local
-                                                                                                        // nutrition
-                                                                                                        // data exists
+            // Ensure local nutrition data exists
+            if (ClientProxy.localNutrition != null && ClientProxy.localNutrition.get(nutrient) != null) {
                 label.addLine(Math.round(ClientProxy.localNutrition.get(nutrient)) + "%%");
-            else label.addLine(I18n.format("gui." + Tags.MODID + ":updating"));
+            } else {
+                label.addLine(I18n.format("gui." + Tags.MODID + ":updating"));
+            }
             i++;
         }
     }
@@ -192,7 +202,7 @@ public class NutritionGui extends GuiScreenDynamic {
     protected void actionPerformed(GuiButton button) {
         if (button == buttonClose) {
             // Close GUI
-            mc.thePlayer.closeScreen();
+            mc.displayGuiScreen(this.previousScreen);
             if (mc.currentScreen == null) mc.setIngameFocus();
         }
     }

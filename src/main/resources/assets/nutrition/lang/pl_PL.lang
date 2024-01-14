@@ -1,0 +1,22 @@
+# Keys
+key.nutrition=Otwórz GUI Nutrition
+
+# GUI
+gui.nutrition:nutrition_title=Odżywianie
+gui.nutrition:close=Zamknij
+gui.nutrition:updating=Aktualizowanie...
+
+# Nutrients
+nutrient.nutrition:grain=Zboża
+nutrient.nutrition:fruit=Owoce
+nutrient.nutrition:vegetable=Warzywa
+nutrient.nutrition:protein=Białka
+nutrient.nutrition:dairy=Nabiał
+
+# Tooltips
+tooltip.nutrition:nutrients=Składniki Odżywcze:
+
+# Potions
+potion.nutrition:toughness=Twardość
+potion.nutrition:nourished=Odżywiony
+potion.nutrition:malnourished=Niedożywiony

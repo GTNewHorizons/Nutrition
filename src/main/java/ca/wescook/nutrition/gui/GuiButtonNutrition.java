@@ -15,7 +15,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiButtonNutrition extends GuiButton {
 
     private static final int BUTTON_ID = 800;
-    private static final ResourceLocation TEXTURE_LOC = new ResourceLocation(Tags.MODID, "textures/gui/gui.png");
+    private static final ResourceLocation TEXTURE_LOC = new ResourceLocation("nutrition", "textures/gui/gui.png");
     private static final int X_TEX_START = 14;
     private static final int Y_TEX_START = 0;
     private static final int Y_DIFF_TEXT = 19;

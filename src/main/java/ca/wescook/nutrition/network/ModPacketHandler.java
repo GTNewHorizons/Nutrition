@@ -7,7 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 
 public class ModPacketHandler {
 
-    public static final SimpleNetworkWrapper NETWORK_CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(Tags.MODID);
+    public static final SimpleNetworkWrapper NETWORK_CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel("nutrition");
 
     // Message IDs
     private static final int MESSAGE_NUTRITION_REQUEST = 0;

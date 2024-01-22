@@ -29,7 +29,7 @@ public class EventTooltip {
         StringJoiner stringJoiner = new StringJoiner(", ");
         List<Nutrient> foundNutrients = NutrientUtils.getFoodNutrients(itemStack);
         for (Nutrient nutrient : foundNutrients) // Loop through nutrients from food
-            if (nutrient.visible) stringJoiner.add(I18n.format("nutrient." + Tags.MODID + ":" + nutrient.name));
+            if (nutrient.visible) stringJoiner.add(I18n.format("nutrient." + "nutrition" + ":" + nutrient.name));
         String nutrientString = stringJoiner.toString();
 
         // Get nutrition value
@@ -38,7 +38,7 @@ public class EventTooltip {
 
         // Build tooltip
         if (!nutrientString.equals("")) {
-            tooltip = I18n.format("tooltip." + Tags.MODID + ":nutrients") + " "
+            tooltip = I18n.format("tooltip." + "nutrition" + ":nutrients") + " "
                 + EnumChatFormatting.DARK_GREEN
                 + nutrientString
                 + EnumChatFormatting.DARK_AQUA

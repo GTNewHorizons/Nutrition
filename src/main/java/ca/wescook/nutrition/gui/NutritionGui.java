@@ -117,7 +117,7 @@ public class NutritionGui extends GuiScreenDynamic {
         for (Nutrient nutrient : NutrientList.getVisible()) {
             // Get width of localized string
             int nutrientWidth = mc.fontRenderer
-                .getStringWidth(I18n.format("nutrient." + Tags.MODID + ":" + nutrient.name));
+                .getStringWidth(I18n.format("nutrient." + "nutrition" + ":" + nutrient.name));
             nutrientWidth = (nutrientWidth / 4) * 4; // Round to nearest multiple of 4
             if (nutrientWidth > labelCharacterPadding) labelCharacterPadding = nutrientWidth;
         }
@@ -136,7 +136,7 @@ public class NutritionGui extends GuiScreenDynamic {
                 bottom - CLOSE_BUTTON_HEIGHT - CLOSE_BUTTON_OFFSET,
                 CLOSE_BUTTON_WIDTH,
                 CLOSE_BUTTON_HEIGHT,
-                I18n.format("gui." + Tags.MODID + ":close")));
+                I18n.format("gui." + "nutrition" + ":close")));
 
         // Draw labels
         redrawLabels();
@@ -148,7 +148,7 @@ public class NutritionGui extends GuiScreenDynamic {
         labelList.clear();
 
         // Draw title
-        String nutritionTitle = I18n.format("gui." + Tags.MODID + ":nutrition_title");
+        String nutritionTitle = I18n.format("gui." + "nutrition" + ":nutrition_title");
         GuiLabelNutrition label;
         labelList.add(
             label = new GuiLabelNutrition(
@@ -175,7 +175,7 @@ public class NutritionGui extends GuiScreenDynamic {
                     0,
                     0xffffffff));
             // Add name from localization file
-            label.addLine(I18n.format("nutrient." + Tags.MODID + ":" + nutrient.name));
+            label.addLine(I18n.format("nutrient." + "nutrition" + ":" + nutrient.name));
 
             // Create percent value labels for each nutrient value
             labelList.add(
@@ -191,7 +191,7 @@ public class NutritionGui extends GuiScreenDynamic {
             if (ClientProxy.localNutrition != null && ClientProxy.localNutrition.get(nutrient) != null) {
                 label.addLine(Math.round(ClientProxy.localNutrition.get(nutrient)) + "%%");
             } else {
-                label.addLine(I18n.format("gui." + Tags.MODID + ":updating"));
+                label.addLine(I18n.format("gui." + "nutrition" + ":updating"));
             }
             i++;
         }

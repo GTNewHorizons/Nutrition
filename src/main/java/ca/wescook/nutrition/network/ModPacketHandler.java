@@ -1,6 +1,5 @@
 package ca.wescook.nutrition.network;
 
-import ca.wescook.nutrition.Tags;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;

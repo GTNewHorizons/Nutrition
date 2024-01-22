@@ -30,7 +30,7 @@ public abstract class GuiScreenDynamic extends GuiScreen {
     protected final List<GuiLabelNutrition> labelList = new ArrayList<>();
 
     // Container info
-    private final ResourceLocation GUI_BORDERS = new ResourceLocation(Tags.MODID, "textures/gui/gui.png");
+    private final ResourceLocation GUI_BORDERS = new ResourceLocation("nutrition", "textures/gui/gui.png");
 
     // Update GUI size
     // Must be increment of 4!

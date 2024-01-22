@@ -8,7 +8,7 @@ import ca.wescook.nutrition.Tags;
 
 public class Log {
 
-    private static final Logger logger = LogManager.getLogger(Tags.MODID);
+    private static final Logger logger = LogManager.getLogger("nutrition");
 
     // Allow log level
     public static void log(Level level, String message) {

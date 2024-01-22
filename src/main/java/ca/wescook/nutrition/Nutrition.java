@@ -20,7 +20,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-@Mod(modid = Tags.MODID, name = Tags.MODNAME, version = Tags.VERSION)
+@Mod(modid = "nutrition", name = "Nutrition", version = Tags.VERSION)
 public class Nutrition {
 
     @Instance

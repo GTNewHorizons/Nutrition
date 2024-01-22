@@ -4,8 +4,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ca.wescook.nutrition.Tags;
-
 public class Log {
 
     private static final Logger logger = LogManager.getLogger("nutrition");

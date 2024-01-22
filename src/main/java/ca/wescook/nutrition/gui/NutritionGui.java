@@ -6,7 +6,6 @@ import net.minecraft.client.resources.I18n;
 
 import org.lwjgl.opengl.GL11;
 
-import ca.wescook.nutrition.Tags;
 import ca.wescook.nutrition.network.Sync;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;

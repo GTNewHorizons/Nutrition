@@ -31,9 +31,14 @@ public class EventTooltip {
             if (nutrient.visible) stringJoiner.add(I18n.format("nutrient." + "nutrition" + ":" + nutrient.name));
         String nutrientString = stringJoiner.toString();
 
+        float nutritionValue;
         // Get nutrition value
-        FoodValues foodValues = AppleCoreAPI.accessor.getFoodValuesForPlayer(itemStack, event.entityPlayer);
-        float nutritionValue = NutrientUtils.calculateNutrition(foodValues, foundNutrients);
+        if (event.entityPlayer != null) {
+            FoodValues foodValues = AppleCoreAPI.accessor.getFoodValuesForPlayer(itemStack, event.entityPlayer);
+            nutritionValue = NutrientUtils.calculateNutrition(foodValues, foundNutrients);
+        } else {
+            nutritionValue = NutrientUtils.getNutrientValue(1, foundNutrients.size());
+        }
 
         // Build tooltip
         if (!nutrientString.equals("")) {

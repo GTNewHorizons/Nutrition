@@ -12,23 +12,14 @@ public class ModHelperManager {
 
     public static void preInit() {
         setupHelpers();
-
         for (IModHelper helper : helpers) {
             helper.preInit();
         }
     }
 
-    public static void init() {
-        for (IModHelper helper : helpers) {
-            helper.init();
-        }
-    }
+    public static void init() {}
 
-    public static void postInit() {
-        for (IModHelper helper : helpers) {
-            helper.postInit();
-        }
-    }
+    public static void postInit() {}
 
     private static void setupHelpers() {
         helpers = new ArrayList<>();

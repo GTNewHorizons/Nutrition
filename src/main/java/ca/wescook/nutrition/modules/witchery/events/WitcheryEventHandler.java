@@ -21,6 +21,10 @@ public class WitcheryEventHandler {
             return;
         }
 
+        if (!(event.entity.worldObj.isRemote)) {
+            return;
+        }
+
         if ((event.entity instanceof EntityPlayer player)) {
             final ExtendedPlayer prop = (ExtendedPlayer) player.getExtendedProperties("WitcheryExtendedPlayer");
             if (prop.isVampire()) {

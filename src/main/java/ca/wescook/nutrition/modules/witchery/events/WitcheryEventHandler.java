@@ -22,10 +22,10 @@ public class WitcheryEventHandler {
         }
 
         if ((event.entity instanceof EntityPlayer player)) {
-            NutrientManager nutritionOld = PlayerDataHandler.getForPlayer(player); // Get old nutrition
-            NutrientManager nutritionNew = new NutrientManager(nutritionOld.get()); // Create new nutrition
             final ExtendedPlayer prop = (ExtendedPlayer) player.getExtendedProperties("WitcheryExtendedPlayer");
             if (prop.isVampire()) {
+                NutrientManager nutritionOld = PlayerDataHandler.getForPlayer(player); // Get old nutrition
+                NutrientManager nutritionNew = new NutrientManager(nutritionOld.get()); // Create new nutrition
                 nutritionNew.vampireFloor();
                 PlayerDataHandler.setForPlayer(player, nutritionNew, true);
             }

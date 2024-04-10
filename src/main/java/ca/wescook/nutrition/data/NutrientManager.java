@@ -38,6 +38,14 @@ public class NutrientManager {
         nutrition.put(nutrient, value);
     }
 
+    public void vampireFloor() {
+        for (Nutrient nutrient : NutrientList.get()) {
+            if (nutrition.get(nutrient) < 50) {
+                nutrition.put(nutrient, 50f);
+            }
+        }
+    }
+
     // Update all nutrients
     public void set(Map<Nutrient, Float> nutrientData) {
         nutrition.putAll(nutrientData);

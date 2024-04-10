@@ -35,6 +35,7 @@
  */
 dependencies {
     api("com.github.GTNewHorizons:AppleCore:3.3.0:dev") { transitive = false }
+    api(deobfCurse('witchery-69673:2234410'))
 
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:SpiceOfLife:2.1.6-carrot:dev")
 }

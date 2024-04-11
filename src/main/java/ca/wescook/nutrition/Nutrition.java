@@ -4,6 +4,8 @@ import net.minecraftforge.common.MinecraftForge;
 
 import ca.wescook.nutrition.effects.EffectsList;
 import ca.wescook.nutrition.events.*;
+import ca.wescook.nutrition.modules.witchery.WitcheryHelper;
+import ca.wescook.nutrition.modules.witchery.events.WitcheryEventHandler;
 import ca.wescook.nutrition.network.ModPacketHandler;
 import ca.wescook.nutrition.potions.ModPotions;
 import ca.wescook.nutrition.proxy.CommonProxy;
@@ -47,6 +49,14 @@ public class Nutrition {
         // only register if allow over-eating is true
         if (Config.allowOverEating) {
             MinecraftForge.EVENT_BUS.register(new EventAllowOvereating());
+        }
+    }
+
+    @Mod.EventHandler
+    public void load(FMLInitializationEvent event) {
+        if (WitcheryHelper.isActive()) {
+            WitcheryEventHandler witcheryEventHandler = new WitcheryEventHandler();
+            MinecraftForge.EVENT_BUS.register(witcheryEventHandler);
         }
     }
 

@@ -64,7 +64,9 @@ public class EventEatFood {
         if (!event.player.getEntityWorld().isRemote) { // Server
             PlayerDataHandler.getForPlayer(event.player)
                 .add(foundNutrients, nutritionValue);
-        } else { // Client
+        }
+
+        if (Nutrition.proxy.isClient()) { // Client
             ClientProxy.localNutrition.add(foundNutrients, nutritionValue);
             // set that food has now been eaten
             ClientProxy.popHungerChange();

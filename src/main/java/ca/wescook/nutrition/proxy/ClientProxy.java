@@ -38,11 +38,6 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
-    @Override
-    public boolean isClient() {
-        return true;
-    }
-
     public static void pushHungerChange(int hungerValue) {
         hungerValues.push(hungerValue);
     }

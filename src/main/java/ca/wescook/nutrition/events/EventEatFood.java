@@ -6,7 +6,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBucketMilk;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 
-import ca.wescook.nutrition.Nutrition;
 import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.effects.EffectsManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
@@ -44,7 +43,7 @@ public class EventEatFood {
 
     @SubscribeEvent
     public void onFoodStatsChanged(FoodEvent.FoodStatsAddition event) {
-        if (Nutrition.proxy.isClient()) {
+        if (event.player.getEntityWorld().isRemote) { // Client
             // only run if hunger value increases, also ignoring saturation
             int hungerValue = event.foodValuesToBeAdded.hunger;
             if (hungerValue <= 0) return;
@@ -64,9 +63,7 @@ public class EventEatFood {
         if (!event.player.getEntityWorld().isRemote) { // Server
             PlayerDataHandler.getForPlayer(event.player)
                 .add(foundNutrients, nutritionValue);
-        }
-
-        if (Nutrition.proxy.isClient()) { // Client
+        } else { // Client
             ClientProxy.localNutrition.add(foundNutrients, nutritionValue);
             // set that food has now been eaten
             ClientProxy.popHungerChange();

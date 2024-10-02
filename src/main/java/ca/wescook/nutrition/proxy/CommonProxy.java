@@ -18,8 +18,4 @@ public class CommonProxy {
     public void postInit(FMLPostInitializationEvent event) {
         ModHelperManager.postInit();
     }
-
-    public boolean isClient() {
-        return false;
-    }
 }

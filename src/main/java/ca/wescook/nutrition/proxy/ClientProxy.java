@@ -5,6 +5,8 @@ import java.util.Stack;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 
+import org.lwjgl.input.Keyboard;
+
 import ca.wescook.nutrition.data.NutrientManager;
 import ca.wescook.nutrition.events.EventNutritionButton;
 import ca.wescook.nutrition.events.EventNutritionKey;
@@ -24,7 +26,8 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent event) {
         if (Config.enableGui) { // If GUI is enabled
-            ClientRegistry.registerKeyBinding(keyNutritionGui = new KeyBinding("key.nutrition", 49, "Nutrition"));
+            ClientRegistry
+                .registerKeyBinding(keyNutritionGui = new KeyBinding("key.nutrition", Keyboard.KEY_NONE, "Nutrition"));
             FMLCommonHandler.instance()
                 .bus()
                 .register(new EventNutritionKey());

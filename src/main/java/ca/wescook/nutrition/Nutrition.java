@@ -2,6 +2,7 @@ package ca.wescook.nutrition;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.effects.EffectsList;
 import ca.wescook.nutrition.events.*;
 import ca.wescook.nutrition.modules.witchery.WitcheryHelper;
@@ -21,6 +22,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 
 @Mod(modid = "nutrition", name = "Nutrition", version = Tags.VERSION)
 public class Nutrition {
@@ -74,5 +76,10 @@ public class Nutrition {
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new ChatCommand());
+    }
+
+    @EventHandler
+    public void onServerStopped(FMLServerStoppedEvent event) {
+        PlayerDataHandler.clearData();
     }
 }

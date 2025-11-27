@@ -10,9 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import ca.wescook.nutrition.data.PlayerDataHandler;
 
-@SuppressWarnings("all")
 @Mixin(EntityPlayer.class)
-public abstract class EntityPlayerMixin {
+public class EntityPlayerMixin {
 
     @Inject(method = "writeEntityToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At(value = "TAIL"))
     private void nutrition$writeEntityToNBT(NBTTagCompound tagCompound, CallbackInfo ci) {

@@ -16,7 +16,6 @@ import ca.wescook.nutrition.utility.Log;
 public class PlayerDataHandler {
 
     private static final String NBT_NUTRIENT_DATA = "Nutrients";
-
     // HELD SERVER SIDE!!!
     private static final Map<EntityPlayer, NutrientManager> MANAGER_STORAGE = new HashMap<>();
 
@@ -85,5 +84,9 @@ public class PlayerDataHandler {
      */
     public static void setForPlayer(EntityPlayer player, NutrientManager manager) {
         setForPlayer(player, manager, false);
+    }
+
+    public static void clearData() {
+        MANAGER_STORAGE.clear();
     }
 }

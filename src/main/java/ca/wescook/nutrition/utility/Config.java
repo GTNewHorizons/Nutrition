@@ -29,6 +29,9 @@ public class Config {
     public static String buttonAnchor;
     public static boolean logMissingFood;
     public static boolean logMissingNutrients;
+    public static boolean witcheryCompatEnable;
+    public static float vampireMinNutrition;
+    public static float vampireMaxNutrition;
 
     // Categories
     private static final String CATEGORY_NUTRITION = "Nutrition";
@@ -36,6 +39,7 @@ public class Config {
     private static final String CATEGORY_DEATH_PENALTY = "Death Penalty";
     private static final String CATEGORY_GUI = "Gui";
     private static final String CATEGORY_LOGGING = "Logging";
+    private static final String CATEGORY_WITCHERY = "witchery";
 
     public static void registerConfigs(File configDirectory) {
         // Update config path for later reference
@@ -152,6 +156,28 @@ public class Config {
             CATEGORY_LOGGING,
             false,
             "Log foods which have been found but do not have any associated nutrients.");
+
+        witcheryCompatEnable = configFile.getBoolean(
+            "enable",
+            CATEGORY_WITCHERY,
+            true,
+            "Enable witchery mod compatibility.");
+
+        vampireMinNutrition = configFile.getFloat(
+            "VampireMinNutrition",
+            CATEGORY_WITCHERY,
+            30f,
+            0,
+            100,
+            "Nutrition value for a lvl 1 vampire full of blood.");
+
+        vampireMaxNutrition = configFile.getFloat(
+            "VampireMaxNutrition",
+            CATEGORY_WITCHERY,
+            90f,
+            0,
+            100,
+            "Nutrition value for a lvl 10 vampire full of blood.");
 
         // Update file
         if (configFile.hasChanged()) configFile.save();

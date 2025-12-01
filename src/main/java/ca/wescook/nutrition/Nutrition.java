@@ -4,9 +4,12 @@ import net.minecraftforge.common.MinecraftForge;
 
 import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.effects.EffectsList;
-import ca.wescook.nutrition.events.*;
-import ca.wescook.nutrition.modules.witchery.WitcheryHelper;
-import ca.wescook.nutrition.modules.witchery.events.WitcheryEventHandler;
+import ca.wescook.nutrition.events.EventAllowOvereating;
+import ca.wescook.nutrition.events.EventEatFood;
+import ca.wescook.nutrition.events.EventPlayerDeath;
+import ca.wescook.nutrition.events.EventPlayerJoinWorld;
+import ca.wescook.nutrition.events.EventWorldTick;
+import ca.wescook.nutrition.events.WitcheryEventHandler;
 import ca.wescook.nutrition.network.ModPacketHandler;
 import ca.wescook.nutrition.potions.ModPotions;
 import ca.wescook.nutrition.proxy.CommonProxy;
@@ -14,6 +17,7 @@ import ca.wescook.nutrition.utility.ChatCommand;
 import ca.wescook.nutrition.utility.Config;
 import ca.wescook.nutrition.utility.DataImporter;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -56,9 +60,8 @@ public class Nutrition {
 
     @Mod.EventHandler
     public void load(FMLInitializationEvent event) {
-        if (WitcheryHelper.isActive()) {
-            WitcheryEventHandler witcheryEventHandler = new WitcheryEventHandler();
-            MinecraftForge.EVENT_BUS.register(witcheryEventHandler);
+        if (Loader.isModLoaded("witchery") && Config.witcheryCompatEnable) {
+            MinecraftForge.EVENT_BUS.register(new WitcheryEventHandler());
         }
     }
 

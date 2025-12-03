@@ -157,11 +157,8 @@ public class Config {
             false,
             "Log foods which have been found but do not have any associated nutrients.");
 
-        witcheryCompatEnable = configFile.getBoolean(
-            "enable",
-            CATEGORY_WITCHERY,
-            true,
-            "Enable witchery mod compatibility.");
+        witcheryCompatEnable = configFile
+            .getBoolean("enable", CATEGORY_WITCHERY, true, "Enable witchery mod compatibility.");
 
         vampireMinNutrition = configFile.getFloat(
             "VampireMinNutrition",

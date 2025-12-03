@@ -6,10 +6,11 @@ import java.util.Map;
 
 import net.minecraft.util.MathHelper;
 
+import com.emoniph.witchery.common.ExtendedPlayer;
+
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.utility.Config;
-import com.emoniph.witchery.common.ExtendedPlayer;
 
 public class NutrientManager {
 
@@ -44,8 +45,10 @@ public class NutrientManager {
      * @return true if any nutrition change
      */
     public boolean setVampireFoodAmount(ExtendedPlayer extendedPlayer) {
-        float maxNutrition = Config.vampireMinNutrition + (Config.vampireMaxNutrition-Config.vampireMinNutrition) * extendedPlayer.getVampireLevel()/10;
-        float nutritionValue = ((float) extendedPlayer.getBloodPower() / extendedPlayer.getMaxBloodPower()) * maxNutrition;
+        float maxNutrition = Config.vampireMinNutrition
+            + (Config.vampireMaxNutrition - Config.vampireMinNutrition) * extendedPlayer.getVampireLevel() / 10;
+        float nutritionValue = ((float) extendedPlayer.getBloodPower() / extendedPlayer.getMaxBloodPower())
+            * maxNutrition;
 
         boolean change = false;
         for (Nutrient nutrient : NutrientList.get()) {

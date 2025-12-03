@@ -3,10 +3,11 @@ package ca.wescook.nutrition.events;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
+import com.emoniph.witchery.common.ExtendedPlayer;
+
 import ca.wescook.nutrition.data.NutrientManager;
 import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.network.Sync;
-import com.emoniph.witchery.common.ExtendedPlayer;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
@@ -24,7 +25,7 @@ public class WitcheryEventHandler {
             final ExtendedPlayer prop = (ExtendedPlayer) player.getExtendedProperties("WitcheryExtendedPlayer");
             if (prop.isVampire()) {
                 NutrientManager manager = PlayerDataHandler.getForPlayer(player);
-                if( manager.setVampireFoodAmount(prop) ){
+                if (manager.setVampireFoodAmount(prop)) {
                     Sync.serverRequest(player);
                 }
             }

@@ -34,8 +34,8 @@
  * For more details, see https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph
  */
 dependencies {
-    api("com.github.GTNewHorizons:AppleCore:3.3.4:dev") { transitive = false }
+    api("com.github.GTNewHorizons:AppleCore:3.3.8:dev") { transitive = false }
     compileOnlyApi(deobfCurse('witchery-69673:2234410'))
 
-    runtimeOnlyNonPublishable("com.github.GTNewHorizons:SpiceOfLife:2.2.1-carrot:dev")
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:SpiceOfLife:2.2.3-carrot:dev")
 }

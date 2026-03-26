@@ -5,6 +5,7 @@ import net.minecraftforge.common.MinecraftForge;
 import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.effects.EffectsList;
 import ca.wescook.nutrition.events.EventAllowOvereating;
+import ca.wescook.nutrition.events.EventClientTick;
 import ca.wescook.nutrition.events.EventEatFood;
 import ca.wescook.nutrition.events.EventPlayerDeath;
 import ca.wescook.nutrition.events.EventPlayerJoinWorld;
@@ -51,6 +52,12 @@ public class Nutrition {
         FMLCommonHandler.instance()
             .bus()
             .register(new EventWorldTick());
+        if (event.getSide()
+            .isClient()) {
+            FMLCommonHandler.instance()
+                .bus()
+                .register(new EventClientTick());
+        }
 
         // only register if allow over-eating is true
         if (Config.allowOverEating) {

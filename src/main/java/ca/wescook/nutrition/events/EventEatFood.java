@@ -36,7 +36,7 @@ import squeek.applecore.api.food.FoodEvent;
  * Hunger value stat changes are pushed to the stack, then popped when food is eaten. This results in
  * a "normal" food pushing the value, then popping it immediately after in the next event.
  * However, something which directly modifies hunger stat will never pop the change.
- * Those changes will be popped by {@link EventWorldTick#clientTickEvent(TickEvent.ClientTickEvent)}
+ * Those changes will be popped by {@link EventClientTick#clientTickEvent(TickEvent.ClientTickEvent)}
  * at the end of each client game tick.
  */
 public class EventEatFood {

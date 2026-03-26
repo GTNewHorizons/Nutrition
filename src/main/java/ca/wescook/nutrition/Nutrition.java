@@ -39,6 +39,7 @@ public class Nutrition {
         clientSide = "ca.wescook.nutrition.proxy.ClientProxy",
         serverSide = "ca.wescook.nutrition.proxy.CommonProxy")
     public static CommonProxy proxy;
+    private EventWorldTick serverTickEvent;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -49,9 +50,10 @@ public class Nutrition {
         MinecraftForge.EVENT_BUS.register(new EventPlayerJoinWorld());
         MinecraftForge.EVENT_BUS.register(new EventPlayerDeath());
         MinecraftForge.EVENT_BUS.register(new EventEatFood());
+        serverTickEvent = new EventWorldTick();
         FMLCommonHandler.instance()
             .bus()
-            .register(new EventWorldTick());
+            .register(serverTickEvent);
         if (event.getSide()
             .isClient()) {
             FMLCommonHandler.instance()
@@ -91,5 +93,11 @@ public class Nutrition {
     @EventHandler
     public void onServerStopped(FMLServerStoppedEvent event) {
         PlayerDataHandler.clearData();
+        if (serverTickEvent != null) {
+            FMLCommonHandler.instance()
+                .bus()
+                .unregister(serverTickEvent);
+            serverTickEvent = null;
+        }
     }
 }

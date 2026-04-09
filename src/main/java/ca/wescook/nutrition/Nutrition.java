@@ -5,6 +5,7 @@ import net.minecraftforge.common.MinecraftForge;
 import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.effects.EffectsList;
 import ca.wescook.nutrition.events.EventAllowOvereating;
+import ca.wescook.nutrition.events.EventClientTick;
 import ca.wescook.nutrition.events.EventEatFood;
 import ca.wescook.nutrition.events.EventPlayerDeath;
 import ca.wescook.nutrition.events.EventPlayerJoinWorld;
@@ -38,6 +39,7 @@ public class Nutrition {
         clientSide = "ca.wescook.nutrition.proxy.ClientProxy",
         serverSide = "ca.wescook.nutrition.proxy.CommonProxy")
     public static CommonProxy proxy;
+    private EventWorldTick serverTickEvent;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -48,9 +50,12 @@ public class Nutrition {
         MinecraftForge.EVENT_BUS.register(new EventPlayerJoinWorld());
         MinecraftForge.EVENT_BUS.register(new EventPlayerDeath());
         MinecraftForge.EVENT_BUS.register(new EventEatFood());
-        FMLCommonHandler.instance()
-            .bus()
-            .register(new EventWorldTick());
+        if (event.getSide()
+            .isClient()) {
+            FMLCommonHandler.instance()
+                .bus()
+                .register(new EventClientTick());
+        }
 
         // only register if allow over-eating is true
         if (Config.allowOverEating) {
@@ -79,10 +84,20 @@ public class Nutrition {
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new ChatCommand());
+        serverTickEvent = new EventWorldTick();
+        FMLCommonHandler.instance()
+            .bus()
+            .register(serverTickEvent);
     }
 
     @EventHandler
     public void onServerStopped(FMLServerStoppedEvent event) {
         PlayerDataHandler.clearData();
+        if (serverTickEvent != null) {
+            FMLCommonHandler.instance()
+                .bus()
+                .unregister(serverTickEvent);
+            serverTickEvent = null;
+        }
     }
 }

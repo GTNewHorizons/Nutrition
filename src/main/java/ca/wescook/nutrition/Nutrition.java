@@ -50,10 +50,6 @@ public class Nutrition {
         MinecraftForge.EVENT_BUS.register(new EventPlayerJoinWorld());
         MinecraftForge.EVENT_BUS.register(new EventPlayerDeath());
         MinecraftForge.EVENT_BUS.register(new EventEatFood());
-        serverTickEvent = new EventWorldTick();
-        FMLCommonHandler.instance()
-            .bus()
-            .register(serverTickEvent);
         if (event.getSide()
             .isClient()) {
             FMLCommonHandler.instance()
@@ -88,6 +84,10 @@ public class Nutrition {
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new ChatCommand());
+        serverTickEvent = new EventWorldTick();
+        FMLCommonHandler.instance()
+            .bus()
+            .register(serverTickEvent);
     }
 
     @EventHandler

@@ -134,7 +134,7 @@ public class Config {
         buttonXPosition = configFile.getInt(
             "ButtonXPosition",
             CATEGORY_GUI,
-            134,
+            132,
             -1000,
             1000,
             "The nutrition button's X position, relative to its anchor point.");

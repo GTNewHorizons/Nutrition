@@ -7,7 +7,6 @@ import net.minecraft.client.resources.I18n;
 
 import org.lwjgl.opengl.GL11;
 
-import ca.wescook.nutrition.api.INutritionManager;
 import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
@@ -72,7 +71,9 @@ public class NutritionGui extends GuiScreenDynamic {
         int i = 0;
         for (Nutrient nutrient : NutrientList.getVisible()) {
             // Calculate percentage width for nutrition bars
-            float currentNutrient = getNutrientValue(nutrient);
+            float currentNutrient = NutritionManager.instance()
+                .get(Minecraft.getMinecraft().thePlayer, nutrient);
+            currentNutrient = Math.round(currentNutrient);
             int nutritionBarDisplayWidth = (int) (currentNutrient / 100 * NUTRITION_BAR_WIDTH);
 
             // Draw icons
@@ -103,17 +104,6 @@ public class NutritionGui extends GuiScreenDynamic {
 
             i++;
         }
-    }
-
-    private float getNutrientValue(Nutrient nutrient) {
-        INutritionManager manager = NutritionManager.instance();
-        Float currentNutrient = manager.get(Minecraft.getMinecraft().thePlayer, nutrient);
-        if (currentNutrient == null) {
-            currentNutrient = 0.0f;
-        } else {
-            currentNutrient = (float) Math.round(currentNutrient);
-        }
-        return currentNutrient;
     }
 
     // Called when GUI is opened or resized
@@ -193,7 +183,11 @@ public class NutritionGui extends GuiScreenDynamic {
                     0,
                     0,
                     0xffffffff));
-            label.addLine(getNutrientValue(nutrient) + "%%");
+
+            float currentNutrient = NutritionManager.instance()
+                .get(Minecraft.getMinecraft().thePlayer, nutrient);
+            currentNutrient = Math.round(currentNutrient);
+            label.addLine(currentNutrient + "%%");
             i++;
         }
     }

@@ -1,6 +1,6 @@
 package ca.wescook.nutrition.events;
 
-import ca.wescook.nutrition.network.Sync;
+import ca.wescook.nutrition.network.CPacketNormalizeNutrients;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.nutrients.NutrientUtils;
 import ca.wescook.nutrition.proxy.ClientProxy;
@@ -23,7 +23,9 @@ public class EventClientTick {
                 hungerModified,
                 NutrientList.get()
                     .size());
-            Sync.normalizeOnServer(amountToChange);
+
+            // Unfortunately since we are doing this on the client, we must manually sync here
+            CPacketNormalizeNutrients.send(amountToChange);
         }
     }
 }

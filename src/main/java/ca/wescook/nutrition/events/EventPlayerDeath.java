@@ -1,9 +1,12 @@
 package ca.wescook.nutrition.events;
 
+import java.util.Map;
+
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-import ca.wescook.nutrition.data.NutrientManager;
-import ca.wescook.nutrition.data.PlayerDataHandler;
+import ca.wescook.nutrition.Nutrition;
+import ca.wescook.nutrition.api.INutritionManager;
+import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.utility.Config;
@@ -14,23 +17,24 @@ public class EventPlayerDeath {
     // Copy player nutrition when "cloned" (death, teleport from End)
     @SubscribeEvent
     public void onPlayerClone(PlayerEvent.Clone event) {
-        // Duplicate nutrition capability data on server
-        NutrientManager nutritionOld = PlayerDataHandler.getForPlayer(event.original); // Get old nutrition
-        NutrientManager nutritionNew = new NutrientManager(nutritionOld.get()); // Create new nutrition
+        if (!Nutrition.proxy.isServer()) return;
+
+        INutritionManager manager = NutritionManager.instance();
+        Map<Nutrient, Float> values = manager.evict(event.original);
 
         // On death, apply nutrition penalty
         // This is synced automatically in EventPlayerJoinWorld#EntityJoinWorldEvent
         if (event.wasDeath) {
             for (Nutrient nutrient : NutrientList.get()) {
+                float value = values.get(nutrient);
+
                 // If reset is disabled, only reduce to cap when above its value
-                if (Config.deathPenaltyReset || nutritionNew.get(nutrient) > Config.deathPenaltyMin) {
+                if (Config.deathPenaltyReset || values.get(nutrient) > Config.deathPenaltyMin) {
                     // Subtract death penalty from each nutrient, to cap
-                    nutritionNew.set(
-                        nutrient,
-                        Math.max(Config.deathPenaltyMin, nutritionNew.get(nutrient) - Config.deathPenaltyLoss));
+                    value = Math.max(Config.deathPenaltyMin, value - Config.deathPenaltyLoss);
                 }
+                manager.set(event.entityPlayer, nutrient, value);
             }
         }
-        PlayerDataHandler.setForPlayer(event.entityPlayer, nutritionNew, true);
     }
 }

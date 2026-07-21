@@ -2,8 +2,8 @@ package ca.wescook.nutrition.network;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import ca.wescook.nutrition.data.NutrientManager;
-import ca.wescook.nutrition.data.PlayerDataHandler;
+import ca.wescook.nutrition.api.INutritionManager;
+import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -11,13 +11,17 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 
-public class PacketNormalizeServerNutrients {
+public class CPacketNormalizeNutrients {
+
+    public static void send(float delta) {
+        ModPacketHandler.NETWORK_CHANNEL.sendToServer(new Message(delta));
+    }
 
     public static class Message implements IMessage {
 
-        float nutrientDelta;
+        private float nutrientDelta;
 
-        public Message() {}
+        public Message() {/**/}
 
         public Message(float statsChange) {
             this.nutrientDelta = statsChange;
@@ -42,24 +46,18 @@ public class PacketNormalizeServerNutrients {
         @Override
         public IMessage onMessage(final Message message, final MessageContext context) {
             EntityPlayerMP player = context.getServerHandler().playerEntity;
-            NutrientManager manager = PlayerDataHandler.getForPlayer(player);
+            INutritionManager manager = NutritionManager.instance();
 
             // Normalize values towards 50 (starting value)
-            boolean wasChanged = false;
             for (Nutrient nutrient : NutrientList.get()) {
-                Float currentValue = manager.get(nutrient);
+                Float currentValue = manager.get(player, nutrient);
                 if (currentValue > 50f) {
-                    wasChanged = true;
-                    manager.set(nutrient, Math.max(50f, currentValue - message.nutrientDelta));
+                    manager.set(player, nutrient, Math.max(50f, currentValue - message.nutrientDelta));
                 } else if (currentValue < 50f) {
-                    wasChanged = true;
-                    manager.set(nutrient, Math.min(50f, currentValue + message.nutrientDelta));
+                    manager.set(player, nutrient, Math.min(50f, currentValue + message.nutrientDelta));
                 }
             }
-            // Only update client if change was actually made
-            if (wasChanged) {
-                Sync.serverRequest(player);
-            }
+
             return null;
         }
     }

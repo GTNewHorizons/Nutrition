@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBucketMilk;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 
-import ca.wescook.nutrition.data.PlayerDataHandler;
+import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.effects.EffectsManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
@@ -60,11 +60,12 @@ public class EventEatFood {
         float nutritionValue = NutrientUtils.calculateNutrition(event.foodValues, foundNutrients);
 
         // Add to each nutrient
-        if (!event.player.getEntityWorld().isRemote) { // Server
-            PlayerDataHandler.getForPlayer(event.player)
-                .add(foundNutrients, nutritionValue);
-        } else { // Client
-            ClientProxy.localNutrition.add(foundNutrients, nutritionValue);
+        if (!event.player.getEntityWorld().isRemote) {
+            for (Nutrient nutrient : foundNutrients) {
+                NutritionManager.instance()
+                    .add(event.player, nutrient, nutritionValue);
+            }
+        } else {
             // set that food has now been eaten
             ClientProxy.popHungerChange();
         }
@@ -82,10 +83,8 @@ public class EventEatFood {
             if (!player.getEntityWorld().isRemote) {
                 // reapply effects on server side only
                 EffectsManager.reapplyEffects(player);
-                PlayerDataHandler.getForPlayer(player)
-                    .add(NutrientList.getByName("dairy"), 1.5F);
-            } else {
-                ClientProxy.localNutrition.add(NutrientList.getByName("dairy"), 1.5F);
+                NutritionManager.instance()
+                    .add(player, NutrientList.getByName("dairy"), 1.5F);
             }
         }
     }

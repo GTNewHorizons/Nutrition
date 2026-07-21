@@ -2,7 +2,6 @@ package ca.wescook.nutrition;
 
 import net.minecraftforge.common.MinecraftForge;
 
-import ca.wescook.nutrition.data.PlayerDataHandler;
 import ca.wescook.nutrition.effects.EffectsList;
 import ca.wescook.nutrition.events.EventAllowOvereating;
 import ca.wescook.nutrition.events.EventClientTick;
@@ -92,7 +91,6 @@ public class Nutrition {
 
     @EventHandler
     public void onServerStopped(FMLServerStoppedEvent event) {
-        PlayerDataHandler.clearData();
         if (serverTickEvent != null) {
             FMLCommonHandler.instance()
                 .bus()

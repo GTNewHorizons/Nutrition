@@ -1,12 +1,14 @@
 package ca.wescook.nutrition.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 
 import org.lwjgl.opengl.GL11;
 
-import ca.wescook.nutrition.network.Sync;
+import ca.wescook.nutrition.api.INutritionManager;
+import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.proxy.ClientProxy;
@@ -70,10 +72,7 @@ public class NutritionGui extends GuiScreenDynamic {
         int i = 0;
         for (Nutrient nutrient : NutrientList.getVisible()) {
             // Calculate percentage width for nutrition bars
-            float currentNutrient = (ClientProxy.localNutrition != null
-                && ClientProxy.localNutrition.get(nutrient) != null)
-                    ? Math.round(ClientProxy.localNutrition.get(nutrient))
-                    : 0; // Display empty if null
+            float currentNutrient = getNutrientValue(nutrient);
             int nutritionBarDisplayWidth = (int) (currentNutrient / 100 * NUTRITION_BAR_WIDTH);
 
             // Draw icons
@@ -106,12 +105,20 @@ public class NutritionGui extends GuiScreenDynamic {
         }
     }
 
+    private float getNutrientValue(Nutrient nutrient) {
+        INutritionManager manager = NutritionManager.instance();
+        Float currentNutrient = manager.get(Minecraft.getMinecraft().thePlayer, nutrient);
+        if (currentNutrient == null) {
+            currentNutrient = 0.0f;
+        } else {
+            currentNutrient = (float) Math.round(currentNutrient);
+        }
+        return currentNutrient;
+    }
+
     // Called when GUI is opened or resized
     @Override
     public void initGui() {
-        // Sync Nutrition info from server to client
-        Sync.clientRequest();
-
         // Calculate label offset for long nutrition names
         for (Nutrient nutrient : NutrientList.getVisible()) {
             // Get width of localized string
@@ -186,12 +193,7 @@ public class NutritionGui extends GuiScreenDynamic {
                     0,
                     0,
                     0xffffffff));
-            // Ensure local nutrition data exists
-            if (ClientProxy.localNutrition != null && ClientProxy.localNutrition.get(nutrient) != null) {
-                label.addLine(Math.round(ClientProxy.localNutrition.get(nutrient)) + "%%");
-            } else {
-                label.addLine(I18n.format("gui." + "nutrition" + ":updating"));
-            }
+            label.addLine(getNutrientValue(nutrient) + "%%");
             i++;
         }
     }

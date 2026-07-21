@@ -7,7 +7,6 @@ import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 
-import ca.wescook.nutrition.data.NutrientManager;
 import ca.wescook.nutrition.events.EventNutritionButton;
 import ca.wescook.nutrition.events.EventNutritionKey;
 import ca.wescook.nutrition.events.EventTooltip;
@@ -18,7 +17,6 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 
 public class ClientProxy extends CommonProxy {
 
-    public static NutrientManager localNutrition; // Holds local copy of data/methods for client-side prediction
     public static KeyBinding keyNutritionGui;
 
     private static final Stack<Integer> hungerValues = new Stack<>();
@@ -39,6 +37,11 @@ public class ClientProxy extends CommonProxy {
         if (Config.enableTooltips) {
             MinecraftForge.EVENT_BUS.register(new EventTooltip()); // Register tooltip event
         }
+    }
+
+    @Override
+    public boolean isServer() {
+        return false;
     }
 
     public static void pushHungerChange(int hungerValue) {

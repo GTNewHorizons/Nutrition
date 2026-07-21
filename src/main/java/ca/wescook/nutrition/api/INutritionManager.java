@@ -51,19 +51,21 @@ public interface INutritionManager {
     boolean set(EntityPlayer player, Nutrient nutrient, float value);
 
     /**
+     * Set all the provided nutrient values for a player. Does not need to be an all-encompassing set of values.
      *
-     * @param player
-     * @param values
-     * @return
+     * @param player The player to set nutrient values for.
+     * @param values The values to set.
+     * @return true if any nutrient value was changed.
      */
     boolean setAll(EntityPlayer player, Map<Nutrient, Float> values);
 
     /**
+     * Add a value to an existing nutrient.
      *
-     * @param player
-     * @param nutrient
-     * @param value
-     * @return
+     * @param player   The player to add nutrient value to.
+     * @param nutrient The nutrient to add value to.
+     * @param value    The amount of nutrient value to add.
+     * @return true if the player's nutrient value was changed.
      */
     default boolean add(EntityPlayer player, Nutrient nutrient, float value) {
         float current = get(player, nutrient);
@@ -72,11 +74,12 @@ public interface INutritionManager {
     }
 
     /**
+     * Remove some value from an existing nutrient.
      *
-     * @param player
-     * @param nutrient
-     * @param value
-     * @return
+     * @param player   The player to remove nutrient value from.
+     * @param nutrient The nutrient to remove value from.
+     * @param value    The amount of nutrient value to remove.
+     * @return true if the player's nutrient value was changed.
      */
     default boolean subtract(EntityPlayer player, Nutrient nutrient, float value) {
         float current = get(player, nutrient);

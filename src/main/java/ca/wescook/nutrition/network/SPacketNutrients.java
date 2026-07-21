@@ -15,6 +15,8 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
 public class SPacketNutrients {
@@ -62,6 +64,12 @@ public class SPacketNutrients {
 
         @Override
         public IMessage onMessage(final Message message, final MessageContext context) {
+            handle(message);
+            return null;
+        }
+
+        @SideOnly(Side.CLIENT)
+        private void handle(final Message message) {
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
             for (var entry : message.values.entrySet()) {
@@ -74,7 +82,6 @@ public class SPacketNutrients {
             if (currentScreen instanceof NutritionGui) {
                 ((NutritionGui) currentScreen).redrawLabels();
             }
-            return null;
         }
     }
 }

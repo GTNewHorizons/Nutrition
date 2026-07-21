@@ -100,7 +100,7 @@ public class ChatCommand extends CommandBase {
         INutritionManager manager = NutritionManager.instance();
         Nutrient nutrient = NutrientList.getByName(args[2]);
         if (nutrient != null) {
-            Float nutrientValue = manager.get(player, nutrient);
+            float nutrientValue = manager.get(player, nutrient);
             sender.addChatMessage(
                 new ChatComponentText(nutrient.name + ": " + String.format("%.2f", nutrientValue) + "%"));
         } else // Write error message

@@ -50,7 +50,7 @@ public class EffectsManager {
                 // If the average of all nutrients is within the threshold
                 case AVERAGE -> {
                     // Reset counter each new loop
-                    Float total = 0f;
+                    float total = 0f;
                     float average;
 
                     // Loop relevant nutrients

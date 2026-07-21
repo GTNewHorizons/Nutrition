@@ -50,7 +50,7 @@ public class CPacketNormalizeNutrients {
 
             // Normalize values towards 50 (starting value)
             for (Nutrient nutrient : NutrientList.get()) {
-                Float currentValue = manager.get(player, nutrient);
+                float currentValue = manager.get(player, nutrient);
                 if (currentValue > 50f) {
                     manager.set(player, nutrient, Math.max(50f, currentValue - message.nutrientDelta));
                 } else if (currentValue < 50f) {

@@ -64,13 +64,8 @@ public class CPacketNutrientChange {
         @Override
         public IMessage onMessage(Message message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-
-            for (var entry : message.values.entrySet()) {
-                NutritionManager.instance()
-                    .set(player, entry.getKey(), entry.getValue());
-            }
-
-            SPacketNutrients.send(player);
+            NutritionManager.instance()
+                .setAll(player, message.values);
             return null;
         }
     }

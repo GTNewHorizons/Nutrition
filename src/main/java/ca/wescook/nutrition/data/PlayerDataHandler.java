@@ -1,5 +1,8 @@
 package ca.wescook.nutrition.data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -25,6 +28,8 @@ public class PlayerDataHandler {
     public static void initializeForPlayer(EntityPlayer player, NBTTagCompound tagCompound) {
         if (tagCompound.hasKey(NBT_NUTRIENT_DATA)) {
             NBTTagCompound nutrientTag = tagCompound.getCompoundTag(NBT_NUTRIENT_DATA);
+            Map<Nutrient, Float> values = new HashMap<>();
+
             for (Nutrient nutrient : NutrientList.get()) {
                 float value;
                 if (nutrientTag.hasKey(nutrient.name)) {
@@ -32,9 +37,11 @@ public class PlayerDataHandler {
                 } else {
                     value = (float) Config.startingNutrition;
                 }
-                NutritionManager.instance()
-                    .set(player, nutrient, value);
+                values.put(nutrient, value);
             }
+
+            NutritionManager.instance()
+                .setAll(player, values);
         }
     }
 }

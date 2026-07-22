@@ -1,5 +1,8 @@
 package ca.wescook.nutrition.network;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import ca.wescook.nutrition.api.INutritionManager;
@@ -49,14 +52,16 @@ public class CPacketNormalizeNutrients {
             INutritionManager manager = NutritionManager.instance();
 
             // Normalize values towards 50 (starting value)
+            Map<Nutrient, Float> values = new HashMap<>();
             for (Nutrient nutrient : NutrientList.get()) {
                 float currentValue = manager.get(player, nutrient);
                 if (currentValue > 50f) {
-                    manager.set(player, nutrient, Math.max(50f, currentValue - message.nutrientDelta));
+                    values.put(nutrient, Math.max(50f, currentValue - message.nutrientDelta));
                 } else if (currentValue < 50f) {
-                    manager.set(player, nutrient, Math.min(50f, currentValue + message.nutrientDelta));
+                    values.put(nutrient, Math.min(50f, currentValue + message.nutrientDelta));
                 }
             }
+            manager.setAll(player, values);
 
             return null;
         }

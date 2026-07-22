@@ -42,7 +42,8 @@ public interface INutritionManager {
     Map<Nutrient, Float> evict(EntityPlayer player);
 
     /**
-     * Set a player's nutrient value.
+     * Set a player's single nutrient value.<br>
+     * If setting multiple on the server, highly recommended to use {@link #setAll} to avoid unnecessary packets.
      *
      * @param player   The player to update the nutrient value for.
      * @param nutrient The nutrient to update.

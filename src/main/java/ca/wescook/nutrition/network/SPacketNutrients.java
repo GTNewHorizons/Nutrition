@@ -71,11 +71,8 @@ public class SPacketNutrients {
         @SideOnly(Side.CLIENT)
         private void handle(final Message message) {
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-
-            for (var entry : message.values.entrySet()) {
-                NutritionManager.instance()
-                    .set(player, entry.getKey(), entry.getValue());
-            }
+            NutritionManager.instance()
+                .setAll(player, message.values);
 
             // If Nutrition GUI is open, update GUI
             GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;

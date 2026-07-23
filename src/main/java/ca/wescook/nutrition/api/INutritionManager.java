@@ -92,7 +92,9 @@ public interface INutritionManager {
      *
      * @param player  The player to normalize nutrient values for.
      * @param toValue The value to normalize to, typically 50.
-     * @param delta   The delta to normalize by, typically the hunger/saturation change.
+     * @param delta   The delta to normalize by, typically the hunger/saturation change passed to
+     *                {@link ca.wescook.nutrition.nutrients.NutrientUtils#getNutrientValue
+     *                NutrientUtils#getNutrientValue}
      * @return true if any of the player's nutrient values were changed.
      */
     boolean normalize(EntityPlayer player, float toValue, float delta);

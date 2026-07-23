@@ -14,6 +14,29 @@ import ca.wescook.nutrition.nutrients.NutrientUtils;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import squeek.applecore.api.food.FoodEvent;
 
+/**
+ * Class has a complex hierarchy of calls to these events, as depending on how stats are changed, different things need
+ * to be done.
+ * "Normal food" follows the event order:
+ * - FoodStatsAddition -> FoodEaten -> UseItem.Finish
+ * <br>
+ * "Stat modifying" items such as healing axe, IC2 food cans, talisman of nourishment, etc. follows event order:
+ * - FoodStatsAddition -> UseItem.Finish (SOMETIMES, depending on the specific item)
+ * <br>
+ * However, FoodStatsAddition, the only common event here, does not provide the Food ItemStack, so there is no way to
+ * gather nutrients,
+ * nor discern if this is a Food or some other direct modification method.
+ * <br>
+ * As a result, we need to know if stats were modified directly without eating an actual food, so that
+ * nutrition values are modified somehow to a "neutral state" by direct-modification methods.
+ * <br>
+ * This is achieved with a Stack, held in {@link NutritionManager}.
+ * Hunger value stat changes are pushed to the stack, then popped when food is eaten. This results in
+ * a "normal" food pushing the value, then popping it immediately after in the next event.
+ * However, something which directly modifies hunger stat will never pop the change.
+ * Those changes will be popped by {@link EventWorldTick#serverTickEvent}
+ * at the end of each server game tick.
+ */
 public class EventEatFood {
 
     @SubscribeEvent

@@ -13,9 +13,7 @@ import ca.wescook.nutrition.utility.Config;
  * <br>
  * Will automatically sync nutrient data to clients when modified on the server.<br>
  * <br>
- * Client modifications are not recommended, but if needed, must be manually synced.<br>
- * See {@link ca.wescook.nutrition.network.CPacketNutrientChange CPacketNutrientChange}
- * for manual syncing from client to server.
+ * Client modifications are not recommended, if needed you will need to sync this to the server.
  *
  * @author serenibyss
  * @since 1.0
@@ -88,6 +86,16 @@ public interface INutritionManager {
         float clamp = MathHelper.clamp_float(current - value, 0, 100);
         return set(player, nutrient, clamp);
     }
+
+    /**
+     * Normalize a player's nutrient values to a specified amount.
+     *
+     * @param player  The player to normalize nutrient values for.
+     * @param toValue The value to normalize to, typically 50.
+     * @param delta   The delta to normalize by, typically the hunger/saturation change.
+     * @return true if any of the player's nutrient values were changed.
+     */
+    boolean normalize(EntityPlayer player, float toValue, float delta);
 
     /**
      * Reset all of a player's nutrient values.

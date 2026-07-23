@@ -1,7 +1,5 @@
 package ca.wescook.nutrition.proxy;
 
-import java.util.Stack;
-
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -18,8 +16,6 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 public class ClientProxy extends CommonProxy {
 
     public static KeyBinding keyNutritionGui;
-
-    private static final Stack<Integer> hungerValues = new Stack<>();
 
     @Override
     public void init(FMLInitializationEvent event) {
@@ -42,23 +38,5 @@ public class ClientProxy extends CommonProxy {
     @Override
     public boolean isServer() {
         return false;
-    }
-
-    public static void pushHungerChange(int hungerValue) {
-        hungerValues.push(hungerValue);
-    }
-
-    public static void popHungerChange() {
-        if (!hungerValues.empty()) {
-            hungerValues.pop();
-        }
-    }
-
-    public static int getUnappliedHungerValues() {
-        int unapplied = 0;
-        while (!hungerValues.empty()) {
-            unapplied += hungerValues.pop();
-        }
-        return unapplied;
     }
 }

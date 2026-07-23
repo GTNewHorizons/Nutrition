@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -76,6 +77,24 @@ public final class NutritionManager implements INutritionManager {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean normalize(EntityPlayer player, float toValue, float delta) {
+        toValue = MathHelper.clamp_float(toValue, 0, 100);
+
+        // Normalize values towards the provided value
+        Map<Nutrient, Float> values = new HashMap<>();
+        for (Nutrient nutrient : NutrientList.get()) {
+            float currentValue = get(player, nutrient);
+            if (currentValue > toValue) {
+                values.put(nutrient, MathHelper.clamp_float(Math.max(toValue, currentValue - delta), 0, 100));
+            } else if (currentValue < toValue) {
+                values.put(nutrient, MathHelper.clamp_float(Math.min(toValue, currentValue + delta), 0, 100));
+            }
+        }
+
+        return setAll(player, values);
     }
 
     @Override

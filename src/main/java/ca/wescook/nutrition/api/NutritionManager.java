@@ -2,6 +2,7 @@ package ca.wescook.nutrition.api;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
@@ -20,6 +21,7 @@ public final class NutritionManager implements INutritionManager {
     private static final NutritionManager INSTANCE = new NutritionManager();
 
     private final Table<EntityPlayer, Nutrient, Float> nutrients = HashBasedTable.create();
+    private final Map<EntityPlayer, Stack<Integer>> nonFoodNutritionChange = new HashMap<>();
 
     private NutritionManager() {/**/}
 
@@ -114,5 +116,33 @@ public final class NutritionManager implements INutritionManager {
             return true;
         }
         return false;
+    }
+
+    // Below is purposefully not API, internal-use only
+    public void pushNonFoodHungerChange(EntityPlayer player, int value) {
+        Stack<Integer> stack = nonFoodNutritionChange.get(player);
+        if (stack == null) {
+            stack = new Stack<>();
+        }
+        stack.push(value);
+        nonFoodNutritionChange.put(player, stack);
+    }
+
+    public void popNonFoodHungerChange(EntityPlayer player) {
+        Stack<Integer> stack = nonFoodNutritionChange.get(player);
+        if (stack == null) return;
+        stack.pop();
+        nonFoodNutritionChange.put(player, stack);
+    }
+
+    public int getNonFoodHungerChange(EntityPlayer player) {
+        Stack<Integer> stack = nonFoodNutritionChange.get(player);
+        if (stack == null) return 0;
+
+        int unapplied = 0;
+        while (!stack.empty()) {
+            unapplied += stack.pop();
+        }
+        return unapplied;
     }
 }

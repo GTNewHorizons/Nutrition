@@ -17,8 +17,19 @@ import squeek.applecore.api.food.FoodEvent;
 public class EventEatFood {
 
     @SubscribeEvent
+    public void onFoodStatsChanged(FoodEvent.FoodStatsAddition event) {
+        if (event.player.getEntityWorld().isRemote) return;
+
+        int hungerValue = event.foodValuesToBeAdded.hunger;
+        if (hungerValue <= 0) return;
+
+        // Set that stats have been changed, but food has not yet been eaten
+        ((NutritionManager) NutritionManager.instance()).pushNonFoodHungerChange(event.player, hungerValue);
+    }
+
+    @SubscribeEvent
     public void onFoodEaten(FoodEvent.FoodEaten event) {
-        if (!event.player.getEntityWorld().isRemote) return;
+        if (event.player.getEntityWorld().isRemote) return;
 
         // Calculate nutrition
         List<Nutrient> foundNutrients = NutrientUtils.getFoodNutrients(event.food);
@@ -29,6 +40,9 @@ public class EventEatFood {
             NutritionManager.instance()
                 .add(event.player, nutrient, nutritionValue);
         }
+
+        // Remove the non-food hunger value change, since we now know that this was actually food
+        ((NutritionManager) NutritionManager.instance()).popNonFoodHungerChange(event.player);
     }
 
     // Handle drinking milk
@@ -36,7 +50,7 @@ public class EventEatFood {
     public void finishUsingItem(PlayerUseItemEvent.Finish event) {
         // Only check against players
         if (!(event.entity instanceof EntityPlayer player)) return;
-        if (!player.getEntityWorld().isRemote) return;
+        if (player.getEntityWorld().isRemote) return;
 
         if (event.item.getItem() instanceof ItemBucketMilk) {
             // reapply effects on server side only

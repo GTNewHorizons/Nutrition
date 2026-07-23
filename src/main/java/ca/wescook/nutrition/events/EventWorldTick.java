@@ -12,6 +12,7 @@ import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.effects.EffectsManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
+import ca.wescook.nutrition.nutrients.NutrientUtils;
 import ca.wescook.nutrition.utility.Config;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -31,15 +32,32 @@ public class EventWorldTick {
         if (event.phase != TickEvent.Phase.END) return;
         if (event.side != Side.SERVER) return;
 
-        // Apply decay check each tick
-        if (Config.enableDecay) {
-            for (EntityPlayer player : event.world.playerEntities) {
+        for (EntityPlayer player : event.world.playerEntities) {
+            // Apply decay check each tick
+            if (Config.enableDecay) {
                 nutritionDecay(player);
             }
+
+            // Handle any non-food hunger value changes each tick
+            handleNonFoodHungerChanges(player);
         }
 
         // Reapply potion effects every 5 seconds
         potionTicking(event.world);
+    }
+
+    private void handleNonFoodHungerChanges(EntityPlayer player) {
+        int hungerChange = ((NutritionManager) NutritionManager.instance()).getNonFoodHungerChange(player);
+        if (hungerChange > 0) {
+            // Use value as if food was actually eaten, which gave this amount of hunger for all nutrients
+            float amountToChange = NutrientUtils.getNutrientValue(
+                hungerChange,
+                NutrientList.get()
+                    .size());
+
+            NutritionManager.instance()
+                .normalize(player, 50.0f, amountToChange);
+        }
     }
 
     private void nutritionDecay(EntityPlayer player) {

@@ -10,7 +10,6 @@ import net.minecraft.util.MathHelper;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-import ca.wescook.nutrition.Nutrition;
 import ca.wescook.nutrition.network.SPacketNutrients;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
@@ -54,7 +53,7 @@ public final class NutritionManager implements INutritionManager {
         if (oldValue == value) return false;
 
         nutrients.put(player, nutrient, value);
-        if (Nutrition.proxy.isServer()) {
+        if (!player.getEntityWorld().isRemote) {
             SPacketNutrients.send(player);
         }
 
@@ -73,7 +72,7 @@ public final class NutritionManager implements INutritionManager {
         }
 
         if (updated) {
-            if (Nutrition.proxy.isServer()) {
+            if (!player.getEntityWorld().isRemote) {
                 SPacketNutrients.send(player);
             }
             return true;
@@ -110,7 +109,7 @@ public final class NutritionManager implements INutritionManager {
         }
 
         if (updated) {
-            if (Nutrition.proxy.isServer()) {
+            if (!player.getEntityWorld().isRemote) {
                 SPacketNutrients.send(player);
             }
             return true;

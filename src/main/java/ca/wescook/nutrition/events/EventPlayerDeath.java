@@ -5,7 +5,6 @@ import java.util.Map;
 
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-import ca.wescook.nutrition.Nutrition;
 import ca.wescook.nutrition.api.INutritionManager;
 import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
@@ -18,7 +17,7 @@ public class EventPlayerDeath {
     // Copy player nutrition when "cloned" (death, teleport from End)
     @SubscribeEvent
     public void onPlayerClone(PlayerEvent.Clone event) {
-        if (!Nutrition.proxy.isServer()) return;
+        if (event.entityPlayer.getEntityWorld().isRemote) return;
 
         INutritionManager manager = NutritionManager.instance();
         Map<Nutrient, Float> oldValues = manager.evict(event.original);

@@ -34,9 +34,4 @@ public class ClientProxy extends CommonProxy {
             MinecraftForge.EVENT_BUS.register(new EventTooltip()); // Register tooltip event
         }
     }
-
-    @Override
-    public boolean isServer() {
-        return false;
-    }
 }

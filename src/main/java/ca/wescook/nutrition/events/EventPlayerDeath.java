@@ -26,17 +26,22 @@ public class EventPlayerDeath {
         // This is synced automatically in EventPlayerJoinWorld#EntityJoinWorldEvent
         if (event.wasDeath) {
             Map<Nutrient, Float> newValues = new HashMap<>();
+
             for (Nutrient nutrient : NutrientList.get()) {
-                float value = oldValues.get(nutrient);
+                float value = oldValues != null ? oldValues.get(nutrient) : Config.startingNutrition;
 
                 // If reset is disabled, only reduce to cap when above its value
-                if (Config.deathPenaltyReset || oldValues.get(nutrient) > Config.deathPenaltyMin) {
+                if (Config.deathPenaltyReset || value > Config.deathPenaltyMin) {
                     // Subtract death penalty from each nutrient, to cap
                     value = Math.max(Config.deathPenaltyMin, value - Config.deathPenaltyLoss);
                 }
                 newValues.put(nutrient, value);
             }
             manager.setAll(event.entityPlayer, newValues);
+        } else if (oldValues != null) {
+            // If not death, re-insert the old values for the (potentially) new
+            // player entity, or just cleaning up from the evict call above.
+            manager.setAll(event.entityPlayer, oldValues);
         }
     }
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.gui.NutritionGui;
@@ -23,7 +24,7 @@ public class SPacketNutrients {
 
     public static void send(EntityPlayer player) {
         Map<Nutrient, Float> values = ((NutritionManager) NutritionManager.instance()).getAll(player);
-        ModPacketHandler.NETWORK_CHANNEL.sendToServer(new Message(values));
+        ModPacketHandler.NETWORK_CHANNEL.sendTo(new Message(values), (EntityPlayerMP) player);
     }
 
     public static class Message implements IMessage {

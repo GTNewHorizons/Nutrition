@@ -144,4 +144,9 @@ public final class NutritionManager implements INutritionManager {
         }
         return unapplied;
     }
+
+    public void clearData() {
+        nutrients.clear();
+        nonFoodNutritionChange.clear();
+    }
 }

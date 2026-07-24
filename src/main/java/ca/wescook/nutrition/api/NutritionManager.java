@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
@@ -39,11 +41,13 @@ public final class NutritionManager implements INutritionManager {
         return nutrients.row(player);
     }
 
+    @Nullable
     @Override
     public Map<Nutrient, Float> evict(EntityPlayer player) {
-        Map<Nutrient, Float> values = new HashMap<>(nutrients.row(player));
-        nutrients.row(player)
-            .clear();
+        Map<Nutrient, Float> oldValues = nutrients.row(player);
+        if (oldValues == null) return null;
+        Map<Nutrient, Float> values = new HashMap<>(oldValues);
+        oldValues.clear();
         return values;
     }
 

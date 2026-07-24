@@ -2,6 +2,8 @@ package ca.wescook.nutrition.api;
 
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
@@ -35,8 +37,9 @@ public interface INutritionManager {
      * <strong>Should only be called from the server!</strong>
      *
      * @param player The player to get nutrient values for.
-     * @return a map of all nutrient values for the player.
+     * @return a map of all nutrient values for the player, or null if none are available.
      */
+    @Nullable
     Map<Nutrient, Float> evict(EntityPlayer player);
 
     /**

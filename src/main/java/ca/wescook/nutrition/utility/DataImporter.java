@@ -48,10 +48,12 @@ public class DataImporter {
                 Map<Nutrient, Float> nutritionNew = new HashMap<>();
 
                 loop: for (Nutrient nutrient : NutrientList.get()) {
-                    for (Map.Entry<Nutrient, Float> nutrientOld : nutritionOld.entrySet()) {
-                        if (nutrient.name.equals(nutrientOld.getKey().name)) {
-                            nutritionNew.put(nutrient, nutrientOld.getValue());
-                            continue loop;
+                    if (nutritionOld != null) {
+                        for (Map.Entry<Nutrient, Float> nutrientOld : nutritionOld.entrySet()) {
+                            if (nutrient.name.equals(nutrientOld.getKey().name)) {
+                                nutritionNew.put(nutrient, nutrientOld.getValue());
+                                continue loop;
+                            }
                         }
                     }
                     nutritionNew.put(nutrient, (float) Config.startingNutrition);

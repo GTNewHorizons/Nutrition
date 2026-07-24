@@ -40,8 +40,10 @@ public class PlayerDataHandler {
                 values.put(nutrient, value);
             }
 
+            // Do not sync here since the client is not yet ready to receive it.
+            // It will be synced later in EventPlayerJoinWorld.
             NutritionManager.instance()
-                .setAll(player, values);
+                .setAll(player, values, false);
         }
     }
 }

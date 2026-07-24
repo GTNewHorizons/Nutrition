@@ -60,7 +60,19 @@ public interface INutritionManager {
      * @param values The values to set.
      * @return true if any nutrient value was changed.
      */
-    boolean setAll(EntityPlayer player, Map<Nutrient, Float> values);
+    default boolean setAll(EntityPlayer player, Map<Nutrient, Float> values) {
+        return setAll(player, values, true);
+    }
+
+    /**
+     * Set all the provided nutrient values for a player. Does not need to be an all-encompassing set of values.
+     *
+     * @param player The player to set nutrient values for.
+     * @param values The values to set.
+     * @param sync   Whether the data change should be synced to the client.
+     * @return true if any nutrient value was changed.
+     */
+    boolean setAll(EntityPlayer player, Map<Nutrient, Float> values, boolean sync);
 
     /**
      * Add a value to an existing nutrient.

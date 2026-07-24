@@ -65,7 +65,7 @@ public final class NutritionManager implements INutritionManager {
     }
 
     @Override
-    public boolean setAll(EntityPlayer player, Map<Nutrient, Float> values) {
+    public boolean setAll(EntityPlayer player, Map<Nutrient, Float> values, boolean sync) {
         boolean updated = false;
 
         for (var entry : values.entrySet()) {
@@ -76,7 +76,7 @@ public final class NutritionManager implements INutritionManager {
         }
 
         if (updated) {
-            if (!player.getEntityWorld().isRemote) {
+            if (sync && !player.getEntityWorld().isRemote) {
                 SPacketNutrients.send(player);
             }
             return true;

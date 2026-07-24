@@ -24,6 +24,7 @@ public class SPacketNutrients {
 
     public static void send(EntityPlayer player) {
         Map<Nutrient, Float> values = ((NutritionManager) NutritionManager.instance()).getAll(player);
+        if (values == null) return;
         ModPacketHandler.NETWORK_CHANNEL.sendTo(new Message(values), (EntityPlayerMP) player);
     }
 

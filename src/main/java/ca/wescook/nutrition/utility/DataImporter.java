@@ -2,7 +2,9 @@ package ca.wescook.nutrition.utility;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -13,8 +15,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 
-import ca.wescook.nutrition.data.PlayerDataHandler;
+import ca.wescook.nutrition.api.INutritionManager;
+import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.nutrients.JsonNutrient;
+import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.nutrients.NutrientUtils;
 
@@ -39,8 +43,23 @@ public class DataImporter {
     public static void updatePlayerCapabilitiesOnServer(MinecraftServer server) {
         for (EntityPlayerMP player : server.getConfigurationManager().playerEntityList) {
             if (!server.worldServerForDimension(0).isRemote) {
-                PlayerDataHandler.getForPlayer(player)
-                    .update();
+                INutritionManager manager = NutritionManager.instance();
+                Map<Nutrient, Float> nutritionOld = manager.evict(player);
+                Map<Nutrient, Float> nutritionNew = new HashMap<>();
+
+                loop: for (Nutrient nutrient : NutrientList.get()) {
+                    if (nutritionOld != null) {
+                        for (Map.Entry<Nutrient, Float> nutrientOld : nutritionOld.entrySet()) {
+                            if (nutrient.name.equals(nutrientOld.getKey().name)) {
+                                nutritionNew.put(nutrient, nutrientOld.getValue());
+                                continue loop;
+                            }
+                        }
+                    }
+                    nutritionNew.put(nutrient, (float) Config.startingNutrition);
+                }
+
+                manager.setAll(player, nutritionNew);
             }
         }
     }

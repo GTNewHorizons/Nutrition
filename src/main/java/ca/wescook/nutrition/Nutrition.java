@@ -2,10 +2,9 @@ package ca.wescook.nutrition;
 
 import net.minecraftforge.common.MinecraftForge;
 
-import ca.wescook.nutrition.data.PlayerDataHandler;
+import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.effects.EffectsList;
 import ca.wescook.nutrition.events.EventAllowOvereating;
-import ca.wescook.nutrition.events.EventClientTick;
 import ca.wescook.nutrition.events.EventEatFood;
 import ca.wescook.nutrition.events.EventPlayerDeath;
 import ca.wescook.nutrition.events.EventPlayerJoinWorld;
@@ -50,12 +49,6 @@ public class Nutrition {
         MinecraftForge.EVENT_BUS.register(new EventPlayerJoinWorld());
         MinecraftForge.EVENT_BUS.register(new EventPlayerDeath());
         MinecraftForge.EVENT_BUS.register(new EventEatFood());
-        if (event.getSide()
-            .isClient()) {
-            FMLCommonHandler.instance()
-                .bus()
-                .register(new EventClientTick());
-        }
 
         // only register if allow over-eating is true
         if (Config.allowOverEating) {
@@ -92,7 +85,7 @@ public class Nutrition {
 
     @EventHandler
     public void onServerStopped(FMLServerStoppedEvent event) {
-        PlayerDataHandler.clearData();
+        ((NutritionManager) NutritionManager.instance()).clearData();
         if (serverTickEvent != null) {
             FMLCommonHandler.instance()
                 .bus()

@@ -6,14 +6,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBucketMilk;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 
-import ca.wescook.nutrition.data.PlayerDataHandler;
+import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.effects.EffectsManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.nutrients.NutrientUtils;
-import ca.wescook.nutrition.proxy.ClientProxy;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import squeek.applecore.api.food.FoodEvent;
 
 /**
@@ -22,7 +20,7 @@ import squeek.applecore.api.food.FoodEvent;
  * "Normal food" follows the event order:
  * - FoodStatsAddition -> FoodEaten -> UseItem.Finish
  * <br>
- * "Stat modifying" items such as healing axe, IC2 food cans, etc. follows event order:
+ * "Stat modifying" items such as healing axe, IC2 food cans, talisman of nourishment, etc. follows event order:
  * - FoodStatsAddition -> UseItem.Finish (SOMETIMES, depending on the specific item)
  * <br>
  * However, FoodStatsAddition, the only common event here, does not provide the Food ItemStack, so there is no way to
@@ -32,61 +30,56 @@ import squeek.applecore.api.food.FoodEvent;
  * As a result, we need to know if stats were modified directly without eating an actual food, so that
  * nutrition values are modified somehow to a "neutral state" by direct-modification methods.
  * <br>
- * This is achieved with a Stack, held in {@link ClientProxy}.
+ * This is achieved with a Stack, held in {@link NutritionManager}.
  * Hunger value stat changes are pushed to the stack, then popped when food is eaten. This results in
  * a "normal" food pushing the value, then popping it immediately after in the next event.
  * However, something which directly modifies hunger stat will never pop the change.
- * Those changes will be popped by {@link EventClientTick#clientTickEvent(TickEvent.ClientTickEvent)}
- * at the end of each client game tick.
+ * Those changes will be popped by {@link EventWorldTick#serverTickEvent}
+ * at the end of each server game tick.
  */
 public class EventEatFood {
 
     @SubscribeEvent
     public void onFoodStatsChanged(FoodEvent.FoodStatsAddition event) {
-        if (event.player.getEntityWorld().isRemote) { // Client
-            // only run if hunger value increases, also ignoring saturation
-            int hungerValue = event.foodValuesToBeAdded.hunger;
-            if (hungerValue <= 0) return;
+        if (event.player.getEntityWorld().isRemote) return;
 
-            // set that stats have been changed, but food has not yet been eaten
-            ClientProxy.pushHungerChange(hungerValue);
-        }
+        int hungerValue = event.foodValuesToBeAdded.hunger;
+        if (hungerValue <= 0) return;
+
+        // Set that stats have been changed, but food has not yet been eaten
+        ((NutritionManager) NutritionManager.instance()).pushNonFoodHungerChange(event.player, hungerValue);
     }
 
     @SubscribeEvent
     public void onFoodEaten(FoodEvent.FoodEaten event) {
+        if (event.player.getEntityWorld().isRemote) return;
+
         // Calculate nutrition
         List<Nutrient> foundNutrients = NutrientUtils.getFoodNutrients(event.food);
         float nutritionValue = NutrientUtils.calculateNutrition(event.foodValues, foundNutrients);
 
         // Add to each nutrient
-        if (!event.player.getEntityWorld().isRemote) { // Server
-            PlayerDataHandler.getForPlayer(event.player)
-                .add(foundNutrients, nutritionValue);
-        } else { // Client
-            ClientProxy.localNutrition.add(foundNutrients, nutritionValue);
-            // set that food has now been eaten
-            ClientProxy.popHungerChange();
+        for (Nutrient nutrient : foundNutrients) {
+            NutritionManager.instance()
+                .add(event.player, nutrient, nutritionValue);
         }
+
+        // Remove the non-food hunger value change, since we now know that this was actually food
+        ((NutritionManager) NutritionManager.instance()).popNonFoodHungerChange(event.player);
     }
 
     // Handle drinking milk
     @SubscribeEvent
     public void finishUsingItem(PlayerUseItemEvent.Finish event) {
         // Only check against players
-        if (!(event.entity instanceof EntityPlayer player)) {
-            return;
-        }
+        if (!(event.entity instanceof EntityPlayer player)) return;
+        if (player.getEntityWorld().isRemote) return;
 
         if (event.item.getItem() instanceof ItemBucketMilk) {
-            if (!player.getEntityWorld().isRemote) {
-                // reapply effects on server side only
-                EffectsManager.reapplyEffects(player);
-                PlayerDataHandler.getForPlayer(player)
-                    .add(NutrientList.getByName("dairy"), 1.5F);
-            } else {
-                ClientProxy.localNutrition.add(NutrientList.getByName("dairy"), 1.5F);
-            }
+            // reapply effects on server side only
+            EffectsManager.reapplyEffects(player);
+            NutritionManager.instance()
+                .add(player, NutrientList.getByName("dairy"), 1.5F);
         }
     }
 }

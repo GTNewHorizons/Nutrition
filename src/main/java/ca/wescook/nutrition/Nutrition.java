@@ -54,7 +54,6 @@ public class Nutrition {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        // Config.registerConfigs(event.getModConfigurationDirectory());
         ModPacketHandler.registerMessages();
 
         ModPotions.createPotions();

@@ -7,8 +7,8 @@ import javax.annotation.Nullable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
+import ca.wescook.nutrition.NutritionConfig;
 import ca.wescook.nutrition.nutrients.Nutrient;
-import ca.wescook.nutrition.utility.Config;
 
 /**
  * Nutrition data manager. Used to access and modify nutrient values for players.<br>
@@ -130,6 +130,6 @@ public interface INutritionManager {
      * @return true if the nutrient value was changed.
      */
     default boolean reset(EntityPlayer player, Nutrient nutrient) {
-        return set(player, nutrient, Config.startingNutrition);
+        return set(player, nutrient, NutritionConfig.nutrition.startingNutrition);
     }
 }

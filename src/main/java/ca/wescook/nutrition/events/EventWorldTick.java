@@ -7,13 +7,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import ca.wescook.nutrition.NutritionConfig;
 import ca.wescook.nutrition.api.INutritionManager;
 import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.effects.EffectsManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.nutrients.NutrientUtils;
-import ca.wescook.nutrition.utility.Config;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -34,7 +34,7 @@ public class EventWorldTick {
 
         for (EntityPlayer player : event.world.playerEntities) {
             // Apply decay check each tick
-            if (Config.enableDecay) {
+            if (NutritionConfig.decay.enable) {
                 nutritionDecay(player);
             }
 

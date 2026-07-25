@@ -5,11 +5,11 @@ import java.util.Map;
 
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
+import ca.wescook.nutrition.NutritionConfig;
 import ca.wescook.nutrition.api.INutritionManager;
 import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
-import ca.wescook.nutrition.utility.Config;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class EventPlayerDeath {
@@ -30,9 +30,10 @@ public class EventPlayerDeath {
                 float value = manager.get(event.original, nutrient);
 
                 // If reset is disabled, only reduce to cap when above its value
-                if (Config.deathPenaltyReset || value > Config.deathPenaltyMin) {
+                if (NutritionConfig.death.deathPenaltyReset || value > NutritionConfig.death.deathPenaltyMin) {
                     // Subtract death penalty from each nutrient, to cap
-                    value = Math.max(Config.deathPenaltyMin, value - Config.deathPenaltyLoss);
+                    value = Math
+                        .max(NutritionConfig.death.deathPenaltyMin, value - NutritionConfig.death.deathPenaltyLoss);
                 }
                 values.put(nutrient, value);
             }

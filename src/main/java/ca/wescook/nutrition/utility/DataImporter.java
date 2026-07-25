@@ -15,6 +15,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 
+import ca.wescook.nutrition.NutritionConfig;
 import ca.wescook.nutrition.api.INutritionManager;
 import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.nutrients.JsonNutrient;
@@ -36,7 +37,7 @@ public class DataImporter {
         NutrientList.register(DataParser.parseNutrients(loadJsonNutrients()));
 
         // List all foods registered in-game without nutrients
-        if (Config.logMissingNutrients) NutrientUtils.findRegisteredFoods();
+        if (NutritionConfig.debug.logMissingNutrients) NutrientUtils.findRegisteredFoods();
     }
 
     // Updates player capabilities on server so object IDs match those in NutrientList
@@ -56,7 +57,7 @@ public class DataImporter {
                             }
                         }
                     }
-                    nutritionNew.put(nutrient, (float) Config.startingNutrition);
+                    nutritionNew.put(nutrient, (float) NutritionConfig.nutrition.startingNutrition);
                 }
 
                 manager.setAll(player, nutritionNew);

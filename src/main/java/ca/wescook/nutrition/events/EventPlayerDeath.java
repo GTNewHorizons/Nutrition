@@ -20,28 +20,32 @@ public class EventPlayerDeath {
         if (event.entityPlayer.getEntityWorld().isRemote) return;
 
         INutritionManager manager = NutritionManager.instance();
-        Map<Nutrient, Float> oldValues = manager.evict(event.original);
 
         // On death, apply nutrition penalty
         // This is synced automatically in EventPlayerJoinWorld#EntityJoinWorldEvent
         if (event.wasDeath) {
-            Map<Nutrient, Float> newValues = new HashMap<>();
+            Map<Nutrient, Float> values = new HashMap<>();
 
             for (Nutrient nutrient : NutrientList.get()) {
-                float value = oldValues != null ? oldValues.get(nutrient) : Config.startingNutrition;
+                float value = manager.get(event.original, nutrient);
 
                 // If reset is disabled, only reduce to cap when above its value
                 if (Config.deathPenaltyReset || value > Config.deathPenaltyMin) {
                     // Subtract death penalty from each nutrient, to cap
                     value = Math.max(Config.deathPenaltyMin, value - Config.deathPenaltyLoss);
                 }
-                newValues.put(nutrient, value);
+                values.put(nutrient, value);
             }
-            manager.setAll(event.entityPlayer, newValues);
-        } else if (oldValues != null) {
-            // If not death, re-insert the old values for the (potentially) new
-            // player entity, or just cleaning up from the evict call above.
-            manager.setAll(event.entityPlayer, oldValues);
+
+            // Remove the old player data, and insert the new player data,
+            // considering if the EntityPlayer object has been remade.
+            manager.evict(event.original);
+            manager.setAll(event.entityPlayer, values);
+
+        } else {
+            // If not death, re-insert the old values in case
+            // the EntityPlayer object has been remade.
+            manager.setAll(event.entityPlayer, manager.evict(event.original));
         }
     }
 }

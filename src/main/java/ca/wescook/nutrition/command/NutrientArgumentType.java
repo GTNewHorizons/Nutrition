@@ -16,7 +16,7 @@ import ca.wescook.nutrition.nutrients.NutrientList;
 
 public class NutrientArgumentType implements ArgumentType<Nutrient> {
 
-    private static final Collection<String> EXAMPLES = Arrays.asList("dairy", "fruit", "vegetable");
+    private static final Collection<String> EXAMPLES = Arrays.asList("dairy", "fruit", "grain", "protein", "vegetable");
 
     private NutrientArgumentType() {/**/}
 
@@ -37,8 +37,12 @@ public class NutrientArgumentType implements ArgumentType<Nutrient> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+        String remaining = builder.getRemainingLowerCase();
+
         for (Nutrient nutrient : NutrientList.get()) {
-            builder.suggest(nutrient.name);
+            if (remaining == null || remaining.isEmpty() || nutrient.name.startsWith(remaining)) {
+                builder.suggest(nutrient.name);
+            }
         }
         return builder.buildFuture();
     }

@@ -6,6 +6,7 @@ import static com.gtnewhorizon.gtnhlib.util.CommandUtils.success;
 
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -189,9 +190,7 @@ public class NutritionCommand {
 
     private static EntityPlayer getPlayerArgument(CommandContext<ICommandSender> ctx) {
         String name = StringArgumentType.getString(ctx, ARG_PLAYER);
-        return ctx.getSource()
-            .getEntityWorld()
-            .getPlayerEntityByName(name);
+        return CommandBase.getPlayer(ctx.getSource(), name);
     }
 
     private enum Action {

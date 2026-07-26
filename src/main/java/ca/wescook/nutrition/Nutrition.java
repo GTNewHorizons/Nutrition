@@ -6,6 +6,7 @@ import com.gtnewhorizon.gtnhlib.config.ConfigException;
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 
 import ca.wescook.nutrition.api.NutritionManager;
+import ca.wescook.nutrition.command.NutritionCommand;
 import ca.wescook.nutrition.effects.EffectsList;
 import ca.wescook.nutrition.events.EventAllowOvereating;
 import ca.wescook.nutrition.events.EventEatFood;
@@ -16,7 +17,6 @@ import ca.wescook.nutrition.events.WitcheryEventHandler;
 import ca.wescook.nutrition.network.ModPacketHandler;
 import ca.wescook.nutrition.potions.ModPotions;
 import ca.wescook.nutrition.proxy.CommonProxy;
-import ca.wescook.nutrition.utility.ChatCommand;
 import ca.wescook.nutrition.utility.DataImporter;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -27,10 +27,15 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 
-@Mod(modid = Nutrition.MODID, name = "Nutrition", version = Tags.VERSION)
+@Mod(
+    modid = Nutrition.MODID,
+    name = "Nutrition",
+    version = Tags.VERSION,
+    dependencies = "required-after:AppleCore;required-after:gtnhlib;")
 public class Nutrition {
 
     public static final String MODID = "nutrition";
@@ -87,11 +92,15 @@ public class Nutrition {
 
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(new ChatCommand());
         serverTickEvent = new EventWorldTick();
         FMLCommonHandler.instance()
             .bus()
             .register(serverTickEvent);
+    }
+
+    @EventHandler
+    public void serverAboutToStart(FMLServerAboutToStartEvent event) {
+        NutritionCommand.register();
     }
 
     @EventHandler

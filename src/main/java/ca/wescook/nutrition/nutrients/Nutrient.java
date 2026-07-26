@@ -15,4 +15,9 @@ public class Nutrient {
     public boolean visible;
     public List<String> foodOreDict = new ArrayList<>();
     public List<ItemStack> foodItems = new ArrayList<>();
+
+    public String getCapitalizedName() {
+        return name.substring(0, 1)
+            .toUpperCase() + name.substring(1);
+    }
 }

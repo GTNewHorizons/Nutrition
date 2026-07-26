@@ -2,7 +2,7 @@ package ca.wescook.nutrition;
 
 import com.gtnewhorizon.gtnhlib.config.Config;
 
-@Config(modid = Nutrition.MODID, filename = "Nutrition")
+@Config(modid = Nutrition.MODID)
 public class NutritionConfig {
 
     @Config.Name("Nutrition")
@@ -41,6 +41,7 @@ public class NutritionConfig {
         @Config.DefaultBoolean(false)
         @Config.Comment("Allow player to continue eating even while full.\n"
             + "This setting may upset balance (and tummies), but is necessary for playing in peaceful mode.")
+        @Config.RequiresMcRestart
         public boolean allowOvereating;
     }
 
@@ -82,14 +83,17 @@ public class NutritionConfig {
 
         @Config.DefaultBoolean(true)
         @Config.Comment("If the nutrition GUI should be enabled.")
+        @Config.RequiresMcRestart
         public boolean enable;
 
         @Config.DefaultBoolean(true)
         @Config.Comment("If the nutrition button should be shown on player inventory (hotkey will still function).")
+        @Config.RequiresMcRestart
         public boolean enableButton;
 
         @Config.DefaultBoolean(true)
         @Config.Comment("If foods should show their nutrients on hover.")
+        @Config.RequiresMcRestart
         public boolean enableTooltips;
 
         @Config.DefaultEnum("Gui")
@@ -145,6 +149,7 @@ public class NutritionConfig {
 
         @Config.DefaultBoolean(true)
         @Config.Comment("Enable witchery mod compatibility.")
+        @Config.RequiresMcRestart
         public boolean enable;
 
         @Config.DefaultFloat(30.0f)

@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.item.*;
 import net.minecraftforge.oredict.OreDictionary;
 
-import ca.wescook.nutrition.utility.Config;
+import ca.wescook.nutrition.NutritionConfig;
 import ca.wescook.nutrition.utility.Log;
 import squeek.applecore.api.AppleCoreAPI;
 import squeek.applecore.api.food.FoodValues;
@@ -50,9 +50,12 @@ public class NutrientUtils {
 
     public static float getNutrientValue(int hungerValue, int numNutrients) {
         // Apply multipliers
-        float adjustedFoodValue = (float) (hungerValue * 0.5); // Halve to start at reasonable starting point
-        adjustedFoodValue = adjustedFoodValue * Config.nutritionMultiplier; // Multiply by config value
-        float lossPercentage = (float) Config.lossPerNutrient / 100; // Loss percentage from config file
+        // Halve to start at reasonable starting point
+        float adjustedFoodValue = (float) (hungerValue * 0.5);
+        // Multiply by config value
+        adjustedFoodValue = adjustedFoodValue * NutritionConfig.nutrition.nutritionMultiplier;
+        // Loss percentage from config file
+        float lossPercentage = (float) NutritionConfig.nutrition.lossPerNutrient / 100;
         // Lose 15% (configurable) for each nutrient added after the first nutrient
         float foodLoss = (adjustedFoodValue * lossPercentage * (numNutrients - 1));
         return Math.max(0, adjustedFoodValue - foodLoss);

@@ -6,10 +6,11 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraftforge.client.event.GuiScreenEvent;
 
+import ca.wescook.nutrition.NutritionConfig;
+import ca.wescook.nutrition.NutritionConfig.Gui.ButtonOrigin;
 import ca.wescook.nutrition.gui.GuiButtonNutrition;
 import ca.wescook.nutrition.gui.NutritionGui;
 import ca.wescook.nutrition.mixin.GuiContainerAccessor;
-import ca.wescook.nutrition.utility.Config;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -64,66 +65,66 @@ public class EventNutritionButton {
         int height = 0;
 
         // Get bounding box of origin
-        if (Config.buttonOrigin.equals("screen")) {
+        if (NutritionConfig.gui.buttonOrigin == ButtonOrigin.Screen) {
             Minecraft mc = Minecraft.getMinecraft();
             ScaledResolution scaledResolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
             width = scaledResolution.getScaledWidth();
             height = scaledResolution.getScaledHeight();
-        } else if (Config.buttonOrigin.equals("gui") && gui instanceof GuiInventory) {
+        } else if (NutritionConfig.gui.buttonOrigin == ButtonOrigin.Gui && gui instanceof GuiInventory) {
             width = ((GuiContainerAccessor) gui).nutrition$getXSize();
             height = ((GuiContainerAccessor) gui).nutrition$getYSize();
         }
 
         // Calculate anchor position from origin (e.g. x/y pixels at right side of gui)
         // The x/y is still relative to the top/left corner of the screen at this point
-        switch (Config.buttonAnchor) {
-            case "top" -> {
+        switch (NutritionConfig.gui.buttonAnchor) {
+            case Top -> {
                 x = width / 2;
                 y = 0;
             }
-            case "right" -> {
+            case Right -> {
                 x = width;
                 y = height / 2;
             }
-            case "bottom" -> {
+            case Bottom -> {
                 x = width / 2;
                 y = height;
             }
-            case "left" -> {
+            case Left -> {
                 x = 0;
                 y = height / 2;
             }
-            case "top-left" -> {
+            case TopLeft -> {
                 x = 0;
                 y = 0;
             }
-            case "top-right" -> {
+            case TopRight -> {
                 x = width;
                 y = 0;
             }
-            case "bottom-right" -> {
+            case BottomRight -> {
                 x = width;
                 y = height;
             }
-            case "bottom-left" -> {
+            case BottomLeft -> {
                 x = 0;
                 y = height;
             }
-            case "center" -> {
+            case Center -> {
                 x = width / 2;
                 y = height / 2;
             }
         }
 
         // If origin=gui, add the offset to the button's position
-        if (Config.buttonOrigin.equals("gui") && gui instanceof GuiInventory) {
+        if (NutritionConfig.gui.buttonOrigin == ButtonOrigin.Gui && gui instanceof GuiInventory) {
             x += ((GuiContainerAccessor) gui).nutrition$getGuiLeft();
             y += ((GuiContainerAccessor) gui).nutrition$getGuiTop();
         }
 
         // Then add the offset as defined in the config file
-        x += Config.buttonXPosition;
-        y += Config.buttonYPosition;
+        x += NutritionConfig.gui.buttonX;
+        y += NutritionConfig.gui.buttonY;
 
         return new int[] { x, y };
     }

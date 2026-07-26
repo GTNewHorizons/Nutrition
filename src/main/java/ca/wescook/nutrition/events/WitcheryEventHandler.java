@@ -9,11 +9,11 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 import com.emoniph.witchery.common.ExtendedPlayer;
 
+import ca.wescook.nutrition.NutritionConfig;
 import ca.wescook.nutrition.api.INutritionManager;
 import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
-import ca.wescook.nutrition.utility.Config;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class WitcheryEventHandler {
@@ -28,8 +28,10 @@ public class WitcheryEventHandler {
                 INutritionManager manager = NutritionManager.instance();
                 Map<Nutrient, Float> newValues = new HashMap<>();
 
-                float maxNutrition = Config.vampireMinNutrition
-                    + (Config.vampireMaxNutrition - Config.vampireMinNutrition) * exPlayer.getVampireLevel() / 10;
+                float configMin = NutritionConfig.witchery.vampireMinNutrition;
+                float configMax = NutritionConfig.witchery.vampireMaxNutrition;
+
+                float maxNutrition = configMin + (configMax - configMin) * exPlayer.getVampireLevel() / 10;
                 float nutritionValue = ((float) exPlayer.getBloodPower() / exPlayer.getMaxBloodPower()) * maxNutrition;
 
                 for (Nutrient nutrient : NutrientList.get()) {

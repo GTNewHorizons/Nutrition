@@ -5,10 +5,10 @@ import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 
+import ca.wescook.nutrition.NutritionConfig;
 import ca.wescook.nutrition.events.EventNutritionButton;
 import ca.wescook.nutrition.events.EventNutritionKey;
 import ca.wescook.nutrition.events.EventTooltip;
-import ca.wescook.nutrition.utility.Config;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -19,19 +19,19 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void init(FMLInitializationEvent event) {
-        if (Config.enableGui) { // If GUI is enabled
+        if (NutritionConfig.gui.enable) {
             ClientRegistry
                 .registerKeyBinding(keyNutritionGui = new KeyBinding("key.nutrition", Keyboard.KEY_NONE, "Nutrition"));
             FMLCommonHandler.instance()
                 .bus()
                 .register(new EventNutritionKey());
-            if (Config.enableGuiButton) {
+            if (NutritionConfig.gui.enableButton) {
                 MinecraftForge.EVENT_BUS.register(new EventNutritionButton());
             }
         }
 
-        if (Config.enableTooltips) {
-            MinecraftForge.EVENT_BUS.register(new EventTooltip()); // Register tooltip event
+        if (NutritionConfig.gui.enableTooltips) {
+            MinecraftForge.EVENT_BUS.register(new EventTooltip());
         }
     }
 }

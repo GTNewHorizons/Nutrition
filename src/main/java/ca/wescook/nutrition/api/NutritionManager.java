@@ -12,10 +12,10 @@ import net.minecraft.util.MathHelper;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
+import ca.wescook.nutrition.NutritionConfig;
 import ca.wescook.nutrition.network.SPacketNutrients;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
-import ca.wescook.nutrition.utility.Config;
 
 public final class NutritionManager implements INutritionManager {
 
@@ -33,7 +33,7 @@ public final class NutritionManager implements INutritionManager {
     @Override
     public float get(EntityPlayer player, Nutrient nutrient) {
         Float value = nutrients.get(player, nutrient);
-        return value == null ? Config.startingNutrition : value;
+        return value == null ? NutritionConfig.nutrition.startingNutrition : value;
     }
 
     // Internal-use only
@@ -104,7 +104,7 @@ public final class NutritionManager implements INutritionManager {
 
     @Override
     public boolean reset(EntityPlayer player) {
-        float newValue = (float) Config.startingNutrition;
+        float newValue = (float) NutritionConfig.nutrition.startingNutrition;
         boolean updated = false;
 
         for (Nutrient nutrient : NutrientList.get()) {

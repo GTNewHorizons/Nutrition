@@ -2,6 +2,9 @@ package ca.wescook.nutrition;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import com.gtnewhorizon.gtnhlib.config.ConfigException;
+import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
+
 import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.effects.EffectsList;
 import ca.wescook.nutrition.events.EventAllowOvereating;
@@ -14,7 +17,6 @@ import ca.wescook.nutrition.network.ModPacketHandler;
 import ca.wescook.nutrition.potions.ModPotions;
 import ca.wescook.nutrition.proxy.CommonProxy;
 import ca.wescook.nutrition.utility.ChatCommand;
-import ca.wescook.nutrition.utility.Config;
 import ca.wescook.nutrition.utility.DataImporter;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -28,8 +30,10 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 
-@Mod(modid = "nutrition", name = "Nutrition", version = Tags.VERSION)
+@Mod(modid = Nutrition.MODID, name = "Nutrition", version = Tags.VERSION)
 public class Nutrition {
+
+    public static final String MODID = "nutrition";
 
     @Instance
     public static Nutrition instance;
@@ -40,9 +44,16 @@ public class Nutrition {
     public static CommonProxy proxy;
     private EventWorldTick serverTickEvent;
 
+    static {
+        try {
+            ConfigurationManager.registerConfig(NutritionConfig.class);
+        } catch (ConfigException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        Config.registerConfigs(event.getModConfigurationDirectory());
         ModPacketHandler.registerMessages();
 
         ModPotions.createPotions();
@@ -51,14 +62,14 @@ public class Nutrition {
         MinecraftForge.EVENT_BUS.register(new EventEatFood());
 
         // only register if allow over-eating is true
-        if (Config.allowOverEating) {
+        if (NutritionConfig.nutrition.allowOvereating) {
             MinecraftForge.EVENT_BUS.register(new EventAllowOvereating());
         }
     }
 
     @Mod.EventHandler
     public void load(FMLInitializationEvent event) {
-        if (Loader.isModLoaded("witchery") && Config.witcheryCompatEnable) {
+        if (Loader.isModLoaded("witchery") && NutritionConfig.witchery.enable) {
             MinecraftForge.EVENT_BUS.register(new WitcheryEventHandler());
         }
     }

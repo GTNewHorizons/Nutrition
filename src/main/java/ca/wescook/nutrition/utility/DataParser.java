@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
+import ca.wescook.nutrition.NutritionConfig;
 import ca.wescook.nutrition.nutrients.JsonNutrient;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import cpw.mods.fml.common.Loader;
@@ -41,7 +42,8 @@ public class DataParser {
 
             // Decay rate multiplier
             // Determined either by global rate, or optional override in nutrient file
-            if (nutrientRaw.decay == null) nutrient.decay = Config.decayMultiplier; // Set to global value
+            if (nutrientRaw.decay == null) nutrient.decay = NutritionConfig.decay.decayMultiplier; // Set to global
+                                                                                                   // value
             else if (nutrientRaw.decay >= -100 && nutrientRaw.decay <= 100) nutrient.decay = nutrientRaw.decay;
             else {
                 nutrient.decay = 0;
@@ -67,7 +69,7 @@ public class DataParser {
 
                     // Item ID not found, issue warning and skip adding item
                     if (item == null) {
-                        if (Config.logMissingFood && Loader.isModLoaded(data.modid)) {
+                        if (NutritionConfig.debug.logMissingFood && Loader.isModLoaded(data.modid)) {
                             Log.warn("Food with nutrients doesn't exist: " + fullName + " (" + nutrient.name + ")");
                         }
                         continue;

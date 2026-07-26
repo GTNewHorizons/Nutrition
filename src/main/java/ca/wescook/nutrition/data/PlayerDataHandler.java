@@ -6,10 +6,10 @@ import java.util.Map;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
+import ca.wescook.nutrition.NutritionConfig;
 import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
-import ca.wescook.nutrition.utility.Config;
 
 public class PlayerDataHandler {
 
@@ -35,7 +35,7 @@ public class PlayerDataHandler {
                 if (nutrientTag.hasKey(nutrient.name)) {
                     value = nutrientTag.getFloat(nutrient.name);
                 } else {
-                    value = (float) Config.startingNutrition;
+                    value = (float) NutritionConfig.nutrition.startingNutrition;
                 }
                 values.put(nutrient, value);
             }

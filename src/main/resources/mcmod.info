@@ -10,5 +10,5 @@
   "credits": "Wes Cook for the original mod",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": ["AppleCore", "gtnhlib"]
 }]

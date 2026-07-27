@@ -4,7 +4,7 @@ Nutrition Unofficial is a highly configurable mod to enable the creation of heal
 
 IMPORTANT NOTE: This project is _not_ associated with the upstream project by [WesCook](https://github.com/WesCook/Nutrition). It has been forked in accordance with the License and with permission from the original author.  It __WILL NOT__ be ported to any other version.  All support requests must be sent to [the GTNH fork](https://github.com/GTNewHorizons/Nutrition/issues).
 
-Uses the [AppleCoreAPI](https://github.com/GTNewHorizons/AppleCore)
+Uses the [AppleCoreAPI](https://github.com/GTNewHorizons/AppleCore) and [GTNHLib](https://github.com/GTNewHorizons/GTNHLib)
 
 [Releases](https://github.com/GTNewHorizons/Nutrition/releases)
 
@@ -24,7 +24,7 @@ Mod support contributions are welcome!  Please create a [Pull Request](https://g
 
 ## License
 
-GTNH Modifications Copyright (c) 2023 Serenibyss and the GTNH Team
+GTNH Modifications Copyright (c) 2026 Serenibyss and the GTNH Team
 
 Licensed under LGPL-3.0 or later - Use this however you want, but please give back any modifications to the community!
 

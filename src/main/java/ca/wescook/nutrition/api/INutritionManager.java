@@ -11,6 +11,7 @@ import net.minecraft.util.MathHelper;
 
 import ca.wescook.nutrition.NutritionConfig;
 import ca.wescook.nutrition.nutrients.Nutrient;
+import ca.wescook.nutrition.nutrients.NutrientList;
 
 /**
  * Nutrition data manager. Used to access and modify nutrient values for players.<br>
@@ -46,6 +47,7 @@ public interface INutritionManager {
 
     /**
      * Set a player's single nutrient value.<br>
+     * <br>
      * If setting multiple, highly recommended to use {@link #setAll}.
      *
      * @param player   The player to update the nutrient value for.
@@ -77,8 +79,10 @@ public interface INutritionManager {
     boolean setAll(EntityPlayer player, Map<Nutrient, Float> values, boolean sync);
 
     /**
-     * Add a value to an existing nutrient.
-     * if adding to multiple nutrients, highly recommended to use {@link addAll}.
+     * Add a value to an existing nutrient.<br>
+     * <br>
+     * if adding to multiple nutrients, highly recommended to use {@link #addAll(EntityPlayer, List, float)}
+     * if some nutrients, or {@link #addAll(EntityPlayer, float)} if all nutrients.
      *
      * @param player   The player to add nutrient value to.
      * @param nutrient The nutrient to add value to.
@@ -89,6 +93,17 @@ public interface INutritionManager {
         float current = get(player, nutrient);
         float clamp = MathHelper.clamp_float(current + value, 0, 100);
         return set(player, nutrient, clamp);
+    }
+
+    /**
+     * Add a value to all nutrients.
+     *
+     * @param player The player to add nutrient value to.
+     * @param value  The amount of nutrient value to add to each nutrient.
+     * @return true if any of the player's nutrient values were changed.
+     */
+    default boolean addAll(EntityPlayer player, float value) {
+        return addAll(player, NutrientList.get(), value);
     }
 
     /**
@@ -111,8 +126,10 @@ public interface INutritionManager {
     }
 
     /**
-     * Remove some value from an existing nutrient.
-     * If removing from multiple, highly recommended to use {@link subtractAll}.
+     * Remove some value from an existing nutrient.<br>
+     * <br>
+     * If removing from multiple, highly recommended to use {@link #subtractAll(EntityPlayer, List, float)}
+     * if some nutrients, or {@link #subtractAll(EntityPlayer, float)} if all nutrients.
      *
      * @param player   The player to remove nutrient value from.
      * @param nutrient The nutrient to remove value from.
@@ -121,6 +138,17 @@ public interface INutritionManager {
      */
     default boolean subtract(EntityPlayer player, Nutrient nutrient, float value) {
         return add(player, nutrient, -value);
+    }
+
+    /**
+     * Remove a value from all provided nutrients.
+     *
+     * @param player The player to remove nutrient value from.
+     * @param value  The amount of nutrient value to remove from each nutrient.
+     * @return true if any of the player's nutrient values were changed.
+     */
+    default boolean subtractAll(EntityPlayer player, float value) {
+        return subtractAll(player, NutrientList.get(), value);
     }
 
     /**

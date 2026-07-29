@@ -55,8 +55,14 @@ public final class NutritionManager implements INutritionManager {
     public boolean set(EntityPlayer player, Nutrient nutrient, float value) {
         float oldValue = get(player, nutrient);
         if (oldValue == value) return false;
-
         nutrients.put(player, nutrient, value);
+
+        // Pop non-food hunger change because if there is a change
+        // in the stack when this method is called, we can safely assume
+        // that this is either a normal food, or someone is handling nutrient
+        // values manually for their non-typical hunger restoring method.
+        popNonFoodHungerChange(player);
+
         if (!player.getEntityWorld().isRemote) {
             SPacketNutrients.send(player);
         }
@@ -74,6 +80,12 @@ public final class NutritionManager implements INutritionManager {
             }
             nutrients.put(player, entry.getKey(), entry.getValue());
         }
+
+        // Pop non-food hunger change because if there is a change
+        // in the stack when this method is called, we can safely assume
+        // that this is either a normal food, or someone is handling nutrient
+        // values manually for their non-typical hunger restoring method.
+        popNonFoodHungerChange(player);
 
         if (updated) {
             if (sync && !player.getEntityWorld().isRemote) {
@@ -134,7 +146,7 @@ public final class NutritionManager implements INutritionManager {
     public void popNonFoodHungerChange(EntityPlayer player) {
         Stack<Integer> stack = nonFoodNutritionChange.get(player);
         if (stack == null) return;
-        stack.pop();
+        if (!stack.empty()) stack.pop();
         nonFoodNutritionChange.put(player, stack);
     }
 

@@ -59,13 +59,8 @@ public class EventEatFood {
         float nutritionValue = NutrientUtils.calculateNutrition(event.foodValues, foundNutrients);
 
         // Add to each nutrient
-        for (Nutrient nutrient : foundNutrients) {
-            NutritionManager.instance()
-                .add(event.player, nutrient, nutritionValue);
-        }
-
-        // Remove the non-food hunger value change, since we now know that this was actually food
-        ((NutritionManager) NutritionManager.instance()).popNonFoodHungerChange(event.player);
+        NutritionManager.instance()
+            .addAll(event.player, foundNutrients, nutritionValue);
     }
 
     // Handle drinking milk

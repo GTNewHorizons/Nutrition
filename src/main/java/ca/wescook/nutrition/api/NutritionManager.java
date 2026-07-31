@@ -57,13 +57,13 @@ public final class NutritionManager implements INutritionManager {
         if (oldValue == value) return false;
         nutrients.put(player, nutrient, value);
 
-        // Pop non-food hunger change because if there is a change
-        // in the stack when this method is called, we can safely assume
-        // that this is either a normal food, or someone is handling nutrient
-        // values manually for their non-typical hunger restoring method.
-        popNonFoodHungerChange(player);
-
         if (!player.getEntityWorld().isRemote) {
+            // Pop non-food hunger change because if there is a change
+            // in the stack when this method is called, we can safely assume
+            // that this is either a normal food, or someone is handling nutrient
+            // values manually for their non-typical hunger restoring method.
+            popNonFoodHungerChange(player);
+
             SPacketNutrients.send(player);
         }
 
@@ -81,19 +81,19 @@ public final class NutritionManager implements INutritionManager {
             nutrients.put(player, entry.getKey(), entry.getValue());
         }
 
-        // Pop non-food hunger change because if there is a change
-        // in the stack when this method is called, we can safely assume
-        // that this is either a normal food, or someone is handling nutrient
-        // values manually for their non-typical hunger restoring method.
-        popNonFoodHungerChange(player);
+        if (!player.getEntityWorld().isRemote) {
+            // Pop non-food hunger change because if there is a change
+            // in the stack when this method is called, we can safely assume
+            // that this is either a normal food, or someone is handling nutrient
+            // values manually for their non-typical hunger restoring method.
+            popNonFoodHungerChange(player);
 
-        if (updated) {
-            if (sync && !player.getEntityWorld().isRemote) {
+            if (updated && sync) {
                 SPacketNutrients.send(player);
             }
-            return true;
         }
-        return false;
+
+        return updated;
     }
 
     @Override

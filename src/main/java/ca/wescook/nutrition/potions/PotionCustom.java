@@ -18,22 +18,12 @@ public class PotionCustom extends Potion {
         this.icon = icon;
     }
 
-    // Inventory potion rendering
+    // Potion rendering
     @SideOnly(Side.CLIENT)
     @Override
     public void renderInventoryEffect(int x, int y, PotionEffect effect, Minecraft mc) {
-        if (mc.currentScreen != null) {
-            mc.getTextureManager()
-                .bindTexture(icon);
-            Gui.func_146110_a(x + 6, y + 7, 0, 0, 18, 18, 18, 18);
-        }
+        mc.getTextureManager()
+            .bindTexture(icon);
+        Gui.func_146110_a(x + 6, y + 7, 0, 0, 18, 18, 18, 18);
     }
-
-    // On-screen HUD rendering
-    // @Override
-    // @SideOnly(Side.CLIENT)
-    // public void renderHUDEffect(PotionEffect effect, Gui gui, int x, int y, float z, float alpha) {
-    // Minecraft.getMinecraft().getTextureManager().bindTexture(icon);
-    // Gui.drawModalRectWithCustomSizedTexture(x + 3, y + 3, 0, 0, 18, 18, 18, 18);
-    // }
 }

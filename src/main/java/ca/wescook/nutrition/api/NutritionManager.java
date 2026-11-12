@@ -12,6 +12,7 @@ import net.minecraft.util.MathHelper;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
+import ca.wescook.nutrition.Nutrition;
 import ca.wescook.nutrition.NutritionConfig;
 import ca.wescook.nutrition.network.SPacketNutrients;
 import ca.wescook.nutrition.nutrients.Nutrient;
@@ -30,22 +31,27 @@ public final class NutritionManager implements INutritionManager {
         return INSTANCE;
     }
 
+    private Map<Nutrient, Float> data(EntityPlayer player) {
+        return player.worldObj.isRemote ? Nutrition.proxy.getClientNutrients() : nutrients.row(player);
+    }
+
     @Override
     public float get(EntityPlayer player, Nutrient nutrient) {
-        Float value = nutrients.get(player, nutrient);
+        Float value = data(player).get(nutrient);
         return value == null ? NutritionConfig.nutrition.startingNutrition : value;
     }
 
     // Internal-use only
     public Map<Nutrient, Float> getAll(EntityPlayer player) {
-        return nutrients.row(player);
+        return data(player);
     }
 
     @Nullable
     @Override
     public Map<Nutrient, Float> evict(EntityPlayer player) {
-        Map<Nutrient, Float> oldValues = nutrients.row(player);
-        if (oldValues == null) return null;
+        nonFoodNutritionChange.remove(player);
+        Map<Nutrient, Float> oldValues = data(player);
+        if (oldValues.isEmpty()) return null;
         Map<Nutrient, Float> values = new HashMap<>(oldValues);
         oldValues.clear();
         return values;
@@ -55,7 +61,7 @@ public final class NutritionManager implements INutritionManager {
     public boolean set(EntityPlayer player, Nutrient nutrient, float value) {
         float oldValue = get(player, nutrient);
         if (oldValue == value) return false;
-        nutrients.put(player, nutrient, value);
+        data(player).put(nutrient, value);
 
         if (!player.getEntityWorld().isRemote) {
             // Pop non-food hunger change because if there is a change
@@ -73,12 +79,13 @@ public final class NutritionManager implements INutritionManager {
     @Override
     public boolean setAll(EntityPlayer player, Map<Nutrient, Float> values, boolean sync) {
         boolean updated = false;
+        Map<Nutrient, Float> data = data(player);
 
         for (var entry : values.entrySet()) {
-            if (!nutrients.contains(player, entry.getKey()) || get(player, entry.getKey()) != entry.getValue()) {
+            if (!data.containsKey(entry.getKey()) || get(player, entry.getKey()) != entry.getValue()) {
                 updated = true;
             }
-            nutrients.put(player, entry.getKey(), entry.getValue());
+            data.put(entry.getKey(), entry.getValue());
         }
 
         if (!player.getEntityWorld().isRemote) {
@@ -118,10 +125,11 @@ public final class NutritionManager implements INutritionManager {
     public boolean reset(EntityPlayer player) {
         float newValue = (float) NutritionConfig.nutrition.startingNutrition;
         boolean updated = false;
+        Map<Nutrient, Float> data = data(player);
 
         for (Nutrient nutrient : NutrientList.get()) {
             if (get(player, nutrient) != newValue) updated = true;
-            nutrients.put(player, nutrient, newValue);
+            data.put(nutrient, newValue);
         }
 
         if (updated) {

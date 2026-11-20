@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
@@ -50,14 +51,14 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
-    @Override
-    public Map<Nutrient, Float> getClientNutrients() {
-        return clientNutrients;
-    }
-
     @SubscribeEvent
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
         Minecraft.getMinecraft()
             .func_152344_a(clientNutrients::clear);
+    }
+
+    @Override
+    public Map<Nutrient, Float> getClientNutrients(EntityPlayer player) {
+        return player == Minecraft.getMinecraft().thePlayer ? clientNutrients : super.getClientNutrients(player);
     }
 }

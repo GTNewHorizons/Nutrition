@@ -32,7 +32,7 @@ public final class NutritionManager implements INutritionManager {
     }
 
     private Map<Nutrient, Float> data(EntityPlayer player) {
-        return player.worldObj.isRemote ? Nutrition.proxy.getClientNutrients() : nutrients.row(player);
+        return player.worldObj.isRemote ? Nutrition.proxy.getClientNutrients(player) : nutrients.row(player);
     }
 
     @Override

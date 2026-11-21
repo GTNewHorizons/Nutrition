@@ -46,7 +46,10 @@ public class EventPlayerDeath {
         } else {
             // If not death, re-insert the old values in case
             // the EntityPlayer object has been remade.
-            manager.setAll(event.entityPlayer, manager.evict(event.original));
+            Map<Nutrient, Float> oldValues = manager.evict(event.original);
+            if (oldValues != null) {
+                manager.setAll(event.entityPlayer, oldValues);
+            }
         }
     }
 }
